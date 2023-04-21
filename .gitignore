@@ -1,0 +1,40 @@
+/fineract-java-sdk/src/main/java/io/finto/fineract/sdk/api
+/fineract-java-sdk/src/main/java/io/finto/fineract/sdk/models
+
+HELP.md
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/test/**
+.openapi-generator
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+target/
+*.log
+/bin/
+
+pom.xml.versionsBackup

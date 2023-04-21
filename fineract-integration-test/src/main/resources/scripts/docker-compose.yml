@@ -1,0 +1,52 @@
+version: '3.7'
+services:
+  # Backend service
+  fineractpostgresql:
+    image: postgres:15.2
+    volumes:
+      - ./:/docker-entrypoint-initdb.d/:Z,ro
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: skdcnwauicn2ucnaecasdsajdnizucawencascdca
+      FINERACT_DB_USER: postgres
+      FINERACT_DB_PASS: skdcnwauicn2ucnaecasdsajdnizucawencascdca
+      FINERACT_TENANTS_DB_NAME: fineract_tenants
+      FINERACT_TENANT_DEFAULT_DB_NAME: fineract_default
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "root" ]
+      timeout: 10s
+      retries: 10
+    ports:
+      - "5432:5432"
+  fineract-server:
+    image: nexus.finlab.dev/fineract:latest
+    volumes:
+      - ./fineract-provider/build/data:/data
+    healthcheck:
+      test: ["CMD", 'sh', '-c', 'echo -e "Checking for the availability of Fineract server deployment"; while ! nc -z "fineract-server" 8443; do sleep 1; printf "-"; done; echo -e " >> Fineract server has started";' ]
+      timeout: 10s
+      retries: 10
+    ports:
+      - "8443:8443"
+    depends_on:
+      - fineractpostgresql
+    environment:
+      # NOTE: node aware scheduler
+      - FINERACT_NODE_ID=1
+      # NOTE: env vars prefixed "FINERACT_HIKARI_*" are used to configure the database connection pool
+      - FINERACT_HIKARI_DRIVER_SOURCE_CLASS_NAME=org.postgresql.Driver
+      - FINERACT_HIKARI_JDBC_URL=jdbc:postgresql://fineractpostgresql:5432/fineract_tenants
+      - FINERACT_HIKARI_USERNAME=postgres
+      - FINERACT_HIKARI_PASSWORD=skdcnwauicn2ucnaecasdsajdnizucawencascdca
+      # NOTE: env vars prefixed "FINERACT_DEFAULT_TENANTDB_*" are used to create the default tenant database
+      - FINERACT_DEFAULT_TENANTDB_HOSTNAME=fineractpostgresql
+      - FINERACT_DEFAULT_TENANTDB_PORT=5432
+      - FINERACT_DEFAULT_TENANTDB_UID=postgres
+      - FINERACT_DEFAULT_TENANTDB_PWD=skdcnwauicn2ucnaecasdsajdnizucawencascdca
+      - FINERACT_DEFAULT_TENANTDB_CONN_PARAMS=
+      - FINERACT_DEFAULT_TENANTDB_TIMEZONE=Asia/Kolkata
+      - FINERACT_DEFAULT_TENANTDB_IDENTIFIER=default
+      - FINERACT_DEFAULT_TENANTDB_NAME=fineract_default
+      - FINERACT_DEFAULT_TENANTDB_DESCRIPTION=Default Demo Tenant
+      - JAVA_TOOL_OPTIONS="-Xmx1G"
