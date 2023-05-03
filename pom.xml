@@ -5,12 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.finto</groupId>
-    <artifactId>finto-keycloak-integration-parent</artifactId>
+    <artifactId>finto-fineract-integration-parent</artifactId>
     <packaging>pom</packaging>
     <version>1.0.0</version>
     <modules>
-        <module>fineract-java-sdk</module>
-        <module>fineract-integration-test</module>
+        <module>java-sdk</module>
+        <module>integration-test</module>
+        <module>integration</module>
     </modules>
 
     <properties>

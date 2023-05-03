@@ -1,5 +1,5 @@
-/fineract-java-sdk/src/main/java/io/finto/fineract/sdk/api
-/fineract-java-sdk/src/main/java/io/finto/fineract/sdk/models
+/java-sdk/src/main/java/io/finto/fineract/sdk/api
+/java-sdk/src/main/java/io/finto/fineract/sdk/models
 
 HELP.md
 .gradle
