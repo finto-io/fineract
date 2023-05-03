@@ -49036,6 +49036,9 @@ components:
         locale:
           type: string
           example: en
+        reasonForBlock:
+          type: string
+          example: Reason for block
     PostSavingsAccountsAccountIdResponse:
       type: object
       description: PostSavingsAccountsAccountIdResponse
