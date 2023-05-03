@@ -37527,6 +37527,8 @@ components:
           $ref: '#/components/schemas/GetSavingsAccountsSummary'
         timeline:
           $ref: '#/components/schemas/GetSavingsTimeline'
+        subStatus:
+          $ref: '#/components/schemas/GetSavingsSubStatus'
     GetSavingsAccountsResponse:
       type: object
       description: GetSavingsAccountsResponse
@@ -38715,6 +38717,39 @@ components:
         submittedOnDate:
           type: string
           format: date
+    GetSavingsSubStatus:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 0
+        code:
+          type: string
+          example: "code"
+        value:
+          type: string
+          example: "value"
+        none:
+          type: boolean
+          example: true
+        inactive:
+          type: boolean
+          example: true
+        dormant:
+          type: boolean
+          example: true
+        escheat:
+          type: boolean
+          example: true
+        block:
+          type: boolean
+          example: true
+        blockCredit:
+          type: boolean
+          example: true
+        blockDebit:
+          type: boolean
+          example: true
     GetSchedulerResponse:
       type: object
       description: GetSchedulerResponse

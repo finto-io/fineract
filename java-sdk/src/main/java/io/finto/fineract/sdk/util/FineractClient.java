@@ -43,7 +43,7 @@ import java.security.cert.X509Certificate;
 
 
 @Getter
-public final class FineractClient {
+public class FineractClient {
 
     public static final String DATE_FORMAT = "yyyy-MM-dd";
 
