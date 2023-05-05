@@ -1,5 +1,6 @@
 package io.finto.integration.fineract.test;
 
+import io.finto.fineract.sdk.api.SavingsAccountApi;
 import io.finto.integration.fineract.test.containers.ContainerHolder;
 import io.finto.integration.fineract.test.helpers.FineractFixture;
 import io.finto.integration.fineract.test.helpers.account.AccountHelper;
@@ -18,7 +19,7 @@ public class TransactionHelperImplIT {
 
     @BeforeEach
     public void setUp(){
-        fineract = FineractFixture.builderSimplified().withContainer(ContainerHolder.getFineract()).build();
+        fineract = new FineractFixture();
         transactionHelper = fineract.getTransactionHelper();
         accountHelper = fineract.getAccountHelper();
     }
