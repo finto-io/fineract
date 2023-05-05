@@ -14,7 +14,7 @@ CREATE TABLE public.account_fields (
   external_account_name varchar(255) DEFAULT NULL,
   external_branch varchar(255) DEFAULT NULL,
   PRIMARY KEY (savings_account_id),
-  CONSTRAINT fk_account_fields_savings_account_id FOREIGN KEY (savings_account_id) REFERENCES m_savings_account (id)
+  CONSTRAINT fk_account_fields_savings_account_id FOREIGN KEY (savings_account_id) REFERENCES m_savings_account (id)  ON DELETE CASCADE
 );
 
 ALTER TABLE public.account_fields OWNER TO postgres;
