@@ -18,6 +18,7 @@
         <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
+        <spring-boot-dependencies.version>2.7.6</spring-boot-dependencies.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <testcontainers.version>1.18.0</testcontainers.version>
         <junit-jupiter-api.version>5.9.2</junit-jupiter-api.version>
@@ -37,6 +38,13 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot-dependencies.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>

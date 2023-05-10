@@ -22,7 +22,9 @@ import io.finto.fineract.sdk.api.*;
 import io.finto.fineract.sdk.services.DocumentsApiFixed;
 import io.finto.fineract.sdk.services.ImagesApi;
 import io.finto.fineract.sdk.services.RunReportsApi;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -43,6 +45,8 @@ import java.security.cert.X509Certificate;
 
 
 @Getter
+@EqualsAndHashCode
+@ToString
 public class FineractClient {
 
     public static final String DATE_FORMAT = "yyyy-MM-dd";
