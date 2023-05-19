@@ -25,16 +25,16 @@ public class FineractContainerBuilder {
 
     public DockerComposeContainer<?> startCommonContainer(){
         var classLoader = this.getClass().getClassLoader();
-        var file = new File("./target/scripts/docker-compose.yml");
+        var composePath = "./target/scripts/docker-compose.yml";
 
         try {
             var inputStream = classLoader.getResourceAsStream("docker-compose.yml");
-            FileUtils.copyInputStreamToFile(Objects.requireNonNull(inputStream), file);
+            FileUtils.copyInputStreamToFile(Objects.requireNonNull(inputStream), new File(composePath));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        var container = new DockerComposeContainer<>(file)
+        var container = new DockerComposeContainer<>(new File(composePath))
                 .withExposedService(FINERACTPOSTGRESQL_DEFAULT_SERVICE_NAME, 5432, Wait.forHealthcheck().withStartupTimeout(Duration.ofSeconds(600L)))
                 .withExposedService(FINERACT_DEFAULT_SERVICE_NAME, 8443, Wait.forHealthcheck().withStartupTimeout(Duration.ofSeconds(600L)));
         container.start();
