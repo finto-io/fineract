@@ -1,10 +1,8 @@
-version: '3.7'
+version: '3'
 services:
   # Backend service
   fineractpostgresql:
-    image: postgres:15.2
-    volumes:
-      - ./:/docker-entrypoint-initdb.d/:Z,ro
+    image: nexus.finlab.dev/fineractpostgresql:latest
     restart: always
     environment:
       POSTGRES_USER: root
@@ -15,17 +13,16 @@ services:
       FINERACT_TENANT_DEFAULT_DB_NAME: fineract_default
     healthcheck:
       test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "root" ]
-      timeout: 10s
+      timeout: 1m
       retries: 10
     ports:
       - "5432:5432"
   fineract-server:
     image: nexus.finlab.dev/fineract:latest
-    volumes:
-      - ./fineract-provider/build/data:/data
+    restart: always
     healthcheck:
       test: ["CMD", 'sh', '-c', 'echo -e "Checking for the availability of Fineract server deployment"; while ! nc -z "fineract-server" 8443; do sleep 1; printf "-"; done; echo -e " >> Fineract server has started";' ]
-      timeout: 10s
+      interval: 30s
       retries: 10
     ports:
       - "8443:8443"

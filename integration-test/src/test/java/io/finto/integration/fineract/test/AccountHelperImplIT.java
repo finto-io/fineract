@@ -10,8 +10,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @ExtendWith({ContainerHolder.class})
 public class AccountHelperImplIT {
@@ -39,14 +40,12 @@ public class AccountHelperImplIT {
     @Test
     public void testCreateAccount() {
         var id = helper.buildSavingAccount().withRandomParams().withIban("iban1").create(1,1).getLastSavingAccountId();
-        var res = client.deleteSavingsAccount(id.longValue());
-        System.out.println(res);
-        //
-//        var account = Calls.ok(client.retrieveOneSavingsAccount(Long.valueOf(id), null, null));
-//        var additionalFields = Calls.ok(dataTablesApi.getDatatableByAppTableId("account_fields", 1L, null));
-//        assertEquals(account.getClientId(), 1);
-//        assertEquals(account.getSavingsProductId(), 1);
-//        assertTrue(additionalFields.contains("\"iban\": \"iban1\""));
+
+        var account = Calls.ok(client.retrieveOneSavingsAccount(Long.valueOf(id), null, null));
+        var additionalFields = Calls.ok(dataTablesApi.getDatatableByAppTableId("account_fields", 1L, null));
+        assertEquals(account.getClientId(), Integer.valueOf(1));
+        assertEquals(account.getSavingsProductId(), Integer.valueOf(1));
+        assertTrue(additionalFields.contains("\"iban\": \"iban1\""));
     }
 
 }
