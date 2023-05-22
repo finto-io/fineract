@@ -8,12 +8,7 @@ import io.finto.fineract.sdk.api.DataTablesApi;
 import io.finto.fineract.sdk.api.SavingsAccountApi;
 import io.finto.fineract.sdk.models.GetSavingsAccountsAccountIdResponse;
 import io.finto.integration.fineract.converter.FineractAccountMapper;
-import io.finto.integration.fineract.domain.Account;
-import io.finto.integration.fineract.domain.AccountAdditionalFields;
-import io.finto.integration.fineract.domain.AccountId;
-import io.finto.integration.fineract.domain.BankName;
-import io.finto.integration.fineract.domain.BankSwift;
-import io.finto.integration.fineract.domain.ProductId;
+import io.finto.integration.fineract.domain.*;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.easymock.EasyMock.createStrictControl;
 import static org.easymock.EasyMock.expect;
 
-class SdkFindAccountUseCaseTest {
+class SdkFindAccountTransactionsUseCaseTest {
 
     private IMocksControl control;
     private SdkFineractUseCaseContext context;

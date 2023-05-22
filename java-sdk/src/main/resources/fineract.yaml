@@ -16957,6 +16957,12 @@ paths:
           schema:
             type: string
             default: all
+        - description: associations
+          in: query
+          name: associations
+          schema:
+            type: string
+            default: transactions
       responses:
         "200":
           content:
@@ -37529,6 +37535,194 @@ components:
           $ref: '#/components/schemas/GetSavingsTimeline'
         subStatus:
           $ref: '#/components/schemas/GetSavingsSubStatus'
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/GetSavingsAccountsAccountIdTransactionsResponse'
+    GetSavingsAccountsAccountIdTransactionsResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 1
+        transactionType:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int32
+              example: 1
+            code:
+              type: string
+              example: "savingsAccountTransactionType.deposit"
+            value:
+              type: string
+              example: "Deposit"
+            deposit:
+              type: boolean
+              example: true
+            dividendPayout:
+              type: boolean
+              example: false
+            withdrawal:
+              type: boolean
+              example: false
+            interestPosting:
+              type: boolean
+              example: false
+            feeDeduction:
+              type: boolean
+              example: false
+            initiateTransfer:
+              type: boolean
+              example: false
+            approveTransfer:
+              type: boolean
+              example: false
+            withdrawTransfer:
+              type: boolean
+              example: false
+            rejectTransfer:
+              type: boolean
+              example: false
+            overdraftInterest:
+              type: boolean
+              example: false
+            writtenoff:
+              type: boolean
+              example: false
+            overdraftFee:
+              type: boolean
+              example: true
+            withholdTax:
+              type: boolean
+              example: false
+            escheat:
+              type: boolean
+              example: false
+            amountHold:
+              type: boolean
+              example: false
+            amountRelease:
+              type: boolean
+              example: false
+        accountId:
+          type: integer
+          format: int32
+          example: 1
+        accountNo:
+          type: string
+          example: "000000001"
+        date:
+          type: array
+          items:
+            type: integer
+            format: int32
+          example: [ 2023, 5, 3 ]
+        currency:
+          type: object
+          properties:
+            code:
+              type: string
+              example: "JOD"
+            name:
+              type: string
+              example: "Jordanian Dinar"
+            decimalPlaces:
+              type: integer
+              format: int32
+              example: 3
+            inMultiplesOf:
+              type: integer
+              format: int32
+              example: 0
+            nameCode:
+              type: string
+              example: "currency.JOD"
+            displayLabel:
+              type: string
+              example: "Jordanian Dinar [JOD]"
+        paymentDetailData:
+          type: object
+          properties:
+            id:
+              type: integer
+              format: int32
+              example: 1
+            paymentType:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int32
+                  example: 1
+                name:
+                  type: string
+                  example: "Money Transfer"
+                isSystemDefined:
+                  type: boolean
+                  example: false
+            accountNumber:
+              type: string
+              example: ""
+            checkNumber:
+              type: string
+              example: ""
+            routingCode:
+              type: string
+              example: ""
+            receiptNumber:
+              type: string
+              example: ""
+            bankNumber:
+              type: string
+              example: ""
+        amount:
+          type: number
+          format: double
+          example: 100.000000
+        runningBalance:
+          type: number
+        reversed:
+          type: boolean
+          example: false
+        submittedOnDate:
+          type: array
+          items:
+            type: integer
+            format: int32
+          example: [ 2023, 5, 3 ]
+        interestedPostedAsOn:
+          type: boolean
+          example: false
+        submittedByUsername:
+          type: string
+          example: "mifos"
+        isManualTransaction:
+          type: boolean
+          example: false
+        isReversal:
+          type: boolean
+          example: false
+        originalTransactionId:
+          type: integer
+          format: int32
+          example: 0
+        lienTransaction:
+          type: boolean
+          example: false
+        releaseTransactionId:
+          type: integer
+          format: int32
+          example: 0
+        chargesPaidByData:
+          type: array
+          example: []
+          items:
+            type: string
+            example: "[]"
+
     GetSavingsAccountsResponse:
       type: object
       description: GetSavingsAccountsResponse
@@ -37686,12 +37880,10 @@ components:
       type: object
       properties:
         accountBalance:
-          type: integer
-          format: int32
+          type: number
           example: 0
         availableBalance:
-          type: integer
-          format: int32
+          type: number
           example: 0
         currency:
           $ref: '#/components/schemas/GetSavingsCurrency'
