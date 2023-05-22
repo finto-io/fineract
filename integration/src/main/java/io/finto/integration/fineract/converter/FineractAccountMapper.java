@@ -29,7 +29,7 @@ public interface FineractAccountMapper {
     @Mapping(target = "noCredit", source = "response.subStatus.blockCredit")
     @Mapping(target = "dormant", source = "response.subStatus.dormant")
     @Mapping(target = "creditCurrentBalance", source = "response.summary.accountBalance")
-    @Mapping(target = "creditBlockedAmount", expression = "java(BigDecimal.valueOf(response.getSummary().getAccountBalance()-response.getSummary().getAvailableBalance()))")
+    @Mapping(target = "creditBlockedAmount", expression = "java(response.getSummary().getAccountBalance().subtract(response.getSummary().getAvailableBalance()))")
     @Mapping(target = "creditAvailableBalance", source = "response.summary.availableBalance")
     @Mapping(target = "iban", source = "accountAdditionalFields.iban")
     @Mapping(target = "externalAccountNumber", source = "accountAdditionalFields.externalAccountNumber")

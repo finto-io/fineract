@@ -61,6 +61,11 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>io.finto</groupId>
+                <artifactId>finto-fineract-integration</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.testcontainers</groupId>
                 <artifactId>testcontainers</artifactId>
                 <version>${testcontainers.version}</version>

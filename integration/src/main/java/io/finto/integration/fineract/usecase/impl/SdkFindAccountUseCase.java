@@ -48,7 +48,7 @@ public class SdkFindAccountUseCase implements FindAccountUseCase {
     @Override
     public Account findAccount(AccountId id) {
         SavingsAccountApi api = context.savingsAccountApi();
-        Call<GetSavingsAccountsAccountIdResponse> initAccountCall = api.retrieveOneSavingsAccount(id.getValue(), null, null);
+        Call<GetSavingsAccountsAccountIdResponse> initAccountCall = api.retrieveOneSavingsAccount(id.getValue(), null, null, null);
 
         GetSavingsAccountsAccountIdResponse savedAccount = context.getResponseBody(initAccountCall);
         DataTablesApi dataTablesApi = context.dataTablesApi();
