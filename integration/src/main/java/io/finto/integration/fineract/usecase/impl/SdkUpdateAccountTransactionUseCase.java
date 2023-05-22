@@ -2,9 +2,6 @@ package io.finto.integration.fineract.usecase.impl;
 
 import io.finto.fineract.sdk.models.PostSavingsAccountsAccountIdRequest;
 import io.finto.fineract.sdk.models.PostSavingsAccountsAccountIdResponse;
-import io.finto.fineract.sdk.util.FineractClient;
-import io.finto.integration.fineract.common.FineractResponseHandler;
-import io.finto.integration.fineract.common.ResponseHandler;
 import io.finto.integration.fineract.converter.FineractTransactionMapper;
 import io.finto.integration.fineract.domain.AccountId;
 import io.finto.integration.fineract.domain.CustomerId;
@@ -20,18 +17,12 @@ import retrofit2.Call;
 public class SdkUpdateAccountTransactionUseCase implements UpdateAccountTransactionUseCase {
 
     @NonNull
+    private final SdkFineractUseCaseContext context;
+    @NonNull
     private final FineractTransactionMapper transactionMapper;
-    @NonNull
-    private final FineractClient fineractClient;
-    @NonNull
-    private final ResponseHandler responseHandler;
 
-    public static UpdateAccountTransactionUseCase defaultInstance(FineractClient fineractClient) {
-        return SdkUpdateAccountTransactionUseCase.builder()
-                .fineractClient(fineractClient)
-                .transactionMapper(FineractTransactionMapper.INSTANCE)
-                .responseHandler(FineractResponseHandler.getDefaultInstance())
-                .build();
+    public static class SdkUpdateAccountTransactionUseCaseBuilder {
+        private FineractTransactionMapper transactionMapper = FineractTransactionMapper.INSTANCE;
     }
 
     @Override
@@ -43,11 +34,11 @@ public class SdkUpdateAccountTransactionUseCase implements UpdateAccountTransact
         PostSavingsAccountsAccountIdRequest request = new PostSavingsAccountsAccountIdRequest();
         request.setReasonForBlock("Reason For Block");
 
-        Call<PostSavingsAccountsAccountIdResponse> call = fineractClient.getSavingsAccounts().handleSavingsAccountsCommands(
+        Call<PostSavingsAccountsAccountIdResponse> call = context.savingsAccountApi().handleSavingsAccountsCommands(
                 accountId.getValue(),
                 request,
                 command);
-        responseHandler.getResponseBody(call);
+        context.getResponseBody(call);
     }
 
 }

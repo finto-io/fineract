@@ -1,8 +1,5 @@
 package io.finto.integration.fineract.usecase.impl;
 
-import io.finto.fineract.sdk.util.FineractClient;
-import io.finto.integration.fineract.common.FineractResponseHandler;
-import io.finto.integration.fineract.common.ResponseHandler;
 import io.finto.integration.fineract.domain.AccountId;
 import io.finto.integration.fineract.usecase.DeleteAccountUseCase;
 import lombok.AllArgsConstructor;
@@ -14,20 +11,11 @@ import lombok.NonNull;
 public class SdkDeleteAccountUseCase implements DeleteAccountUseCase {
 
     @NonNull
-    private final FineractClient fineractClient;
-    @NonNull
-    private final ResponseHandler responseHandler;
-
-    public static SdkDeleteAccountUseCase defaultInstance(FineractClient fineractClient) {
-        return SdkDeleteAccountUseCase.builder()
-                .fineractClient(fineractClient)
-                .responseHandler(FineractResponseHandler.getDefaultInstance())
-                .build();
-    }
+    private final SdkFineractUseCaseContext context;
 
     @Override
     public void deleteAccount(AccountId id) {
-        responseHandler.getResponseBody(fineractClient.getSavingsAccounts().deleteSavingsAccount(id.getValue()));
+        context.getResponseBody(context.savingsAccountApi().deleteSavingsAccount(id.getValue()));
     }
 
 }

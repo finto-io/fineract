@@ -7,9 +7,6 @@ import io.finto.exceptions.core.FintoApiException;
 import io.finto.fineract.sdk.api.DataTablesApi;
 import io.finto.fineract.sdk.api.SavingsAccountApi;
 import io.finto.fineract.sdk.models.GetSavingsAccountsAccountIdResponse;
-import io.finto.fineract.sdk.util.FineractClient;
-import io.finto.integration.fineract.common.FineractResponseHandler;
-import io.finto.integration.fineract.common.ResponseHandler;
 import io.finto.integration.fineract.converter.FineractAccountMapper;
 import io.finto.integration.fineract.domain.Account;
 import io.finto.integration.fineract.domain.AccountAdditionalFields;
@@ -31,43 +28,33 @@ import java.util.function.Supplier;
 public class SdkFindAccountUseCase implements FindAccountUseCase {
 
     @NonNull
-    private final FineractClient fineractClient;
+    private final SdkFineractUseCaseContext context;
     @NonNull
     private final FineractAccountMapper accountMapper;
-    @NonNull
-    private final ResponseHandler responseHandler;
-    @NonNull
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    private final ObjectMapper objectMapper;
     @NonNull
     private final Supplier<BankSwift> bankSwiftInfo;
     @NonNull
     private final Supplier<BankName> bankNameInfo;
+    @NonNull
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private final ObjectMapper objectMapper;
 
-    public static FindAccountUseCase defaultInstance(FineractClient fineractClient,
-                                              Supplier<BankSwift> bankSwiftInfo,
-                                              Supplier<BankName> bankNameInfo) {
-        return SdkFindAccountUseCase.builder()
-                .fineractClient(fineractClient)
-                .objectMapper(JsonMapper.builder().findAndAddModules().build())
-                .accountMapper(FineractAccountMapper.INSTANCE)
-                .responseHandler(FineractResponseHandler.getDefaultInstance())
-                .bankNameInfo(bankNameInfo)
-                .bankSwiftInfo(bankSwiftInfo)
-                .build();
+    public static class SdkFindAccountUseCaseBuilder {
+        private FineractAccountMapper accountMapper = FineractAccountMapper.INSTANCE;
+        private ObjectMapper objectMapper = JsonMapper.builder().findAndAddModules().build();
     }
 
     @Override
     public Account findAccount(AccountId id) {
-        SavingsAccountApi api = fineractClient.getSavingsAccounts();
+        SavingsAccountApi api = context.savingsAccountApi();
         Call<GetSavingsAccountsAccountIdResponse> initAccountCall = api.retrieveOneSavingsAccount(id.getValue(), null, null);
 
-        GetSavingsAccountsAccountIdResponse savedAccount = responseHandler.getResponseBody(initAccountCall);
-        DataTablesApi dataTablesApi = fineractClient.getDataTables();
+        GetSavingsAccountsAccountIdResponse savedAccount = context.getResponseBody(initAccountCall);
+        DataTablesApi dataTablesApi = context.dataTablesApi();
         Call<String> callDataTables = dataTablesApi.getDatatableByAppTableId("account_fields", id.getValue(), null);
 
-        String additionalDetailsContent = responseHandler.getResponseBody(callDataTables);
+        String additionalDetailsContent = context.getResponseBody(callDataTables);
         AccountAdditionalFields accountAdditionalFields = parseAdditionalFields(additionalDetailsContent);
         return accountMapper.toAccount(savedAccount, accountAdditionalFields, bankSwiftInfo.get(), bankNameInfo.get());
     }
