@@ -7,8 +7,6 @@ import io.finto.exceptions.core.FintoApiException;
 import io.finto.fineract.sdk.api.DataTablesApi;
 import io.finto.fineract.sdk.api.SavingsAccountApi;
 import io.finto.fineract.sdk.models.GetSavingsAccountsAccountIdResponse;
-import io.finto.fineract.sdk.util.FineractClient;
-import io.finto.integration.fineract.common.ResponseHandler;
 import io.finto.integration.fineract.converter.FineractAccountMapper;
 import io.finto.integration.fineract.domain.Account;
 import io.finto.integration.fineract.domain.AccountAdditionalFields;
@@ -34,8 +32,7 @@ import static org.easymock.EasyMock.expect;
 class SdkFindAccountUseCaseTest {
 
     private IMocksControl control;
-    private FineractClient fineractClient;
-    private ResponseHandler responseHandler;
+    private SdkFineractUseCaseContext context;
     private FineractAccountMapper fineractAccountMapper;
     private Supplier<BankName> bankName = () -> BankName.of("testBankName");
     private Supplier<BankSwift> bankSwift = () -> BankSwift.of("testBankSwift");
@@ -50,25 +47,18 @@ class SdkFindAccountUseCaseTest {
     @BeforeEach
     void setUp() {
         control = createStrictControl();
-        fineractClient = control.createMock(FineractClient.class);
-        responseHandler = control.createMock(ResponseHandler.class);
+        context = control.createMock(SdkFineractUseCaseContext.class);
         fineractAccountMapper = control.createMock(FineractAccountMapper.class);
         useCase = SdkFindAccountUseCase.builder()
-                .fineractClient(fineractClient)
+                .context(context)
                 .objectMapper(mapper)
                 .accountMapper(fineractAccountMapper)
-                .responseHandler(responseHandler)
                 .bankNameInfo(bankName)
                 .bankSwiftInfo(bankSwift)
                 .build();
 
         savingsAccountApi = control.createMock(SavingsAccountApi.class);
         dataTablesApi = control.createMock(DataTablesApi.class);
-    }
-
-    @Test
-    void test_defaultInstance_creation() {
-        assertThat(SdkFindAccountUseCase.defaultInstance(fineractClient, bankSwift, bankName)).isNotNull();
     }
 
     /**
@@ -81,14 +71,14 @@ class SdkFindAccountUseCaseTest {
         Call<String> callDataTables = control.createMock(Call.class);
         String additionalDetailsContent = "";
 
-        expect(fineractClient.getSavingsAccounts()).andReturn(savingsAccountApi);
+        expect(context.savingsAccountApi()).andReturn(savingsAccountApi);
         expect(savingsAccountApi.retrieveOneSavingsAccount(accountId.getValue(), null, null))
                 .andReturn(savingCall);
-        expect(responseHandler.getResponseBody(savingCall)).andReturn(savedAccount);
-        expect(fineractClient.getDataTables()).andReturn(dataTablesApi);
+        expect(context.getResponseBody(savingCall)).andReturn(savedAccount);
+        expect(context.dataTablesApi()).andReturn(dataTablesApi);
         expect(dataTablesApi.getDatatableByAppTableId("account_fields", accountId.getValue(), null))
                 .andReturn(callDataTables);
-        expect(responseHandler.getResponseBody(callDataTables)).andReturn(additionalDetailsContent);
+        expect(context.getResponseBody(callDataTables)).andReturn(additionalDetailsContent);
 
         control.replay();
 
@@ -110,14 +100,14 @@ class SdkFindAccountUseCaseTest {
         String additionalDetailsContent = "[]";
         Account result = Account.builder().id(accountId).productId(ProductId.builder().value(10L).build()).build();
 
-        expect(fineractClient.getSavingsAccounts()).andReturn(savingsAccountApi);
+        expect(context.savingsAccountApi()).andReturn(savingsAccountApi);
         expect(savingsAccountApi.retrieveOneSavingsAccount(accountId.getValue(), null, null))
                 .andReturn(savingCall);
-        expect(responseHandler.getResponseBody(savingCall)).andReturn(savedAccount);
-        expect(fineractClient.getDataTables()).andReturn(dataTablesApi);
+        expect(context.getResponseBody(savingCall)).andReturn(savedAccount);
+        expect(context.dataTablesApi()).andReturn(dataTablesApi);
         expect(dataTablesApi.getDatatableByAppTableId("account_fields", accountId.getValue(), null))
                 .andReturn(callDataTables);
-        expect(responseHandler.getResponseBody(callDataTables)).andReturn(additionalDetailsContent);
+        expect(context.getResponseBody(callDataTables)).andReturn(additionalDetailsContent);
         expect(fineractAccountMapper.toAccount(savedAccount, null, bankSwift.get(), bankName.get()))
                 .andReturn(result);
 
@@ -142,14 +132,14 @@ class SdkFindAccountUseCaseTest {
         String additionalDetailsContent = mapper.writeValueAsString(List.of(additionalFields));
         Account result = Account.builder().id(accountId).productId(ProductId.builder().value(10L).build()).build();
 
-        expect(fineractClient.getSavingsAccounts()).andReturn(savingsAccountApi);
+        expect(context.savingsAccountApi()).andReturn(savingsAccountApi);
         expect(savingsAccountApi.retrieveOneSavingsAccount(accountId.getValue(), null, null))
                 .andReturn(savingCall);
-        expect(responseHandler.getResponseBody(savingCall)).andReturn(savedAccount);
-        expect(fineractClient.getDataTables()).andReturn(dataTablesApi);
+        expect(context.getResponseBody(savingCall)).andReturn(savedAccount);
+        expect(context.dataTablesApi()).andReturn(dataTablesApi);
         expect(dataTablesApi.getDatatableByAppTableId("account_fields", accountId.getValue(), null))
                 .andReturn(callDataTables);
-        expect(responseHandler.getResponseBody(callDataTables)).andReturn(additionalDetailsContent);
+        expect(context.getResponseBody(callDataTables)).andReturn(additionalDetailsContent);
         expect(fineractAccountMapper.toAccount(savedAccount, additionalFields, bankSwift.get(), bankName.get()))
                 .andReturn(result);
 

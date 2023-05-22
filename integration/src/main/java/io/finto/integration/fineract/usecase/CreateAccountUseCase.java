@@ -1,7 +1,8 @@
 package io.finto.integration.fineract.usecase;
 
-import io.finto.integration.fineract.domain.Account;
+import io.finto.integration.fineract.domain.AccountId;
+import io.finto.integration.fineract.domain.OpeningAccount;
 
 public interface CreateAccountUseCase {
-    Account initAccount();
+    AccountId initAccount(OpeningAccount request);
 }

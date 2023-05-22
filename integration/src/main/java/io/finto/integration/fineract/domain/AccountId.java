@@ -8,7 +8,6 @@ import lombok.Value;
 @Builder
 public class AccountId {
 
-
     @NonNull
     Long value;
 

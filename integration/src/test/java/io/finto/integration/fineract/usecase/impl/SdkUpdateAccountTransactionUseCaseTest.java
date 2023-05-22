@@ -3,8 +3,6 @@ package io.finto.integration.fineract.usecase.impl;
 import io.finto.fineract.sdk.api.SavingsAccountApi;
 import io.finto.fineract.sdk.models.PostSavingsAccountsAccountIdRequest;
 import io.finto.fineract.sdk.models.PostSavingsAccountsAccountIdResponse;
-import io.finto.fineract.sdk.util.FineractClient;
-import io.finto.integration.fineract.common.ResponseHandler;
 import io.finto.integration.fineract.converter.FineractTransactionMapper;
 import io.finto.integration.fineract.domain.AccountId;
 import io.finto.integration.fineract.domain.CustomerId;
@@ -14,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import retrofit2.Call;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.easymock.EasyMock.createStrictControl;
 import static org.easymock.EasyMock.expect;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -22,8 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 class SdkUpdateAccountTransactionUseCaseTest {
 
     private IMocksControl control;
-    private FineractClient fineractClient;
-    private ResponseHandler responseHandler;
+    private SdkFineractUseCaseContext context;
 
     private SdkUpdateAccountTransactionUseCase useCase;
 
@@ -32,21 +28,14 @@ class SdkUpdateAccountTransactionUseCaseTest {
     @BeforeEach
     void setUp() {
         control = createStrictControl();
-        fineractClient = control.createMock(FineractClient.class);
-        responseHandler = control.createMock(ResponseHandler.class);
+        context = control.createMock(SdkFineractUseCaseContext.class);
 
         useCase = SdkUpdateAccountTransactionUseCase.builder()
-                .fineractClient(fineractClient)
+                .context(context)
                 .transactionMapper(FineractTransactionMapper.INSTANCE)
-                .responseHandler(responseHandler)
                 .build();
 
         savingsAccountApi = control.createMock(SavingsAccountApi.class);
-    }
-
-    @Test
-    void test_defaultInstance_creation() {
-        assertThat(SdkUpdateAccountTransactionUseCase.defaultInstance(fineractClient)).isNotNull();
     }
 
     /**
@@ -62,9 +51,9 @@ class SdkUpdateAccountTransactionUseCaseTest {
         String command = "block";
         Call<PostSavingsAccountsAccountIdResponse> call = control.createMock(Call.class);
 
-        expect(fineractClient.getSavingsAccounts()).andReturn(savingsAccountApi);
+        expect(context.savingsAccountApi()).andReturn(savingsAccountApi);
         expect(savingsAccountApi.handleSavingsAccountsCommands(accountId.getValue(), request, command)).andReturn(call);
-        expect(responseHandler.getResponseBody(call)).andReturn(null);
+        expect(context.getResponseBody(call)).andReturn(null);
 
         control.replay();
 
