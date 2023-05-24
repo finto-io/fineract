@@ -54873,6 +54873,36 @@ components:
         uploadedInputStream:
           type: string
           format: binary
+    CommonErrorResponse:
+      type: object
+      properties:
+        developerMessage:
+          type: string
+        httpStatusCode:
+          type: string
+        defaultUserMessage:
+          type: string
+        userMessageGlobalisationCode:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorDetails'
+    ErrorDetails:
+      type: object
+      properties:
+        developerMessage:
+          type: string
+        defaultUserMessage:
+          type: string
+        userMessageGlobalisationCode:
+          type: string
+        parameterName:
+          type: string
+        value:
+          type: string
+        args:
+          type: object
   securitySchemes:
     basicAuth:
       scheme: basic
