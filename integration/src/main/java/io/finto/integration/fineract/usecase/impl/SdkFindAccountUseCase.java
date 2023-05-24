@@ -23,6 +23,8 @@ import retrofit2.Call;
 
 import java.util.function.Supplier;
 
+import static io.finto.fineract.sdk.CustomDatatableNames.ACCOUNT_ADDITIONAL_FIELDS;
+
 @AllArgsConstructor
 @Builder
 public class SdkFindAccountUseCase implements FindAccountUseCase {
@@ -52,7 +54,7 @@ public class SdkFindAccountUseCase implements FindAccountUseCase {
 
         GetSavingsAccountsAccountIdResponse savedAccount = context.getResponseBody(initAccountCall);
         DataTablesApi dataTablesApi = context.dataTablesApi();
-        Call<String> callDataTables = dataTablesApi.getDatatableByAppTableId("account_fields", id.getValue(), null);
+        Call<String> callDataTables = dataTablesApi.getDatatableByAppTableId(ACCOUNT_ADDITIONAL_FIELDS, id.getValue(), null);
 
         String additionalDetailsContent = context.getResponseBody(callDataTables);
         AccountAdditionalFields accountAdditionalFields = parseAdditionalFields(additionalDetailsContent);
