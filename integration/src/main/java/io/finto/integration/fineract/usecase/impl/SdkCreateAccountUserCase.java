@@ -32,14 +32,10 @@ public class SdkCreateAccountUserCase implements CreateAccountUseCase {
 
     @Override
     public AccountId initAccount(OpeningAccount request) {
-        Product product = findProduct.apply(request.getAccountType(), request.getCurrencyCode());
-        PostSavingsAccountsRequest fineractRequest = new PostSavingsAccountsRequest();
-        fineractRequest.setProductId(product.getId().getValue().intValue());
-        fineractRequest.setClientId(request.getCustomerId().getValue().intValue());
-        //TODO fix contant values
-        fineractRequest.setLocale("en");
-        fineractRequest.setDateFormat("dd MMMM yyyy");
-        fineractRequest.submittedOnDate("12 April 2023");
+        PostSavingsAccountsRequest fineractRequest = accountMapper.accountCreationFineractRequest(
+                findProduct.apply(request.getAccountType(), request.getCurrencyCode()),
+                request.getCustomerId()
+        );
 
         return AccountId.of(
                 Objects.requireNonNull(context
