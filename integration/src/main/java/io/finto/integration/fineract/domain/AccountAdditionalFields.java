@@ -1,25 +1,23 @@
 package io.finto.integration.fineract.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AccountAdditionalFields {
-    private Long savingsAccountId;
     private String iban;
-    private Boolean externalIntegrationSuccess;
-    private String externalSource;
-    private String integrationFailureType;
-    private String swift;
     private String externalAccountNumber;
     private String externalAccountName;
     private String externalBranch;
+    private String externalSource;
 }

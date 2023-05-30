@@ -3,7 +3,11 @@ package io.finto.integration.fineract.converter;
 import io.finto.fineract.sdk.models.GetSavingsAccountsAccountIdTransactionsResponse;
 import io.finto.integration.fineract.domain.Transaction;
 import io.finto.integration.fineract.domain.TransactionsStatus;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.Named;
+import org.mapstruct.ValueMapping;
 import org.mapstruct.factory.Mappers;
 
 import java.time.LocalDate;

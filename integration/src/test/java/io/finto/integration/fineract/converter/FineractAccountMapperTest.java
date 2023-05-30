@@ -15,7 +15,6 @@ import io.finto.integration.fineract.domain.Product;
 import io.finto.integration.fineract.domain.ProductId;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
