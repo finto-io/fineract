@@ -68,7 +68,7 @@ public class TestSavingAccountCreator<T extends TestSavingAccountRepository<T>> 
     }
 
     public TestSavingAccountCreator<T> withRandomParams() {
-        var date = LocalDate.now().minusDays((long) (PRNG.nextDouble() * 365 * 20));
+        var date = LocalDate.now();
         var dateFormat = availableDateFormat.get(PRNG.nextInt(availableDateFormat.size()));
 
         return withDateFormat(availableDateFormat.get(PRNG.nextInt(availableDateFormat.size())))
