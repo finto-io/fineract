@@ -2,9 +2,9 @@ package io.finto.integration.fineract.test.helpers;
 
 import io.finto.fineract.sdk.util.FineractClient;
 import io.finto.integration.fineract.test.helpers.account.AccountHelper;
+import io.finto.integration.fineract.test.helpers.client.ClientHelper;
 import io.finto.integration.fineract.test.helpers.transaction.TransactionHelper;
-import lombok.*;
-import org.testcontainers.containers.DockerComposeContainer;
+import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class FineractFixture {
@@ -12,6 +12,7 @@ public class FineractFixture {
     private FineractClient fineractClient;
     private AccountHelper accountHelper;
     private TransactionHelper transactionHelper;
+    private ClientHelper clientHelper;
 
     public FineractClient getFineractClient(){
         if (fineractClient == null) {
@@ -37,6 +38,12 @@ public class FineractFixture {
             transactionHelper = new TransactionHelper(getFineractClient());
         }
         return transactionHelper;
+    }
+    public ClientHelper getClientHelper(){
+        if (clientHelper == null){
+            clientHelper = new ClientHelper(getFineractClient());
+        }
+        return clientHelper;
     }
 
 }

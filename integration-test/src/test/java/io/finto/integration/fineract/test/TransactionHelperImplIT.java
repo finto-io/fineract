@@ -4,6 +4,7 @@ import io.finto.integration.fineract.domain.AccountId;
 import io.finto.integration.fineract.test.containers.ContainerHolder;
 import io.finto.integration.fineract.test.helpers.FineractFixture;
 import io.finto.integration.fineract.test.helpers.account.AccountHelper;
+import io.finto.integration.fineract.test.helpers.client.ClientHelper;
 import io.finto.integration.fineract.test.helpers.transaction.TransactionHelper;
 import io.finto.integration.fineract.usecase.impl.SdkFindAccountTransactionsUseCase;
 import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
@@ -18,15 +19,20 @@ import java.io.IOException;
 @ExtendWith({ContainerHolder.class})
 public class TransactionHelperImplIT {
 
+    private final Integer PRODUCT_ID = 1;
     private FineractFixture fineract;
     private TransactionHelper transactionHelper;
     private AccountHelper accountHelper;
+    private ClientHelper clientHelper;
+
 
     @BeforeEach
     public void setUp(){
         fineract = new FineractFixture();
         transactionHelper = fineract.getTransactionHelper();
         accountHelper = fineract.getAccountHelper();
+        clientHelper = fineract.getClientHelper();
+
     }
 
     @AfterEach
@@ -34,11 +40,20 @@ public class TransactionHelperImplIT {
         fineract.getTransactionHelper().getTransactionRepository().getTransactionIDs()
                 .forEach(x -> fineract.getFineractClient().savingsAccounts.deleteSavingsAccount(Long.valueOf(x)));
         fineract.getTransactionHelper().clearAll();
+        fineract.getAccountHelper().getSavingAccountRepository().getSavingAccountIDs()
+                .forEach(x -> fineract.getFineractClient().savingsAccounts.deleteSavingsAccount(Long.valueOf(x)));
+        fineract.getAccountHelper().clearAll();
+        fineract.getClientHelper().getClientRepository().getClientIDs()
+                .forEach(x -> fineract.getFineractClient().clientApi.deleteClient(Long.valueOf(x)));
+        fineract.getClientHelper().clearAll();
     }
 
     @Test
     public void testCreateTransaction() {
-        var id = accountHelper.createRandomSavingAccount()
+        var clientId = clientHelper.createRandomClient()
+                .activateLastClient()
+                .getLastClientId();
+        var id = accountHelper.createRandomSavingAccount(clientId, PRODUCT_ID)
                 .approveLastAccount()
                 .activateLastAccount()
                 .getLastSavingAccountId();
@@ -46,8 +61,11 @@ public class TransactionHelperImplIT {
     }
 
     @Test
-    public void testTransactionList() throws IOException {
-        var id = accountHelper.createRandomSavingAccount()
+    public void testTransactionList(){
+        var clientId = clientHelper.createRandomClient()
+                .activateLastClient()
+                .getLastClientId();
+        var id = accountHelper.createRandomSavingAccount(clientId, PRODUCT_ID)
                 .approveLastAccount()
                 .activateLastAccount()
                 .getLastSavingAccountId();

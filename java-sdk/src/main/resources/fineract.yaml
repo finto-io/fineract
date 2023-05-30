@@ -3399,12 +3399,6 @@ paths:
           schema:
             type: integer
             format: int64
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DeleteClientsClientIdRequest'
-        required: true
       responses:
         "200":
           content:
