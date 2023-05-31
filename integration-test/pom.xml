@@ -5,7 +5,7 @@
     <parent>
         <artifactId>finto-fineract-integration-parent</artifactId>
         <groupId>io.finto</groupId>
-        <version>1.16.0</version>
+        <version>1.17.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
