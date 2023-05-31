@@ -19,4 +19,8 @@ public class AccountId {
         return of(Long.parseLong(id));
     }
 
+    public static AccountId of(Integer id) {
+        return of(Long.valueOf(id));
+    }
+
 }
