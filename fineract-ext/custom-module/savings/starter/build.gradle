@@ -1,0 +1,8 @@
+
+description = 'Finto Fineract Starter'
+
+group = 'io.finto.fineract.savings.starter'
+
+archivesBaseName = 'finto-fineract-savings-starter'
+
+apply from: 'dependencies.gradle'
