@@ -14,8 +14,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.io.IOException;
-
 @ExtendWith({ContainerHolder.class})
 public class TransactionHelperImplIT {
 
@@ -44,7 +42,7 @@ public class TransactionHelperImplIT {
                 .forEach(x -> fineract.getFineractClient().savingsAccounts.deleteSavingsAccount(Long.valueOf(x)));
         fineract.getAccountHelper().clearAll();
         fineract.getClientHelper().getClientRepository().getClientIDs()
-                .forEach(x -> fineract.getFineractClient().clientApi.deleteClient(Long.valueOf(x)));
+                .forEach(x -> fineract.getFineractClient().clients.deleteClient(Long.valueOf(x)));
         fineract.getClientHelper().clearAll();
     }
 

@@ -69,7 +69,7 @@ public class FineractClient {
     public final CashiersApi cashiers;
     public final CentersApi centers;
     public final ChargesApi charges;
-    public final ClientApi clientApi;
+    public final ClientApi clients;
     public final ClientChargesApi clientCharges;
     public final ClientIdentifierApi clientIdentifiers;
     public final ClientsAddressApi clientAddresses;
@@ -185,7 +185,7 @@ public class FineractClient {
         cashiers = retrofit.create(CashiersApi.class);
         centers = retrofit.create(CentersApi.class);
         charges = retrofit.create(ChargesApi.class);
-        clientApi = retrofit.create(ClientApi.class);
+        clients = retrofit.create(ClientApi.class);
         clientCharges = retrofit.create(ClientChargesApi.class);
         clientIdentifiers = retrofit.create(ClientIdentifierApi.class);
         clientAddresses = retrofit.create(ClientsAddressApi.class);

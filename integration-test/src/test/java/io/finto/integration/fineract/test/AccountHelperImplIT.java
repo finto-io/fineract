@@ -41,7 +41,7 @@ public class AccountHelperImplIT {
                 .forEach(x -> fineract.getFineractClient().savingsAccounts.deleteSavingsAccount(Long.valueOf(x)));
         fineract.getAccountHelper().clearAll();
         fineract.getClientHelper().getClientRepository().getClientIDs()
-                .forEach(x -> fineract.getFineractClient().clientApi.deleteClient(Long.valueOf(x)));
+                .forEach(x -> fineract.getFineractClient().clients.deleteClient(Long.valueOf(x)));
         fineract.getClientHelper().clearAll();
     }
 

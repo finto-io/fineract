@@ -23,14 +23,14 @@ public class ClientHelperImplIT {
     @BeforeEach
     public void setUp() {
         fineract = new FineractFixture();
-        clientApi = fineract.getFineractClient().getClientApi();
+        clientApi = fineract.getFineractClient().getClients();
         helper = fineract.getClientHelper();
     }
 
     @AfterEach
     public void setDown() {
         fineract.getClientHelper().getClientRepository().getClientIDs()
-                .forEach(x -> fineract.getFineractClient().clientApi.deleteClient(Long.valueOf(x)));
+                .forEach(x -> fineract.getFineractClient().clients.deleteClient(Long.valueOf(x)));
         fineract.getClientHelper().clearAll();
     }
 

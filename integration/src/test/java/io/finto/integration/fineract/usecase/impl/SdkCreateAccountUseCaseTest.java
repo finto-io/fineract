@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.easymock.EasyMock.createStrictControl;
 import static org.easymock.EasyMock.expect;
 
-class SdkCreateAccountUserCaseTest {
+class SdkCreateAccountUseCaseTest {
 
     private IMocksControl control;
     private SdkFineractUseCaseContext context;
@@ -33,7 +33,7 @@ class SdkCreateAccountUserCaseTest {
     private BiFunction<AccountType, CurrencyCode, Product> productResolver = (accountType, currencyCode) -> product;
     private FineractAccountMapper accountMapper;
 
-    private SdkCreateAccountUserCase useCase;
+    private SdkCreateAccountUseCase useCase;
 
     @BeforeEach
     void setUp() {
@@ -41,7 +41,7 @@ class SdkCreateAccountUserCaseTest {
         context = control.createMock(SdkFineractUseCaseContext.class);
         accountMapper = control.createMock(FineractAccountMapper.class);
         savingsAccountApi = control.createMock(SavingsAccountApi.class);
-        useCase = SdkCreateAccountUserCase.builder()
+        useCase = SdkCreateAccountUseCase.builder()
                 .context(context)
                 .findProduct(productResolver)
                 .accountMapper(accountMapper)
@@ -61,7 +61,7 @@ class SdkCreateAccountUserCaseTest {
     }
 
     /**
-     * Method under test: {@link SdkCreateAccountUserCase#initAccount(OpeningAccount)}
+     * Method under test: {@link SdkCreateAccountUseCase#initAccount(OpeningAccount)}
      */
     @Test
     void test_findAccount_invalidAdditionalFieldsContent() {

@@ -17,7 +17,7 @@ import java.util.function.BiFunction;
 
 @AllArgsConstructor
 @Builder
-public class SdkCreateAccountUserCase implements CreateAccountUseCase {
+public class SdkCreateAccountUseCase implements CreateAccountUseCase {
 
     @NonNull
     private final SdkFineractUseCaseContext context;
@@ -26,7 +26,7 @@ public class SdkCreateAccountUserCase implements CreateAccountUseCase {
     @NonNull
     private final BiFunction<AccountType, CurrencyCode, Product> findProduct;
 
-    public static class SdkCreateAccountUserCaseBuilder {
+    public static class SdkCreateAccountUseCaseBuilder {
         private FineractAccountMapper accountMapper = FineractAccountMapper.INSTANCE;
     }
 
