@@ -10,5 +10,5 @@ import lombok.Value;
 public class Customer {
     String name;
     String fullName;
-    String type;
+    String type = "INDIVIDUAL";
 }

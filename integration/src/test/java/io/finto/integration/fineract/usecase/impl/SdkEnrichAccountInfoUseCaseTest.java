@@ -3,7 +3,6 @@ package io.finto.integration.fineract.usecase.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.finto.fineract.sdk.api.DataTablesApi;
-import io.finto.fineract.sdk.models.PostDataTablesAppTableIdResponse;
 import io.finto.fineract.sdk.models.PutDataTablesAppTableIdResponse;
 import io.finto.integration.fineract.domain.Account;
 import io.finto.integration.fineract.domain.AccountAdditionalFields;

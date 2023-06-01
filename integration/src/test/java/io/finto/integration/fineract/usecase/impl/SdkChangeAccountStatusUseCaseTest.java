@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import io.finto.fineract.sdk.api.SavingsAccountApi;
 import io.finto.fineract.sdk.models.PostSavingsAccountsAccountIdRequest;
 import io.finto.fineract.sdk.models.PostSavingsAccountsAccountIdResponse;
-import io.finto.integration.fineract.common.DateFormatUtil;
 import io.finto.integration.fineract.domain.AccountId;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.Assertions;
@@ -13,8 +12,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import retrofit2.Call;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
+import static io.finto.fineract.sdk.Constants.DATE_FORMAT_PATTERN;
+import static io.finto.fineract.sdk.Constants.DEFAULT_DATE_FORMATTER;
 import static org.easymock.EasyMock.createStrictControl;
 import static org.easymock.EasyMock.expect;
 
@@ -49,9 +50,9 @@ class SdkChangeAccountStatusUseCaseTest {
         Call<PostSavingsAccountsAccountIdResponse> executeCommandCall = control.createMock(Call.class);
         PostSavingsAccountsAccountIdRequest fineractRequest = new PostSavingsAccountsAccountIdRequest();
         fineractRequest.setLocale("en");
-        fineractRequest.setDateFormat(DateFormatUtil.dateFormat);
+        fineractRequest.setDateFormat(DATE_FORMAT_PATTERN);
         // TODO: this wil fail in case the test will be executed at midnight. think about it
-        fineractRequest.setApprovedOnDate(DateFormatUtil.convertDate(LocalDateTime.now()));
+        fineractRequest.setApprovedOnDate(LocalDate.now().format(DEFAULT_DATE_FORMATTER));
 
         PostSavingsAccountsAccountIdResponse response = new PostSavingsAccountsAccountIdResponse();
         response.setResourceId(accountId.getValue().intValue());
@@ -76,8 +77,8 @@ class SdkChangeAccountStatusUseCaseTest {
         Call<PostSavingsAccountsAccountIdResponse> executeCommandCall = control.createMock(Call.class);
         PostSavingsAccountsAccountIdRequest fineractRequest = new PostSavingsAccountsAccountIdRequest();
         fineractRequest.setLocale("en");
-        fineractRequest.setDateFormat(DateFormatUtil.dateFormat);
-        fineractRequest.setActivatedOnDate(DateFormatUtil.convertDate(LocalDateTime.now()));
+        fineractRequest.setDateFormat(DATE_FORMAT_PATTERN);
+        fineractRequest.setActivatedOnDate(LocalDate.now().format(DEFAULT_DATE_FORMATTER));
 
         PostSavingsAccountsAccountIdResponse response = new PostSavingsAccountsAccountIdResponse();
         response.setResourceId(accountId.getValue().intValue());
@@ -102,8 +103,8 @@ class SdkChangeAccountStatusUseCaseTest {
         Call<PostSavingsAccountsAccountIdResponse> executeCommandCall = control.createMock(Call.class);
         PostSavingsAccountsAccountIdRequest fineractRequest = new PostSavingsAccountsAccountIdRequest();
         fineractRequest.setLocale("en");
-        fineractRequest.setDateFormat(DateFormatUtil.dateFormat);
-        fineractRequest.setClosedOnDate(DateFormatUtil.convertDate(LocalDateTime.now()));
+        fineractRequest.setDateFormat(DATE_FORMAT_PATTERN);
+        fineractRequest.setClosedOnDate(LocalDate.now().format(DEFAULT_DATE_FORMATTER));
 
         PostSavingsAccountsAccountIdResponse response = new PostSavingsAccountsAccountIdResponse();
         response.setResourceId(accountId.getValue().intValue());
