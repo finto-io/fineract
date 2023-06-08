@@ -1,17 +1,14 @@
 package io.finto.integration.fineract.converter;
 
+import io.finto.domain.account.*;
+import io.finto.domain.customer.CustomerId;
+import io.finto.domain.product.Product;
+import io.finto.domain.product.ProductId;
 import io.finto.fineract.sdk.models.GetSavingsAccountsAccountIdResponse;
 import io.finto.fineract.sdk.models.PostSavingsAccountsRequest;
 import io.finto.fineract.sdk.models.PostSavingsAccountsRequestDatatablesInner;
 import io.finto.fineract.sdk.models.PostSavingsAccountsRequestDatatablesInnerData;
-import io.finto.integration.fineract.domain.Account;
-import io.finto.integration.fineract.domain.AccountAdditionalFields;
-import io.finto.integration.fineract.domain.AccountId;
-import io.finto.integration.fineract.domain.BankName;
-import io.finto.integration.fineract.domain.BankSwift;
-import io.finto.integration.fineract.domain.CustomerId;
-import io.finto.integration.fineract.domain.Product;
-import io.finto.integration.fineract.domain.ProductId;
+import io.finto.integration.fineract.dto.AccountAdditionalFieldsDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
@@ -20,9 +17,7 @@ import org.mapstruct.factory.Mappers;
 import java.time.LocalDate;
 import java.util.List;
 
-import static io.finto.fineract.sdk.Constants.DATE_FORMAT_PATTERN;
-import static io.finto.fineract.sdk.Constants.DEFAULT_DATE_FORMATTER;
-import static io.finto.fineract.sdk.Constants.LOCALE;
+import static io.finto.fineract.sdk.Constants.*;
 import static io.finto.fineract.sdk.CustomDatatableNames.ACCOUNT_ADDITIONAL_FIELDS;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
@@ -37,7 +32,7 @@ public interface FineractAccountMapper {
     @Mapping(target = "bankName", source = "bankName.value")
     @Mapping(target = "customer.name", source = "response.clientName")
     @Mapping(target = "customer.fullName", source = "response.clientName")
-    @Mapping(target = "currencyCode", source = "response.currency.code")
+    @Mapping(target = "currencyCode.value", source = "response.currency.code")
     @Mapping(target = "noDebit", source = "response.subStatus.blockDebit")
     @Mapping(target = "noCredit", source = "response.subStatus.blockCredit")
     @Mapping(target = "dormant", source = "response.subStatus.dormant")
@@ -48,7 +43,7 @@ public interface FineractAccountMapper {
     @Mapping(target = "externalAccountNumber", source = "accountAdditionalFields.externalAccountNumber")
     @Mapping(target = "externalAccountName", source = "accountAdditionalFields.externalAccountName")
     @Mapping(target = "branch", source = "accountAdditionalFields.externalBranch")
-    Account toAccount(GetSavingsAccountsAccountIdResponse response, AccountAdditionalFields accountAdditionalFields, BankSwift bankSwift, BankName bankName);
+    Account toAccount(GetSavingsAccountsAccountIdResponse response, AccountAdditionalFieldsDto accountAdditionalFields, BankSwift bankSwift, BankName bankName);
 
     default AccountId toAccountId(Long id) {
         return AccountId.of(id);
@@ -76,6 +71,8 @@ public interface FineractAccountMapper {
 
         return fineractRequest;
     }
+
+    AccountAdditionalFieldsDto toAccountAdditionalFieldsDto(AccountDetailsUpdate account);
 
 }
 

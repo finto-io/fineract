@@ -1,26 +1,21 @@
 package io.finto.integration.fineract.converter;
 
+import io.finto.domain.account.*;
+import io.finto.domain.customer.Customer;
+import io.finto.domain.customer.CustomerId;
+import io.finto.domain.product.Product;
+import io.finto.domain.product.ProductId;
 import io.finto.fineract.sdk.models.GetSavingsAccountsAccountIdResponse;
 import io.finto.fineract.sdk.models.PostSavingsAccountsRequest;
 import io.finto.fineract.sdk.models.PostSavingsAccountsRequestDatatablesInner;
 import io.finto.fineract.sdk.models.PostSavingsAccountsRequestDatatablesInnerData;
-import io.finto.integration.fineract.domain.Account;
-import io.finto.integration.fineract.domain.AccountAdditionalFields;
-import io.finto.integration.fineract.domain.AccountId;
-import io.finto.integration.fineract.domain.BankName;
-import io.finto.integration.fineract.domain.BankSwift;
-import io.finto.integration.fineract.domain.Customer;
-import io.finto.integration.fineract.domain.CustomerId;
-import io.finto.integration.fineract.domain.Product;
-import io.finto.integration.fineract.domain.ProductId;
+import io.finto.integration.fineract.dto.AccountAdditionalFieldsDto;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import static io.finto.fineract.sdk.Constants.DATE_FORMAT_PATTERN;
-import static io.finto.fineract.sdk.Constants.DEFAULT_DATE_FORMATTER;
-import static io.finto.fineract.sdk.Constants.LOCALE;
+import static io.finto.fineract.sdk.Constants.*;
 import static io.finto.fineract.sdk.CustomDatatableNames.ACCOUNT_ADDITIONAL_FIELDS;
 import static io.finto.integration.fineract.test.Fixtures.testAccountAdditionalFields;
 import static io.finto.integration.fineract.test.Fixtures.testSavedAccountResponse;
@@ -51,7 +46,7 @@ class FineractAccountMapperTest {
                 .swift(bankSwift.getValue())
                 .bankName(bankName.getValue())
                 .customer(Customer.builder().name(savedAccount.getClientName()).fullName(savedAccount.getClientName()).build())
-                .currencyCode(savedAccount.getCurrency().getCode())
+                .currencyCode(CurrencyCode.of(savedAccount.getCurrency().getCode()))
                 .noDebit(savedAccount.getSubStatus().getBlockDebit())
                 .noCredit(savedAccount.getSubStatus().getBlockCredit())
                 .dormant(savedAccount.getSubStatus().getDormant())
@@ -72,7 +67,7 @@ class FineractAccountMapperTest {
         BankSwift bankSwift = BankSwift.of("testSwift");
         BankName bankName = BankName.of("testBankName");
         GetSavingsAccountsAccountIdResponse savedAccount = testSavedAccountResponse(accountId);
-        AccountAdditionalFields additionalFields = testAccountAdditionalFields(accountId);
+        AccountAdditionalFieldsDto additionalFields = testAccountAdditionalFields(accountId);
 
         Account actual = mapper.toAccount(savedAccount, additionalFields, bankSwift, bankName);
 
@@ -88,7 +83,7 @@ class FineractAccountMapperTest {
                 .swift(bankSwift.getValue())
                 .bankName(bankName.getValue())
                 .customer(Customer.builder().name(savedAccount.getClientName()).fullName(savedAccount.getClientName()).build())
-                .currencyCode(savedAccount.getCurrency().getCode())
+                .currencyCode(CurrencyCode.of(savedAccount.getCurrency().getCode()))
                 .noDebit(savedAccount.getSubStatus().getBlockDebit())
                 .noCredit(savedAccount.getSubStatus().getBlockCredit())
                 .dormant(savedAccount.getSubStatus().getDormant())

@@ -1,13 +1,13 @@
 package io.finto.integration.fineract.usecase.impl;
 
+import io.finto.domain.account.Account;
+import io.finto.domain.account.AccountId;
+import io.finto.domain.customer.CustomerId;
+import io.finto.domain.product.ProductId;
 import io.finto.fineract.sdk.api.ClientApi;
 import io.finto.fineract.sdk.models.GetClientsClientIdAccountsResponse;
 import io.finto.fineract.sdk.models.GetClientsSavingsAccounts;
-import io.finto.integration.fineract.domain.Account;
-import io.finto.integration.fineract.domain.AccountId;
-import io.finto.integration.fineract.domain.CustomerId;
-import io.finto.integration.fineract.domain.ProductId;
-import io.finto.integration.fineract.usecase.FindAccountUseCase;
+import io.finto.usecase.account.FindAccountUseCase;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

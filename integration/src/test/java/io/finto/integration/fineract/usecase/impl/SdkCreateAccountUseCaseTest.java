@@ -1,16 +1,16 @@
 package io.finto.integration.fineract.usecase.impl;
 
+import io.finto.domain.account.AccountId;
+import io.finto.domain.account.AccountType;
+import io.finto.domain.account.CurrencyCode;
+import io.finto.domain.account.OpeningAccount;
+import io.finto.domain.customer.CustomerId;
+import io.finto.domain.product.Product;
+import io.finto.domain.product.ProductId;
 import io.finto.fineract.sdk.api.SavingsAccountApi;
 import io.finto.fineract.sdk.models.PostSavingsAccountsRequest;
 import io.finto.fineract.sdk.models.PostSavingsAccountsResponse;
 import io.finto.integration.fineract.converter.FineractAccountMapper;
-import io.finto.integration.fineract.domain.AccountId;
-import io.finto.integration.fineract.domain.AccountType;
-import io.finto.integration.fineract.domain.CurrencyCode;
-import io.finto.integration.fineract.domain.CustomerId;
-import io.finto.integration.fineract.domain.OpeningAccount;
-import io.finto.integration.fineract.domain.Product;
-import io.finto.integration.fineract.domain.ProductId;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

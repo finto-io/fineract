@@ -1,7 +1,7 @@
 package io.finto.integration.fineract.converter;
 
-import io.finto.integration.fineract.domain.Transaction;
-import io.finto.integration.fineract.domain.TransactionsStatus;
+import io.finto.domain.transaction.Transaction;
+import io.finto.domain.transaction.TransactionsStatus;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

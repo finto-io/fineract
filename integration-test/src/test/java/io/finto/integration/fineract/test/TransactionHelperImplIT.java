@@ -1,6 +1,6 @@
 package io.finto.integration.fineract.test;
 
-import io.finto.integration.fineract.domain.AccountId;
+import io.finto.domain.account.AccountId;
 import io.finto.integration.fineract.test.containers.ContainerHolder;
 import io.finto.integration.fineract.test.helpers.FineractFixture;
 import io.finto.integration.fineract.test.helpers.account.AccountHelper;
