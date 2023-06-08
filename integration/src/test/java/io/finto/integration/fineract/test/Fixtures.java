@@ -1,14 +1,8 @@
 package io.finto.integration.fineract.test;
 
-import io.finto.fineract.sdk.models.GetSavingsAccountsAccountIdResponse;
-import io.finto.fineract.sdk.models.GetSavingsAccountsAccountIdTransactionsResponse;
-import io.finto.fineract.sdk.models.GetSavingsAccountsAccountIdTransactionsResponseCurrency;
-import io.finto.fineract.sdk.models.GetSavingsAccountsAccountIdTransactionsResponseTransactionType;
-import io.finto.fineract.sdk.models.GetSavingsAccountsSummary;
-import io.finto.fineract.sdk.models.GetSavingsCurrency;
-import io.finto.fineract.sdk.models.GetSavingsSubStatus;
-import io.finto.integration.fineract.domain.AccountAdditionalFields;
-import io.finto.integration.fineract.domain.AccountId;
+import io.finto.domain.account.AccountId;
+import io.finto.fineract.sdk.models.*;
+import io.finto.integration.fineract.dto.AccountAdditionalFieldsDto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -28,8 +22,8 @@ public class Fixtures {
                 .build();
     }
 
-    public static AccountAdditionalFields testAccountAdditionalFields(AccountId accountId) {
-        return AccountAdditionalFields.builder()
+    public static AccountAdditionalFieldsDto testAccountAdditionalFields(AccountId accountId) {
+        return AccountAdditionalFieldsDto.builder()
                 .iban("testIban")
                 .externalSource("test")
                 .externalAccountNumber("1234567890")

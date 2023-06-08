@@ -1,4 +1,4 @@
-package io.finto.integration.fineract.domain;
+package io.finto.integration.fineract.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -16,7 +16,7 @@ import lombok.experimental.SuperBuilder;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class AccountAdditionalFields {
+public class AccountAdditionalFieldsDto {
     private String iban;
     private String externalAccountNumber;
     private String externalAccountName;

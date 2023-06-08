@@ -1,11 +1,11 @@
 package io.finto.integration.fineract.usecase.impl;
 
+import io.finto.domain.account.Account;
+import io.finto.domain.account.AccountId;
+import io.finto.domain.customer.CustomerId;
 import io.finto.fineract.sdk.models.GetClientsSavingsAccounts;
-import io.finto.integration.fineract.domain.Account;
-import io.finto.integration.fineract.domain.AccountId;
-import io.finto.integration.fineract.domain.CustomerId;
-import io.finto.integration.fineract.usecase.FindAccountUseCase;
-import io.finto.integration.fineract.usecase.FindAccountsUseCase;
+import io.finto.usecase.account.FindAccountUseCase;
+import io.finto.usecase.account.FindAccountsUseCase;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NonNull;

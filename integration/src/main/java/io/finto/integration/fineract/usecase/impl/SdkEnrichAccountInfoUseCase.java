@@ -3,16 +3,13 @@ package io.finto.integration.fineract.usecase.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import io.finto.domain.account.Account;
+import io.finto.domain.account.AccountDetailsUpdate;
+import io.finto.domain.account.AccountId;
 import io.finto.exceptions.core.FintoApiException;
-import io.finto.integration.fineract.domain.Account;
-import io.finto.integration.fineract.domain.AccountAdditionalFields;
-import io.finto.integration.fineract.domain.AccountId;
-import io.finto.integration.fineract.usecase.EnrichAccountInfoUseCase;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.NonNull;
-import lombok.ToString;
+import io.finto.integration.fineract.converter.FineractAccountMapper;
+import io.finto.usecase.account.EnrichAccountInfoUseCase;
+import lombok.*;
 
 import java.util.function.Function;
 
@@ -30,21 +27,25 @@ public class SdkEnrichAccountInfoUseCase implements EnrichAccountInfoUseCase {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private final ObjectMapper objectMapper;
+    @NonNull
+    private final FineractAccountMapper accountMapper;
 
     public static class SdkEnrichAccountInfoUseCaseBuilder {
+        private FineractAccountMapper accountMapper = FineractAccountMapper.INSTANCE;
         private ObjectMapper objectMapper = JsonMapper.builder().findAndAddModules().build();
     }
 
     @Override
     public Account saveAdditionalFields(AccountId accountId,
-                                        AccountAdditionalFields additionalFields) {
+                                        AccountDetailsUpdate request) {
+        var dto = accountMapper.toAccountAdditionalFieldsDto(request);
         try {
             context.getResponseBody(
                     context.dataTablesApi()
                             .updateDatatableEntryOnetoOne(
                                     ACCOUNT_ADDITIONAL_FIELDS,
                                     accountId.getValue(),
-                                    objectMapper.writeValueAsString(additionalFields)
+                                    objectMapper.writeValueAsString(dto)
                             )
             );
         } catch (JsonProcessingException e) {

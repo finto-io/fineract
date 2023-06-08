@@ -3,17 +3,17 @@ package io.finto.integration.fineract.usecase.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import io.finto.domain.account.Account;
+import io.finto.domain.account.AccountId;
+import io.finto.domain.account.BankName;
+import io.finto.domain.account.BankSwift;
+import io.finto.domain.product.ProductId;
 import io.finto.exceptions.core.FintoApiException;
 import io.finto.fineract.sdk.api.DataTablesApi;
 import io.finto.fineract.sdk.api.SavingsAccountApi;
 import io.finto.fineract.sdk.models.GetSavingsAccountsAccountIdResponse;
 import io.finto.integration.fineract.converter.FineractAccountMapper;
-import io.finto.integration.fineract.domain.Account;
-import io.finto.integration.fineract.domain.AccountAdditionalFields;
-import io.finto.integration.fineract.domain.AccountId;
-import io.finto.integration.fineract.domain.BankName;
-import io.finto.integration.fineract.domain.BankSwift;
-import io.finto.integration.fineract.domain.ProductId;
+import io.finto.integration.fineract.dto.AccountAdditionalFieldsDto;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -126,7 +126,7 @@ class SdkFindAccountUseCaseTest {
     @Test
     void test_findAccount_withNoBlankAdditionalFieldsContent() throws JsonProcessingException {
         GetSavingsAccountsAccountIdResponse savedAccount = testSavedAccountResponse(accountId);
-        AccountAdditionalFields additionalFields = testAccountAdditionalFields(accountId);
+        AccountAdditionalFieldsDto additionalFields = testAccountAdditionalFields(accountId);
         Call<GetSavingsAccountsAccountIdResponse> savingCall = control.createMock(Call.class);
         Call<String> callDataTables = control.createMock(Call.class);
         String additionalDetailsContent = mapper.writeValueAsString(List.of(additionalFields));

@@ -1,8 +1,8 @@
 package io.finto.integration.fineract.usecase.impl;
 
+import io.finto.domain.account.AccountId;
 import io.finto.fineract.sdk.models.PostSavingsAccountsAccountIdRequest;
-import io.finto.integration.fineract.domain.AccountId;
-import io.finto.integration.fineract.usecase.ChangeAccountStatusUseCase;
+import io.finto.usecase.account.ChangeAccountStatusUseCase;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NonNull;
