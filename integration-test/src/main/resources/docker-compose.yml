@@ -2,7 +2,7 @@ version: '3'
 services:
   # Backend service
   fineractpostgresql:
-    image: nexus.finlab.dev/fineractpostgresql:1.0.0
+    image: nexus.finlab.dev/fineractpostgresql:1.0.1
     restart: always
     environment:
       POSTGRES_USER: root
