@@ -26,7 +26,7 @@ public interface FineractAccountMapper {
     FineractAccountMapper INSTANCE = Mappers.getMapper(FineractAccountMapper.class);
 
     @Mapping(target = "id", source = "response.id")
-    @Mapping(target = "number", source = "response.accountNo")
+    @Mapping(target = "number", expression = "java(accountAdditionalFields != null && accountAdditionalFields.getExternalAccountNumber() != null ? accountAdditionalFields.getExternalAccountNumber() : response.getAccountNo())")
     @Mapping(target = "productId", source = "response.savingsProductId")
     @Mapping(target = "swift", source = "bankSwift.value")
     @Mapping(target = "bankName", source = "bankName.value")
@@ -43,6 +43,7 @@ public interface FineractAccountMapper {
     @Mapping(target = "externalAccountNumber", source = "accountAdditionalFields.externalAccountNumber")
     @Mapping(target = "externalAccountName", source = "accountAdditionalFields.externalAccountName")
     @Mapping(target = "branch", source = "accountAdditionalFields.externalBranch")
+    @Mapping(target = "name", source = "accountAdditionalFields.externalAccountName")
     Account toAccount(GetSavingsAccountsAccountIdResponse response, AccountAdditionalFieldsDto accountAdditionalFields, BankSwift bankSwift, BankName bankName);
 
     default AccountId toAccountId(Long id) {
