@@ -49225,6 +49225,17 @@ components:
         reasonForBlock:
           type: string
           example: Reason for block
+        withdrawBalance:
+          type: boolean
+          example: true
+        accountNumber:
+          type: integer
+          format: int64
+          example: 222
+        paymentTypeId:
+          type: integer
+          format: int64
+          example: 101
     PostSavingsAccountsAccountIdResponse:
       type: object
       description: PostSavingsAccountsAccountIdResponse
