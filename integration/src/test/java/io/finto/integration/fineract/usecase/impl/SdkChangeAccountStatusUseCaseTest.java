@@ -24,6 +24,8 @@ class SdkChangeAccountStatusUseCaseTest {
     private IMocksControl control;
     private SdkFineractUseCaseContext context;
     private AccountId accountId = AccountId.of(10L);
+    private AccountId creditAccountId = AccountId.of(11L);
+
     private ObjectMapper mapper = JsonMapper.builder().findAndAddModules().build();
 
     private SavingsAccountApi savingsAccountApi;
@@ -96,7 +98,7 @@ class SdkChangeAccountStatusUseCaseTest {
         Assertions.assertEquals(accountId, actual);
     }
     /**
-     * Method under test: {@link SdkChangeAccountStatusUseCase#closeAccount(AccountId)}
+     * Method under test: {@link SdkChangeAccountStatusUseCase#closeAccount(AccountId, AccountId)}
      */
     @Test
     void test_closeAccount_success() {
@@ -104,6 +106,9 @@ class SdkChangeAccountStatusUseCaseTest {
         PostSavingsAccountsAccountIdRequest fineractRequest = new PostSavingsAccountsAccountIdRequest();
         fineractRequest.setLocale("en");
         fineractRequest.setDateFormat(DATE_FORMAT_PATTERN);
+        fineractRequest.setPaymentTypeId(1L);
+        fineractRequest.setAccountNumber(creditAccountId.getValue());
+        fineractRequest.setWithdrawBalance(true);
         fineractRequest.setClosedOnDate(LocalDate.now().format(DEFAULT_DATE_FORMATTER));
 
         PostSavingsAccountsAccountIdResponse response = new PostSavingsAccountsAccountIdResponse();
@@ -115,7 +120,7 @@ class SdkChangeAccountStatusUseCaseTest {
 
         control.replay();
 
-        AccountId actual = useCase.closeAccount(accountId);
+        AccountId actual = useCase.closeAccount(accountId, creditAccountId);
 
         control.verify();
 

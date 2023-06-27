@@ -43,11 +43,14 @@ public class SdkChangeAccountStatusUseCase implements ChangeAccountStatusUseCase
     }
 
     @Override
-    public AccountId closeAccount(AccountId accountId) {
+    public AccountId closeAccount(AccountId accountId, AccountId creditAccountId) {
         PostSavingsAccountsAccountIdRequest fineractRequest = new PostSavingsAccountsAccountIdRequest();
         fineractRequest.setDateFormat(DATE_FORMAT_PATTERN);
         fineractRequest.setClosedOnDate(LocalDate.now().format(DEFAULT_DATE_FORMATTER));
         fineractRequest.setLocale("en");
+        fineractRequest.setWithdrawBalance(true);
+        fineractRequest.setPaymentTypeId(1L);
+        fineractRequest.setAccountNumber(creditAccountId.getValue());
         return executeCommand(accountId, fineractRequest, COMMAND_CLOSE);
     }
 

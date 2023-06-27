@@ -1,11 +1,12 @@
 package io.finto.integration.fineract.test.helpers.client;
 
-import io.finto.fineract.sdk.models.*;
+import io.finto.fineract.sdk.models.PostClientsClientIdRequest;
+import io.finto.fineract.sdk.models.PostClientsRequest;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Getter
@@ -53,7 +54,7 @@ public class TestClient {
                 return PostClientsClientIdRequest.builder()
                         .dateFormat(dateFormat)
                         .locale("en")
-                        .activationDate(LocalDate.now().format(formatter))
+                        .activationDate(ZonedDateTime.now(ZoneOffset.UTC).format(formatter))
                         .build();
         }
         throw new UnsupportedOperationException();
