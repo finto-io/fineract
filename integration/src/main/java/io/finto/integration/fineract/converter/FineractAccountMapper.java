@@ -30,7 +30,6 @@ public interface FineractAccountMapper {
     @Mapping(target = "productId", source = "response.savingsProductId")
     @Mapping(target = "swift", source = "bankSwift.value")
     @Mapping(target = "bankName", source = "bankName.value")
-    @Mapping(target = "customer.name", source = "response.clientName")
     @Mapping(target = "customer.fullName", source = "response.clientName")
     @Mapping(target = "currencyCode.value", source = "response.currency.code")
     @Mapping(target = "noDebit", source = "response.subStatus.blockDebit")
