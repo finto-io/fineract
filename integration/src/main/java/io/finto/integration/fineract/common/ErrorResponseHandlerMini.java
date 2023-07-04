@@ -46,6 +46,8 @@ public class ErrorResponseHandlerMini implements ErrorResponseHandler {
             switch (failureResponse.code()) {
                 case 400:
                     return new BadRequestException(BadRequestException.DEFAULT_ERROR_CODE, errorMessage);
+                case 403:
+                    return new BadRequestException(BadRequestException.DEFAULT_ERROR_CODE, errorMessage);
                 case 404:
                     return new EntityNotFoundException(EntityNotFoundException.DEFAULT_ERROR_CODE, errorMessage);
                 default:
