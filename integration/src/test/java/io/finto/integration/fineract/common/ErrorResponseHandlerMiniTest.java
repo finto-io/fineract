@@ -68,6 +68,16 @@ class ErrorResponseHandlerMiniTest {
     }
 
     @Test
+    void test_convert_403() throws Exception {
+        ResponseBody responseBody = ResponseBody.create(null, commonErrorResponse(null, List.of("error1", "error2")));
+        Response<String> response = Response.error(403, responseBody);
+
+        RuntimeException actual = handlerMini.convert(response);
+        assertThat(actual).isInstanceOf(BadRequestException.class);
+        assertThat(actual.getMessage()).isEqualTo("error1;error2");
+    }
+
+    @Test
     void test_convert_404() throws Exception {
         ResponseBody responseBody = ResponseBody.create(null, commonErrorResponse(null, List.of("not found")));
         Response<String> response = Response.error(404, responseBody);
