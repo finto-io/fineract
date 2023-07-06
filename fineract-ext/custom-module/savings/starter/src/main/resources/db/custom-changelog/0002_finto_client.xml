@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="finto" id="2">
+        <update tableName="c_configuration">
+            <column name="enabled" valueBoolean="true"/>
+            <where>id = '31'</where>
+        </update>
+        <insert tableName="m_code_value">
+            <column name="id" valueNumeric="15"/>
+            <column name="code_id" valueNumeric="4"/>
+            <column name="code_value" value="M"/>
+            <column name="code_description" value="Male"/>
+            <column name="order_position" valueNumeric="0"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="is_mandatory" valueBoolean="false"/>
+        </insert>
+        <insert tableName="m_code_value">
+            <column name="id" valueNumeric="16"/>
+            <column name="code_id" valueNumeric="4"/>
+            <column name="code_value" value="F"/>
+            <column name="code_description" value="Female"/>
+            <column name="order_position" valueNumeric="0"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="is_mandatory" valueBoolean="false"/>
+        </insert>
+        <insert tableName="m_code_value">
+            <column name="id" valueNumeric="17"/>
+            <column name="code_id" valueNumeric="29"/>
+            <column name="code_value" value="Residence Address"/>
+            <column name="code_description" value="Residence Address"/>
+            <column name="order_position" valueNumeric="1"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="is_mandatory" valueBoolean="false"/>
+        </insert>
+        <insert tableName="m_code_value">
+            <column name="id" valueNumeric="18"/>
+            <column name="code_id" valueNumeric="29"/>
+            <column name="code_value" value="Work Address"/>
+            <column name="code_description" value="Work Address"/>
+            <column name="order_position" valueNumeric="2"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="is_mandatory" valueBoolean="false"/>
+        </insert>
+        <insert tableName="m_code_value">
+            <column name="id" valueNumeric="19"/>
+            <column name="code_id" valueNumeric="28"/>
+            <column name="code_value" value="JO"/>
+            <column name="code_description" value="Jordan"/>
+            <column name="order_position" valueNumeric="1"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="is_mandatory" valueBoolean="false"/>
+        </insert>
+        <insert tableName="m_code_value">
+            <column name="id" valueNumeric="20"/>
+            <column name="code_id" valueNumeric="27"/>
+            <column name="code_value" value="Amman"/>
+            <column name="code_description" value="Amman"/>
+            <column name="order_position" valueNumeric="0"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="is_mandatory" valueBoolean="false"/>
+        </insert>
+        <insert tableName="m_code_value">
+            <column name="id" valueNumeric="21"/>
+            <column name="code_id" valueNumeric="14"/>
+            <column name="code_value" value="Bank Request"/>
+            <column name="code_description" value="Bank Request"/>
+            <column name="order_position" valueNumeric="0"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="is_mandatory" valueBoolean="false"/>
+        </insert>
+        <insert tableName="m_code_value">
+            <column name="id" valueNumeric="22"/>
+            <column name="code_id" valueNumeric="14"/>
+            <column name="code_value" value="Customer Request"/>
+            <column name="code_description" value="Customer Request"/>
+            <column name="order_position" valueNumeric="0"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="is_mandatory" valueBoolean="false"/>
+        </insert>
+        <createTable tableName="customer_fields">
+            <column autoIncrement="true" name="client_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValueComputed="NULL" name="kyc_id" type="VARCHAR(255)"/>
+            <column defaultValueComputed="NULL" name="external_customer_number" type="VARCHAR(64)"/>
+            <column defaultValueComputed="NULL" name="nationality" type="VARCHAR(64)"/>
+            <column defaultValueComputed="NULL" name="residency_flag" type="VARCHAR(64)"/>
+            <column defaultValueComputed="NULL" name="deceased" type="BOOLEAN"/>
+            <column defaultValueComputed="NULL" name="dormant" type="BOOLEAN"/>
+            <column defaultValueComputed="NULL" name="dormant_since_date" type="DATE"/>
+            <column defaultValueComputed="NULL" name="is_customer_restricted" type="BOOLEAN"/>
+            <column defaultValueComputed="NULL" name="email" type="VARCHAR(255)"/>
+            <column defaultValueComputed="NULL" name="user_id" type="VARCHAR(255)"/>
+            <column defaultValueComputed="NULL" name="partner_id" type="VARCHAR(255)"/>
+            <column defaultValueComputed="NULL" name="partner_name" type="VARCHAR(255)"/>
+            <column defaultValueComputed="NULL" name="updated_at" type="DATETIME"/>
+            <column defaultValueComputed="NULL" name="updated_by" type="VARCHAR(255)"/>
+            <column defaultValueComputed="NULL" name="external_source" type="BOOLEAN"/>
+            <column defaultValueComputed="NULL" name="update_flag" type="TEXT"/>
+        </createTable>
+        <insert tableName="x_registered_table">
+            <column name="registered_table_name" value="customer_fields"/>
+            <column name="application_table_name" value="m_client"/>
+            <column name="entity_subtype" value="customer_fields"/>
+            <column name="category" valueNumeric="200"/>
+        </insert>
+        <delete tableName="m_payment_type"/>
+        <insert tableName="m_payment_type">
+            <column name="value" value="Internal Transfer"/>
+            <column name="description" value="Internal Transfer"/>
+            <column name="is_cash_payment" valueBoolean="false"/>
+            <column name="order_position" valueNumeric="1"/>
+        </insert>
+        <insert tableName="m_payment_type">
+            <column name="value" value="Outward - ACH Transfer"/>
+            <column name="description" value="Outward - ACH Transfer"/>
+            <column name="is_cash_payment" valueBoolean="false"/>
+            <column name="order_position" valueNumeric="2"/>
+        </insert>
+        <insert tableName="m_payment_type">
+            <column name="value" value="Outward - RTGS Transfer"/>
+            <column name="description" value="Outward - RTGS Transfer"/>
+            <column name="is_cash_payment" valueBoolean="false"/>
+            <column name="order_position" valueNumeric="3"/>
+        </insert>
+        <insert tableName="m_payment_type">
+            <column name="value" value="Outward - International Transfer"/>
+            <column name="description" value="International Transfer"/>
+            <column name="is_cash_payment" valueBoolean="false"/>
+            <column name="order_position" valueNumeric="4"/>
+        </insert>
+        <insert tableName="m_payment_type">
+            <column name="value" value="Card Top Up"/>
+            <column name="description" value="Card Top Up"/>
+            <column name="is_cash_payment" valueBoolean="false"/>
+            <column name="order_position" valueNumeric="5"/>
+        </insert>
+        <insert tableName="m_payment_type">
+            <column name="value" value="Card Withdrawal"/>
+            <column name="description" value="Card Withdrawal"/>
+            <column name="is_cash_payment" valueBoolean="false"/>
+            <column name="order_position" valueNumeric="6"/>
+        </insert>
+        <insert tableName="m_payment_type">
+            <column name="value" value="Inward - ACH Transfer"/>
+            <column name="description" value="Inward - ACH Transfer"/>
+            <column name="is_cash_payment" valueBoolean="false"/>
+            <column name="order_position" valueNumeric="7"/>
+        </insert>
+        <insert tableName="m_payment_type">
+            <column name="value" value="Inward - RTGS Transfer"/>
+            <column name="description" value="Inward - RTGS Transfer"/>
+            <column name="is_cash_payment" valueBoolean="false"/>
+            <column name="order_position" valueNumeric="7"/>
+        </insert>
+        <insert tableName="m_payment_type">
+            <column name="value" value="Inward - International Transfer"/>
+            <column name="description" value="Inward - International Transfer"/>
+            <column name="is_cash_payment" valueBoolean="false"/>
+            <column name="order_position" valueNumeric="7"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

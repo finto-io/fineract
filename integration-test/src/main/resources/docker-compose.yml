@@ -18,7 +18,7 @@ services:
     ports:
       - "5432:5432"
   fineract-server:
-    image: nexus.finlab.dev/fineract-ext:1.0.0
+    image: nexus.finlab.dev/fineract-ext:1.1.0
     restart: always
     healthcheck:
       test: ["CMD", 'sh', '-c', 'echo -e "Checking for the availability of Fineract server deployment"; while ! nc -z "fineract-server" 8443; do sleep 1; printf "-"; done; echo -e " >> Fineract server has started";' ]

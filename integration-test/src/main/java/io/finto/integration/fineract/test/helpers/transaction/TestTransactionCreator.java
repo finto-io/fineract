@@ -63,7 +63,7 @@ public class TestTransactionCreator<T extends TestTransactionRepository<T>> {
         return withCommand("deposit")
                 .withDateFormat(availableDateFormat.get(PRNG.nextInt(availableDateFormat.size())))
                 .withLocale(availableLocale.get(PRNG.nextInt(availableLocale.size())))
-                .withPaymentTypeId(1)
+                .withPaymentTypeId(4)
                 .withTransactionAmount(BigDecimal.valueOf(PRNG.nextDouble() * 1000))
                 .withTransactionDate(date.format(DateTimeFormatter.ofPattern(dateFormat)))
                 ;

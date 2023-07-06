@@ -7,6 +7,7 @@ import lombok.ToString;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -32,6 +33,7 @@ public class TestClientCreator<T extends TestClientRepository<T>> {
     private Integer legalFormId;
     private ClientStatus status;
     private String locale;
+    private List<TestClientAddress> address;
 
     public TestClientCreator<T> withDateFormat(String dateFormat) {
         this.dateFormat = dateFormat;
@@ -73,13 +75,30 @@ public class TestClientCreator<T extends TestClientRepository<T>> {
         return this;
     }
 
+    public TestClientCreator<T> withAddress(List<TestClientAddress> address) {
+        this.address = address;
+        return this;
+    }
+
     public TestClientCreator<T> withRandomParams() {
+        TestClientAddress address = TestClientAddress.builder()
+                .addressTypeId(17L)
+                .addressLine1("A")
+                .addressLine2("B")
+                .addressLine3("C")
+                .city("Amman")
+                .countryId(19)
+                .postalCode(107490L)
+                .isActive(true)
+                .build();
+
         return withDateFormat(availableDateFormat.get(PRNG.nextInt(availableDateFormat.size())))
                 .withOfficeId(1)
                 .withFirstName(random(10, true, true))
                 .withLastName(random(10, true, true))
                 .withLegalFormId(1)
                 .withLocale("en")
+                .withAddress(List.of(address))
                 .withStatus(ClientStatus.ACTIVATED);
     }
 
@@ -93,6 +112,7 @@ public class TestClientCreator<T extends TestClientRepository<T>> {
                 .legalFormId(legalFormId)
                 .status(status)
                 .locale(locale)
+                .address(address)
                 .build());
     }
 
