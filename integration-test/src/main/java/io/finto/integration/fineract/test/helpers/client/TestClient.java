@@ -1,5 +1,6 @@
 package io.finto.integration.fineract.test.helpers.client;
 
+import io.finto.fineract.sdk.models.PostClientsAddressRequest;
 import io.finto.fineract.sdk.models.PostClientsClientIdRequest;
 import io.finto.fineract.sdk.models.PostClientsRequest;
 import lombok.*;
@@ -7,7 +8,9 @@ import lombok.*;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -29,6 +32,7 @@ public class TestClient {
     private Integer legalFormId;
     private ClientStatus status;
     private String locale;
+    private List<TestClientAddress> address;
 
     public PostClientsRequest toClientRequest() {
         return PostClientsRequest.builder()
@@ -38,12 +42,30 @@ public class TestClient {
                 .officeId(officeId)
                 .legalFormId(legalFormId)
                 .locale(locale)
+                .address(toClientAddressRequest())
                 .build();
     }
 
-    public PostClientsClientIdRequest toStatusRequest(){
+    private List<PostClientsAddressRequest> toClientAddressRequest() {
+        return address == null ? null : address.stream().map(this::toClientAddress).collect(Collectors.toList());
+    }
+
+    private PostClientsAddressRequest toClientAddress(TestClientAddress testClientAddress) {
+        return PostClientsAddressRequest.builder()
+                .addressTypeId(testClientAddress.getAddressTypeId())
+                .addressLine1(testClientAddress.getAddressLine1())
+                .addressLine2(testClientAddress.getAddressLine2())
+                .addressLine3(testClientAddress.getAddressLine3())
+                .city(testClientAddress.getCity())
+                .countryId(testClientAddress.getCountryId())
+                .postalCode(testClientAddress.getPostalCode())
+                .isActive(testClientAddress.getIsActive())
+                .build();
+    }
+
+    public PostClientsClientIdRequest toStatusRequest() {
         var formatter = DateTimeFormatter.ofPattern(dateFormat);
-        switch (status){
+        switch (status) {
             case CLOSED:
             case APPROVED:
                 return PostClientsClientIdRequest.builder()

@@ -49,7 +49,9 @@ public class SdkChangeAccountStatusUseCase implements ChangeAccountStatusUseCase
         fineractRequest.setClosedOnDate(LocalDate.now().format(DEFAULT_DATE_FORMATTER));
         fineractRequest.setLocale("en");
         fineractRequest.setWithdrawBalance(true);
-        fineractRequest.setPaymentTypeId(1L);
+        // TODO: change the payment type choosing mechanism
+        // possible to use m_payment_type.code_name field as an enum values
+        fineractRequest.setPaymentTypeId(4L);
         fineractRequest.setAccountNumber(creditAccountId.getValue());
         return executeCommand(accountId, fineractRequest, COMMAND_CLOSE);
     }

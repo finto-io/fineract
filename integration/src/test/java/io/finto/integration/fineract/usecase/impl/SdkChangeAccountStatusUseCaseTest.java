@@ -106,7 +106,7 @@ class SdkChangeAccountStatusUseCaseTest {
         PostSavingsAccountsAccountIdRequest fineractRequest = new PostSavingsAccountsAccountIdRequest();
         fineractRequest.setLocale("en");
         fineractRequest.setDateFormat(DATE_FORMAT_PATTERN);
-        fineractRequest.setPaymentTypeId(1L);
+        fineractRequest.setPaymentTypeId(4L);
         fineractRequest.setAccountNumber(creditAccountId.getValue());
         fineractRequest.setWithdrawBalance(true);
         fineractRequest.setClosedOnDate(LocalDate.now().format(DEFAULT_DATE_FORMATTER));
