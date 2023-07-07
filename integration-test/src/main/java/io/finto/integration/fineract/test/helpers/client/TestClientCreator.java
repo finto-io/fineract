@@ -5,9 +5,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -33,6 +30,7 @@ public class TestClientCreator<T extends TestClientRepository<T>> {
     private Integer legalFormId;
     private ClientStatus status;
     private String locale;
+    private String mobileNo;
     private List<TestClientAddress> address;
 
     public TestClientCreator<T> withDateFormat(String dateFormat) {
@@ -75,6 +73,11 @@ public class TestClientCreator<T extends TestClientRepository<T>> {
         return this;
     }
 
+    public TestClientCreator<T> withMobileNo(String mobileNo) {
+        this.mobileNo = mobileNo;
+        return this;
+    }
+
     public TestClientCreator<T> withAddress(List<TestClientAddress> address) {
         this.address = address;
         return this;
@@ -98,6 +101,7 @@ public class TestClientCreator<T extends TestClientRepository<T>> {
                 .withLastName(random(10, true, true))
                 .withLegalFormId(1)
                 .withLocale("en")
+                .withMobileNo(random(10, false, true))
                 .withAddress(List.of(address))
                 .withStatus(ClientStatus.ACTIVATED);
     }
@@ -112,6 +116,7 @@ public class TestClientCreator<T extends TestClientRepository<T>> {
                 .legalFormId(legalFormId)
                 .status(status)
                 .locale(locale)
+                .mobileNo(mobileNo)
                 .address(address)
                 .build());
     }

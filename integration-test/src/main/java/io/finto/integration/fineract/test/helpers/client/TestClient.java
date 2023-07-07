@@ -32,6 +32,7 @@ public class TestClient {
     private Integer legalFormId;
     private ClientStatus status;
     private String locale;
+    private String mobileNo;
     private List<TestClientAddress> address;
 
     public PostClientsRequest toClientRequest() {
@@ -42,6 +43,7 @@ public class TestClient {
                 .officeId(officeId)
                 .legalFormId(legalFormId)
                 .locale(locale)
+                .mobileNo(mobileNo)
                 .address(toClientAddressRequest())
                 .build();
     }
