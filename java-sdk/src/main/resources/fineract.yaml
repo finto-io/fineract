@@ -3438,6 +3438,11 @@ paths:
           schema:
             type: boolean
             default: false
+        - description: fields
+          in: query
+          name: fields
+          schema:
+            type: string
       responses:
         '200':
           content:
@@ -28333,6 +28338,9 @@ components:
         displayName:
           type: string
           example: savings test
+        mobileNo:
+          type: string
+          example: 89991113355
         emailAddress:
           type: string
           example: test@test.com

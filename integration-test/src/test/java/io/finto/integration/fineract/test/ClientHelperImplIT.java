@@ -14,7 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import static org.junit.Assert.assertTrue;
 
 @ExtendWith({ContainerHolder.class})
-public class ClientHelperImplIT {
+class ClientHelperImplIT {
 
     private FineractFixture fineract;
     private ClientApi clientApi;
@@ -35,12 +35,12 @@ public class ClientHelperImplIT {
     }
 
     @Test
-    public void testCreateClients_success_evenAfterRemove() {
+    void testCreateClients_success_evenAfterRemove() {
         var expectedClientId_1 = helper.buildClient().withRandomParams().create().getLastClientId();
         var expectedClientId_2 = helper.buildClient().withRandomParams().create().getLastClientId();
 
-        var actual_1 = Calls.ok(clientApi.retrieveOneClient(Long.valueOf(expectedClientId_1), false));
-        var actual_2 = Calls.ok(clientApi.retrieveOneClient(Long.valueOf(expectedClientId_2), false));
+        var actual_1 = Calls.ok(clientApi.retrieveOneClient(Long.valueOf(expectedClientId_1), false, null));
+        var actual_2 = Calls.ok(clientApi.retrieveOneClient(Long.valueOf(expectedClientId_2), false, null));
 
         Assertions.assertEquals(expectedClientId_1, actual_1.getId());
         Assertions.assertEquals(expectedClientId_2, actual_2.getId());
@@ -50,8 +50,8 @@ public class ClientHelperImplIT {
         var expectedClientId_3 = helper.buildClient().withRandomParams().create().getLastClientId();
         var expectedClientId_4 = helper.buildClient().withRandomParams().create().getLastClientId();
 
-        var actual_3 = Calls.ok(clientApi.retrieveOneClient(Long.valueOf(expectedClientId_3), false));
-        var actual_4 = Calls.ok(clientApi.retrieveOneClient(Long.valueOf(expectedClientId_4), false));
+        var actual_3 = Calls.ok(clientApi.retrieveOneClient(Long.valueOf(expectedClientId_3), false, null));
+        var actual_4 = Calls.ok(clientApi.retrieveOneClient(Long.valueOf(expectedClientId_4), false, null));
 
         Assertions.assertEquals(expectedClientId_3, actual_3.getId());
         Assertions.assertEquals(expectedClientId_4, actual_4.getId());
