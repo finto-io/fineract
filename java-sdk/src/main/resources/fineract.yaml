@@ -46090,6 +46090,15 @@ components:
         activationDate:
           type: string
           example: 03 August 2021
+        reactivationDate:
+          type: string
+          example: 03 August 2021
+        closureDate:
+          type: string
+          example: 03 August 2021
+        closureReasonId:
+          type: integer
+          example: 1
         dateFormat:
           type: string
           example: dd MMM yyyy

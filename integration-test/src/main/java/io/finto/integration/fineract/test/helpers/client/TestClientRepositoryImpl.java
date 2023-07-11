@@ -80,8 +80,8 @@ public class TestClientRepositoryImpl implements TestClientRepository<TestClient
     }
 
     @Override
-    public TestClientRepositoryImpl approveLastClient() {
-        return setClientStatus(getLastClient(), ClientStatus.APPROVED);
+    public TestClientRepositoryImpl reactivateLastClient() {
+        return setClientStatus(getLastClient(), ClientStatus.REACTIVATED);
     }
 
     @Override
@@ -89,10 +89,10 @@ public class TestClientRepositoryImpl implements TestClientRepository<TestClient
         return setClientStatus(getLastClient(), ClientStatus.ACTIVATED);
     }
 
-    public TestClientRepositoryImpl setClientStatus(TestClient savingClient, ClientStatus status) {
-        var id = getClientId(savingClient);
-        savingClient.setStatus(status);
-        issuer.updateStatus(id, savingClient);
+    public TestClientRepositoryImpl setClientStatus(TestClient testClient, ClientStatus status) {
+        var id = getClientId(testClient);
+        testClient.setStatus(status);
+        issuer.updateStatus(id, testClient);
         return this;
     }
 

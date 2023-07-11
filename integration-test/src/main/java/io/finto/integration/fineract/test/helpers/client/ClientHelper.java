@@ -28,8 +28,8 @@ public class ClientHelper implements TestClientRepositoryDelegate<ClientHelper>,
     }
 
     @Override
-    public ClientHelper approveLastClient() {
-        repository.approveLastClient();
+    public ClientHelper reactivateLastClient() {
+        repository.reactivateLastClient();
         return this;
     }
 
@@ -40,8 +40,8 @@ public class ClientHelper implements TestClientRepositoryDelegate<ClientHelper>,
     }
 
     @Override
-    public ClientHelper setClientStatus(TestClient savingAccount, ClientStatus status) {
-        repository.setClientStatus(savingAccount, status);
+    public ClientHelper setClientStatus(TestClient testClient, ClientStatus status) {
+        repository.setClientStatus(testClient, status);
         return this;
     }
 
