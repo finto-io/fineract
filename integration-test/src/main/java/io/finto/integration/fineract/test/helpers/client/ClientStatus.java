@@ -1,14 +1,14 @@
 package io.finto.integration.fineract.test.helpers.client;
 
 public enum ClientStatus {
-    CLOSED, APPROVED, ACTIVATED;
+    CLOSED, REACTIVATED, ACTIVATED;
 
     public String getCommand(){
         switch (this){
             case CLOSED:
                 return "close";
-            case APPROVED:
-                return "approve";
+            case REACTIVATED:
+                return "reactivate";
             case ACTIVATED:
                 return "activate";
             default:

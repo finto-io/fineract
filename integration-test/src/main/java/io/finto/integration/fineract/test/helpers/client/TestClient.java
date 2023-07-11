@@ -69,9 +69,11 @@ public class TestClient {
         var formatter = DateTimeFormatter.ofPattern(dateFormat);
         switch (status) {
             case CLOSED:
-            case APPROVED:
                 return PostClientsClientIdRequest.builder()
                         .dateFormat(dateFormat)
+                        .closureDate(ZonedDateTime.now(ZoneOffset.UTC).format(formatter))
+                        // TODO: magic digits
+                        .closureReasonId(22)
                         .locale("en")
                         .build();
             case ACTIVATED:
@@ -79,6 +81,12 @@ public class TestClient {
                         .dateFormat(dateFormat)
                         .locale("en")
                         .activationDate(ZonedDateTime.now(ZoneOffset.UTC).format(formatter))
+                        .build();
+            case REACTIVATED:
+                return PostClientsClientIdRequest.builder()
+                        .dateFormat(dateFormat)
+                        .locale("en")
+                        .reactivationDate(ZonedDateTime.now(ZoneOffset.UTC).format(formatter))
                         .build();
         }
         throw new UnsupportedOperationException();

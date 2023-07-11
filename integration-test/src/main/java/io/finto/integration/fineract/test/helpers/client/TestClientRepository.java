@@ -4,15 +4,15 @@ import java.util.List;
 
 public interface TestClientRepository<T extends TestClientRepository<T>> {
     
-    T submitClient(TestClient savingAccount);
+    T submitClient(TestClient testClient);
 
     T closeLastClient();
 
-    T approveLastClient();
+    T reactivateLastClient();
 
     T activateLastClient();
 
-    T setClientStatus(TestClient savingAccount, ClientStatus status);
+    T setClientStatus(TestClient testClient, ClientStatus status);
 
     int getClientCount();
     
