@@ -1,8 +1,6 @@
 package io.finto.integration.fineract.usecase.impl;
 
-import io.finto.fineract.sdk.api.ClientApi;
-import io.finto.fineract.sdk.api.DataTablesApi;
-import io.finto.fineract.sdk.api.SavingsAccountApi;
+import io.finto.fineract.sdk.api.*;
 import io.finto.fineract.sdk.util.FineractClient;
 import io.finto.integration.fineract.common.FineractResponseHandler;
 import io.finto.integration.fineract.common.ResponseHandler;
@@ -48,4 +46,16 @@ public class SdkFineractUseCaseContext {
         return fineract().getClients();
     }
 
+    public ClientsAddressApi clientsAddressApi(){
+        return fineractClient.getClientAddresses();
+    }
+
+    public CodeValuesApi codeValuesApi() {
+        return fineract().getCodeValues();
+    }
+
+    public ClientIdentifierApi clientIdentifierApi() {
+        return fineract().getClientIdentifiers();
+    }
+    
 }

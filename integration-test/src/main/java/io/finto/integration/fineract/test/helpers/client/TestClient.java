@@ -72,7 +72,6 @@ public class TestClient {
                 return PostClientsClientIdRequest.builder()
                         .dateFormat(dateFormat)
                         .closureDate(ZonedDateTime.now(ZoneOffset.UTC).format(formatter))
-                        // TODO: magic digits
                         .closureReasonId(22)
                         .locale("en")
                         .build();
