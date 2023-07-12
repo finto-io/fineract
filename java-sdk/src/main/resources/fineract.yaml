@@ -28004,8 +28004,7 @@ components:
           type: boolean
           example: false
         postalCode:
-          type: integer
-          format: int64
+          type: string
           example: 400095
         stateName:
           type: string
@@ -28350,6 +28349,9 @@ components:
         firstname:
           type: string
           example: savings
+        middlename:
+          type: string
+          example: savings
         groups:
           type: array
           example: []
@@ -28362,6 +28364,15 @@ components:
         lastname:
           type: string
           example: test
+        mobileNo:
+          type: string
+          example: '+353851239876'
+        dateOfBirth:
+          type: string
+          format: date
+        isStaff:
+          type: boolean
+          example: false
         officeId:
           type: integer
           format: int32
@@ -28376,6 +28387,10 @@ components:
         savingsProductName:
           type: string
           example: account overdraft
+        legalForm:
+          $ref: '#/components/schemas/CommonEnumValue'
+        gender:
+          $ref: '#/components/schemas/CodeValueData'
         status:
           $ref: '#/components/schemas/GetClientsClientIdStatus'
         timeline:
@@ -28393,6 +28408,9 @@ components:
           type: integer
           format: int32
           example: 300
+        value:
+          type: string
+          example: Active
     GetClientsClientIdTransactionsResponse:
       type: object
       description: GetClientsClientIdTransactionsResponse
@@ -46067,6 +46085,9 @@ components:
           type: integer
           format: int32
           example: 1
+        status:
+          type: string
+          example: Active
     PostClientsClientIdIdentifiersResponse:
       type: object
       description: PostClientsClientIdIdentifiersResponse
@@ -46146,20 +46167,47 @@ components:
       properties:
         data:
           type: object
-          additionalProperties:
-            type: object
-            example: data
-          example: data
+          properties:
+            locale:
+              type: string
+              example: en
+            kyc_id:
+              type: string
+            external_customer_number:
+              type: string
+            nationality:
+              type: string
+            residency_flag:
+              type: string
+            deceased:
+              type: boolean
+            dormant:
+              type: boolean
+            dormant_since_date:
+              type: string
+            is_customer_restricted:
+              type: boolean
+            email:
+              type: string
+            user_id:
+              type: string
+            partner_id:
+              type: string
+            partner_name:
+              type: string
         registeredTableName:
           type: string
-          example: Client Beneficiary information
+          example: customer_fields
     PostClientsRequest:
       type: object
       description: PostClientsRequest
       properties:
         activationDate:
           type: string
-          example: 04 March 2009
+          example: 2023-03-04
+        submittedOnDate:
+          type: string
+          example: 2023-03-04
         active:
           type: boolean
           example: true
@@ -46188,16 +46236,24 @@ components:
         firstname:
           type: string
           example: Client_FirstName
+        middlename:
+          type: string
+          example: Client_MiddleName
+        lastname:
+          type: string
+          example: Client_LastName
         fullname:
           type: string
           example: Client of group
+        isStaff:
+          type: boolean
+        genderId:
+          type: integer
+          format: int64
         groupId:
           type: integer
           format: int32
           example: 1
-        lastname:
-          type: string
-          example: Client_LastName
         legalFormId:
           type: integer
           format: int32
@@ -54904,6 +54960,20 @@ components:
           type: string
         args:
           type: object
+    CommonEnumValue:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 1
+        code:
+          type: string
+          example: legalFormType.person
+        value:
+          type: string
+          example: Person
+
   securitySchemes:
     basicAuth:
       scheme: basic

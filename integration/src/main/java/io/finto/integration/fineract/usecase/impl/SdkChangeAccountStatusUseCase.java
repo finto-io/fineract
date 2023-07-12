@@ -10,8 +10,7 @@ import lombok.NonNull;
 import java.time.LocalDate;
 import java.util.Objects;
 
-import static io.finto.fineract.sdk.Constants.DATE_FORMAT_PATTERN;
-import static io.finto.fineract.sdk.Constants.DEFAULT_DATE_FORMATTER;
+import static io.finto.fineract.sdk.Constants.*;
 
 @AllArgsConstructor
 @Builder
@@ -49,9 +48,7 @@ public class SdkChangeAccountStatusUseCase implements ChangeAccountStatusUseCase
         fineractRequest.setClosedOnDate(LocalDate.now().format(DEFAULT_DATE_FORMATTER));
         fineractRequest.setLocale("en");
         fineractRequest.setWithdrawBalance(true);
-        // TODO: change the payment type choosing mechanism
-        // possible to use m_payment_type.code_name field as an enum values
-        fineractRequest.setPaymentTypeId(4L);
+        fineractRequest.setPaymentTypeId(INTERNAL_TRANSFER_PAYMENT_TYPE_ID);
         fineractRequest.setAccountNumber(creditAccountId.getValue());
         return executeCommand(accountId, fineractRequest, COMMAND_CLOSE);
     }

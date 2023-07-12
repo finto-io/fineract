@@ -3,6 +3,7 @@ package io.finto.integration.fineract.usecase.impl;
 import io.finto.domain.customer.CustomerId;
 import io.finto.fineract.sdk.api.ClientApi;
 import io.finto.fineract.sdk.models.DeleteClientsClientIdResponse;
+import io.finto.integration.fineract.usecase.impl.customer.SdkDeleteCustomerUseCase;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

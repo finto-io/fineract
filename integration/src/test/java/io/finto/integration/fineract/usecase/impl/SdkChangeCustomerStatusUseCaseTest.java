@@ -1,11 +1,10 @@
 package io.finto.integration.fineract.usecase.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import io.finto.domain.customer.CustomerId;
 import io.finto.fineract.sdk.api.ClientApi;
 import io.finto.fineract.sdk.models.PostClientsClientIdRequest;
 import io.finto.fineract.sdk.models.PostClientsClientIdResponse;
+import io.finto.usecase.customer.FindKeyValueDictionaryUseCase;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,9 +13,7 @@ import retrofit2.Call;
 
 import java.time.LocalDate;
 
-import static io.finto.fineract.sdk.Constants.DATE_FORMAT_PATTERN;
-import static io.finto.fineract.sdk.Constants.DEFAULT_DATE_FORMATTER;
-import static io.finto.integration.fineract.usecase.impl.SdkChangeCustomerStatusUseCase.CUSTOMER_CLOSURE_REASON_ID;
+import static io.finto.fineract.sdk.Constants.*;
 import static org.easymock.EasyMock.createStrictControl;
 import static org.easymock.EasyMock.expect;
 
@@ -24,6 +21,7 @@ class SdkChangeCustomerStatusUseCaseTest {
 
     private IMocksControl control;
     private SdkFineractUseCaseContext context;
+    private FindKeyValueDictionaryUseCase dictionaryUseCase;
     private CustomerId customerId = CustomerId.of(10L);
 
     private ClientApi clientApi;
@@ -34,8 +32,10 @@ class SdkChangeCustomerStatusUseCaseTest {
     void setUp() {
         control = createStrictControl();
         context = control.createMock(SdkFineractUseCaseContext.class);
+        dictionaryUseCase = control.createMock(FindKeyValueDictionaryUseCase.class);
         useCase = SdkChangeCustomerStatusUseCase.builder()
                 .context(context)
+                .dictionaryUseCase(dictionaryUseCase)
                 .build();
 
         clientApi = control.createMock(ClientApi.class);
@@ -74,16 +74,18 @@ class SdkChangeCustomerStatusUseCaseTest {
      */
     @Test
     void test_closeCustomer_success() {
+        Long reasonId = 14L;
         Call<PostClientsClientIdResponse> executeCommandCall = control.createMock(Call.class);
         PostClientsClientIdRequest fineractRequest = new PostClientsClientIdRequest();
         fineractRequest.setDateFormat(DATE_FORMAT_PATTERN);
         fineractRequest.setClosureDate(LocalDate.now().format(DEFAULT_DATE_FORMATTER));
-        fineractRequest.setClosureReasonId(CUSTOMER_CLOSURE_REASON_ID);
+        fineractRequest.setClosureReasonId(reasonId.intValue());
         fineractRequest.setLocale("en");
 
         PostClientsClientIdResponse response = new PostClientsClientIdResponse();
         response.setResourceId(customerId.getValue().intValue());
 
+        expect(dictionaryUseCase.getOneKeyByValue(CLIENT_CLOSURE_REASON_DICTIONARY_ID, CUSTOMER_REQUEST_CODE_NAME)).andReturn(reasonId);
         expect(context.clientApi()).andReturn(clientApi);
         expect(clientApi.activateClient(customerId.getValue(), fineractRequest, "close")).andReturn(executeCommandCall);
         expect(context.getResponseBody(executeCommandCall)).andReturn(response);
