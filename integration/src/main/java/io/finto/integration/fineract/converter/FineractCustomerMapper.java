@@ -27,7 +27,7 @@ public interface FineractCustomerMapper {
                 .firstname(request.getPersonalData().getFirstName())
                 .middlename(request.getPersonalData().getMiddleName())
                 .lastname(request.getPersonalData().getLastName())
-                .isStaff(request.isStaff())
+                .isStaff(request.getStaff())
                 .active(false)
                 .mobileNo(request.getPersonalData().getMobileNumber())
                 .dateOfBirth(LocalDate.parse(request.getPersonalData().getDateOfBirth(), DEFAULT_DATE_FORMATTER))

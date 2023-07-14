@@ -36,6 +36,11 @@ public class SdkCreateCustomerIdentifierUseCase implements CreateCustomerIdentif
     }
 
     @Override
+    public IdentifierId createPassportIdentifier(CustomerId customerId, String documentValue) {
+        return createCustomerIdentifier(customerId, PASSPORT_CODE_NAME, documentValue);
+    }
+
+    @Override
     public IdentifierId createNationIdIdentifier(CustomerId customerId, String documentValue) {
         return createCustomerIdentifier(customerId, NATION_ID_CODE_NAME, documentValue);
     }
