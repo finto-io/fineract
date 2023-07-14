@@ -32,14 +32,14 @@ public class SdkCreateCustomerUseCase implements CreateCustomerUseCase {
     @Override
     public CustomerId createCustomer(OpeningCustomer openingCustomer) {
         var countryId = openingCustomer.getCountry() == null ? null : dictionaryUseCase.findOneKeyByValue(COUNTRY_DICTIONARY_ID, openingCustomer.getCountry())
-                .orElseThrow(() -> new BadRequestException(String.format("Country with name=%s not found", openingCustomer.getCountry())));
+                .orElseThrow(() -> new BadRequestException(String.format(BadRequestException.DEFAULT_ERROR_CODE, "Country with name=%s not found", openingCustomer.getCountry())));
         var profCountryId = openingCustomer.getPersonalData() == null || openingCustomer.getPersonalData().getProf() == null || openingCustomer.getPersonalData().getProf().getCountry() == null ? null :
                 dictionaryUseCase.findOneKeyByValue(COUNTRY_DICTIONARY_ID, openingCustomer.getPersonalData().getProf().getCountry())
-                        .orElseThrow(() -> new BadRequestException(String.format("Professional Address Country with name=%s not found", openingCustomer.getPersonalData().getProf().getCountry())));
+                        .orElseThrow(() -> new BadRequestException(String.format(BadRequestException.DEFAULT_ERROR_CODE, "Professional Address Country with name=%s not found", openingCustomer.getPersonalData().getProf().getCountry())));
         var postalCodeId = openingCustomer.getPostalCode() == null ? null : customerMapper.toPostalCodeId(openingCustomer.getPostalCode());
         var genderId = openingCustomer.getPersonalData() == null || openingCustomer.getPersonalData().getSex() == null ? null :
                 dictionaryUseCase.findOneKeyByValue(GENDER_DICTIONARY_ID, openingCustomer.getPersonalData().getSex())
-                        .orElseThrow(() -> new BadRequestException(String.format("Sex with name=%s not found", openingCustomer.getPersonalData().getSex())));
+                        .orElseThrow(() -> new BadRequestException(String.format(BadRequestException.DEFAULT_ERROR_CODE, "Sex with name=%s not found", openingCustomer.getPersonalData().getSex())));
         var residenceAddressId = dictionaryUseCase.getOneKeyByValue(ADDRESS_TYPE_DICTIONARY_ID, RESIDENCE_ADDRESS_CODE_NAME);
         var workAddressId = dictionaryUseCase.getOneKeyByValue(ADDRESS_TYPE_DICTIONARY_ID, WORK_ADDRESS_CODE_NAME);
 
