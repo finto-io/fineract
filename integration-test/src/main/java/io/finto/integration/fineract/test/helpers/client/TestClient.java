@@ -1,8 +1,6 @@
 package io.finto.integration.fineract.test.helpers.client;
 
-import io.finto.fineract.sdk.models.PostClientsAddressRequest;
-import io.finto.fineract.sdk.models.PostClientsClientIdRequest;
-import io.finto.fineract.sdk.models.PostClientsRequest;
+import io.finto.fineract.sdk.models.*;
 import lombok.*;
 
 import java.time.ZoneOffset;
@@ -11,6 +9,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
+
+import static io.finto.fineract.sdk.Constants.LOCALE;
+import static io.finto.fineract.sdk.CustomDatatableNames.CUSTOMER_ADDITIONAL_FIELDS;
 
 @Getter
 @Setter
@@ -45,6 +46,10 @@ public class TestClient {
                 .locale(locale)
                 .mobileNo(mobileNo)
                 .address(toClientAddressRequest())
+                .datatables(List.of(PostClientsDatatable.builder()
+                        .registeredTableName(CUSTOMER_ADDITIONAL_FIELDS)
+                        .data(PostClientsDatatableData.builder().locale(LOCALE).build())
+                        .build()))
                 .build();
     }
 
