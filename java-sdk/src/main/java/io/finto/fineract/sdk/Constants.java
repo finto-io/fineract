@@ -6,9 +6,10 @@ public class Constants {
     public static final String USER = "mifos";
     public static final String LOCALE = "en";
     public static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd";
-    public static final String DATE_TIME_FORMAT_PATTERN = "yyyy-MM-dd HH:mm";
+    public static final String DATE_TIME_FORMAT_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
     public static final DateTimeFormatter DEFAULT_DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
+    public static final DateTimeFormatter DEFAULT_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT_PATTERN);
     public static final Long INTERNAL_TRANSFER_PAYMENT_TYPE_ID = 4L;
     public static final Long GENDER_DICTIONARY_ID = 4L;
     public static final Long COUNTRY_DICTIONARY_ID = 28L;

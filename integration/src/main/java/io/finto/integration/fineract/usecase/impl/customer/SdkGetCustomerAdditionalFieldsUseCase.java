@@ -2,11 +2,12 @@ package io.finto.integration.fineract.usecase.impl.customer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import io.finto.domain.customer.Customer;
+import io.finto.domain.customer.CustomerAdditionalFields;
 import io.finto.domain.customer.CustomerId;
+import io.finto.integration.fineract.converter.ConverterUtils;
 import io.finto.integration.fineract.converter.FineractCustomerMapper;
 import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
-import io.finto.usecase.customer.FindCustomerUseCase;
+import io.finto.usecase.customer.GetCustomerAdditionalFieldsUseCase;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -14,11 +15,10 @@ import lombok.NonNull;
 import lombok.ToString;
 
 import static io.finto.fineract.sdk.CustomDatatableNames.CUSTOMER_ADDITIONAL_FIELDS;
-import static io.finto.integration.fineract.converter.ConverterUtils.parseAdditionalFields;
 
 @AllArgsConstructor
 @Builder
-public class SdkFindCustomerUseCase implements FindCustomerUseCase {
+public class SdkGetCustomerAdditionalFieldsUseCase implements GetCustomerAdditionalFieldsUseCase {
 
     @NonNull
     private final SdkFineractUseCaseContext context;
@@ -29,23 +29,17 @@ public class SdkFindCustomerUseCase implements FindCustomerUseCase {
     @ToString.Exclude
     private final ObjectMapper objectMapper;
 
-    public static class SdkFindCustomerUseCaseBuilder {
+    public static class SdkGetCustomerAdditionalFieldsUseCaseBuilder {
         private FineractCustomerMapper customerMapper = FineractCustomerMapper.INSTANCE;
         private ObjectMapper objectMapper = JsonMapper.builder().findAndAddModules().build();
 
     }
 
     @Override
-    public Customer findCustomer(CustomerId customerId) {
-        var client = context.getResponseBody(context.clientApi()
-                .retrieveOneClient(customerId.getValue(), false, null));
-        var addresses = context.getResponseBody(context.clientsAddressApi()
-                .getClientAddresses(customerId.getValue(), null, null));
-        var identifiers = context.getResponseBody(context.clientIdentifierApi().
-                retrieveAllClientIdentifiers(customerId.getValue()));
-        var additionalDetails = parseAdditionalFields(objectMapper, context.getResponseBody(context.dataTablesApi()
+    public CustomerAdditionalFields getCustomerAdditionalFields(CustomerId customerId) {
+        var additionalDetails = ConverterUtils.parseAdditionalFields(objectMapper, context.getResponseBody(context.dataTablesApi()
                 .getDatatableByAppTableId(CUSTOMER_ADDITIONAL_FIELDS, customerId.getValue(), null)));
-        return customerMapper.toDomain(client, addresses, identifiers, additionalDetails);
+        return customerMapper.toAdditionalFields(additionalDetails);
     }
 
 }

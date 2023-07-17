@@ -1,9 +1,26 @@
 package io.finto.integration.fineract.converter;
 
-import io.finto.domain.customer.*;
-import io.finto.fineract.sdk.models.*;
+import io.finto.domain.customer.Address;
+import io.finto.domain.customer.Customer;
+import io.finto.domain.customer.CustomerAdditionalFields;
+import io.finto.domain.customer.CustomerDetailsUpdate;
+import io.finto.domain.customer.CustomerId;
+import io.finto.domain.customer.CustomerIdentifier;
+import io.finto.domain.customer.CustomerMobileNumber;
+import io.finto.domain.customer.IdentifierId;
+import io.finto.domain.customer.OpeningCustomer;
+import io.finto.domain.customer.UdfName;
+import io.finto.fineract.sdk.models.GetClientClientIdAddressesResponse;
+import io.finto.fineract.sdk.models.GetClientsClientIdIdentifiersResponse;
+import io.finto.fineract.sdk.models.GetClientsClientIdResponse;
+import io.finto.fineract.sdk.models.PostClientsAddressRequest;
+import io.finto.fineract.sdk.models.PostClientsClientIdIdentifiersRequest;
+import io.finto.fineract.sdk.models.PostClientsDatatable;
+import io.finto.fineract.sdk.models.PostClientsDatatableData;
+import io.finto.fineract.sdk.models.PostClientsRequest;
+import io.finto.fineract.sdk.models.PutClientsClientIdRequest;
 import io.finto.integration.fineract.dto.CustomerAdditionalFieldsDto;
-import io.finto.integration.fineract.dto.UpdateCustomerAuditFieldsDto;
+import io.finto.integration.fineract.dto.CustomerDetailsUpdateDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
@@ -11,10 +28,14 @@ import org.mapstruct.factory.Mappers;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static io.finto.fineract.sdk.Constants.*;
+import static io.finto.fineract.sdk.Constants.DATE_FORMAT_PATTERN;
+import static io.finto.fineract.sdk.Constants.DATE_TIME_FORMAT_PATTERN;
+import static io.finto.fineract.sdk.Constants.DEFAULT_DATE_FORMATTER;
+import static io.finto.fineract.sdk.Constants.DEFAULT_DATE_TIME_FORMATTER;
+import static io.finto.fineract.sdk.Constants.LOCALE;
+import static io.finto.fineract.sdk.Constants.USER;
 import static io.finto.fineract.sdk.CustomDatatableNames.CUSTOMER_ADDITIONAL_FIELDS;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
@@ -117,7 +138,7 @@ public interface FineractCustomerMapper {
     @Mapping(target = "isCustomerRestricted", source = "additionalFields.isCustomerRestricted")
     @Mapping(target = "email", source = "additionalFields.email")
     @Mapping(target = "externalSource", source = "additionalFields.externalSource")
-    @Mapping(target = "updatedAt", expression = "java(additionalFields.getUpdatedAt().format(io.finto.fineract.sdk.Constants.DEFAULT_DATE_FORMATTER))")
+    @Mapping(target = "updatedAt", expression = "java(additionalFields.getUpdatedAt() != null ? additionalFields.getUpdatedAt().format(io.finto.fineract.sdk.Constants.DEFAULT_DATE_FORMATTER) : null)")
     @Mapping(target = "updatedBy", source = "additionalFields.updatedBy")
     @Mapping(target = "userId", source = "additionalFields.userId")
     @Mapping(target = "partnerId", source = "additionalFields.partnerId")
@@ -125,6 +146,9 @@ public interface FineractCustomerMapper {
     @Mapping(target = "updateFlag", source = "additionalFields.updateFlag")
     Customer toDomain(GetClientsClientIdResponse customer, List<GetClientClientIdAddressesResponse> addresses,
                       List<GetClientsClientIdIdentifiersResponse> identifiers, CustomerAdditionalFieldsDto additionalFields);
+
+
+    CustomerAdditionalFields toAdditionalFields(CustomerAdditionalFieldsDto additionalFields);
 
     @Mapping(target = "id", source = "addressId")
     @Mapping(target = "type", source = "addressType")
@@ -161,13 +185,18 @@ public interface FineractCustomerMapper {
                 .build();
     }
 
-    default UpdateCustomerAuditFieldsDto toUpdateTimeRequest(){
-        return UpdateCustomerAuditFieldsDto.builder()
-                .locale("en")
+    default CustomerDetailsUpdateDto toUpdateTimeRequest(){
+        return CustomerDetailsUpdateDto.builder()
+                .locale(LOCALE)
                 .dateFormat(DATE_TIME_FORMAT_PATTERN)
-                .updatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT_PATTERN)))
+                .updatedAt(LocalDateTime.now().format(DEFAULT_DATE_TIME_FORMATTER))
                 .updatedBy(USER)
                 .build();
     }
+
+    @Mapping(target ="dateFormat", expression = "java(io.finto.fineract.sdk.Constants.DATE_TIME_FORMAT_PATTERN)")
+    @Mapping(target ="updatedAt", expression = "java(customerDetailsUpdate.getUpdatedAt() != null ? io.finto.fineract.sdk.Constants.DEFAULT_DATE_TIME_FORMATTER.format( customerDetailsUpdate.getUpdatedAt()) : null)")
+    @Mapping(target ="locale", expression = "java(io.finto.fineract.sdk.Constants.LOCALE)")
+    CustomerDetailsUpdateDto toCustomerDetailsUpdateDto(CustomerDetailsUpdate customerDetailsUpdate);
 
 }

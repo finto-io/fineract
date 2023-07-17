@@ -1,9 +1,10 @@
-package io.finto.integration.fineract.usecase.impl;
+package io.finto.integration.fineract.usecase.impl.customer;
 
 import io.finto.domain.customer.CustomerId;
 import io.finto.domain.customer.CustomerMobileNumber;
 import io.finto.fineract.sdk.models.GetClientsClientIdResponse;
 import io.finto.integration.fineract.converter.FineractCustomerMapper;
+import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
 import io.finto.usecase.customer.GetCustomerMobileNumberUseCase;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -4,6 +4,7 @@ import io.finto.domain.customer.CustomerId;
 import io.finto.fineract.sdk.api.ClientApi;
 import io.finto.fineract.sdk.models.PostClientsClientIdRequest;
 import io.finto.fineract.sdk.models.PostClientsClientIdResponse;
+import io.finto.integration.fineract.usecase.impl.customer.SdkChangeCustomerStatusUseCase;
 import io.finto.usecase.customer.FindKeyValueDictionaryUseCase;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.Assertions;
