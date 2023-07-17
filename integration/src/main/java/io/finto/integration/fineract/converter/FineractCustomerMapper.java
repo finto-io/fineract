@@ -3,12 +3,15 @@ package io.finto.integration.fineract.converter;
 import io.finto.domain.customer.*;
 import io.finto.fineract.sdk.models.*;
 import io.finto.integration.fineract.dto.CustomerAdditionalFieldsDto;
+import io.finto.integration.fineract.dto.UpdateCustomerAuditFieldsDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.factory.Mappers;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static io.finto.fineract.sdk.Constants.*;
@@ -150,6 +153,21 @@ public interface FineractCustomerMapper {
 
     default CustomerMobileNumber toCustomerMobileNumber(String mobileNo) {
         return mobileNo != null ? CustomerMobileNumber.builder().mobileNumber(mobileNo).build() : CustomerMobileNumber.builder().mobileNumber("").build();
+    }
+
+    default PutClientsClientIdRequest toUpdateMobileNumberRequest(String newMobileNumber){
+        return PutClientsClientIdRequest.builder()
+                .mobileNo(newMobileNumber)
+                .build();
+    }
+
+    default UpdateCustomerAuditFieldsDto toUpdateTimeRequest(){
+        return UpdateCustomerAuditFieldsDto.builder()
+                .locale("en")
+                .dateFormat(DATE_TIME_FORMAT_PATTERN)
+                .updatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT_PATTERN)))
+                .updatedBy(USER)
+                .build();
     }
 
 }

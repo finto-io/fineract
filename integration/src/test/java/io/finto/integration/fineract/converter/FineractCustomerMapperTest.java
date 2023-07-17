@@ -323,4 +323,17 @@ class FineractCustomerMapperTest {
         assertEquals(expected, result);
     }
 
+    @Test
+    void toUpdateMobileNumberRequest() {
+        var newMobileNumber = "newMobileNumber";
+        var expected = PutClientsClientIdRequest.builder()
+                .mobileNo(newMobileNumber)
+                .build();
+
+        var result = mapper.toUpdateMobileNumberRequest(newMobileNumber);
+
+        assertEquals(expected, result);
+    }
+
+
 }

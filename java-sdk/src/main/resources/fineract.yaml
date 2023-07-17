@@ -50807,6 +50807,8 @@ components:
         resourceExternalId:
           type: string
           example: 123-456
+        mobileNo:
+          type: string
     PutClientsClientIdResponse:
       type: object
       description: PutClientsClientIdResponse

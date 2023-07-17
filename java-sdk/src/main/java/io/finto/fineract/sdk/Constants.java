@@ -3,8 +3,11 @@ package io.finto.fineract.sdk;
 import java.time.format.DateTimeFormatter;
 
 public class Constants {
+    public static final String USER = "mifos";
     public static final String LOCALE = "en";
     public static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd";
+    public static final String DATE_TIME_FORMAT_PATTERN = "yyyy-MM-dd HH:mm";
+
     public static final DateTimeFormatter DEFAULT_DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
     public static final Long INTERNAL_TRANSFER_PAYMENT_TYPE_ID = 4L;
     public static final Long GENDER_DICTIONARY_ID = 4L;
