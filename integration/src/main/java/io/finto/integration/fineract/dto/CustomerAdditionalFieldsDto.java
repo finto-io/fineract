@@ -40,9 +40,9 @@ public class CustomerAdditionalFieldsDto {
     private String email;
     @JsonProperty("external_source")
     private Boolean externalSource;
-    @JsonProperty("updated_at")
+    @JsonProperty("modified_at")
     private LocalDateTime updatedAt;
-    @JsonProperty("updated_by")
+    @JsonProperty("modified_by")
     private String updatedBy;
     @JsonProperty("user_id")
     private String userId;

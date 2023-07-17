@@ -5,6 +5,7 @@ import io.finto.domain.customer.CustomerMobileNumber;
 import io.finto.fineract.sdk.api.ClientApi;
 import io.finto.fineract.sdk.models.GetClientsClientIdResponse;
 import io.finto.integration.fineract.converter.FineractCustomerMapper;
+import io.finto.integration.fineract.usecase.impl.customer.SdkGetCustomerMobileNumberUseCase;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

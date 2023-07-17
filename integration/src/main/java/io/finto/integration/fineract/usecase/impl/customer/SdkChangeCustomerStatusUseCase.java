@@ -1,7 +1,8 @@
-package io.finto.integration.fineract.usecase.impl;
+package io.finto.integration.fineract.usecase.impl.customer;
 
 import io.finto.domain.customer.CustomerId;
 import io.finto.fineract.sdk.models.PostClientsClientIdRequest;
+import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
 import io.finto.usecase.customer.ChangeCustomerStatusUseCase;
 import io.finto.usecase.customer.FindKeyValueDictionaryUseCase;
 import lombok.AllArgsConstructor;

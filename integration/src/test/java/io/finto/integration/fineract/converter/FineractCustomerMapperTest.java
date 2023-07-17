@@ -1,15 +1,37 @@
 package io.finto.integration.fineract.converter;
 
-import io.finto.domain.customer.*;
-import io.finto.fineract.sdk.models.*;
+import io.finto.domain.customer.Customer;
+import io.finto.domain.customer.CustomerDetailsUpdate;
+import io.finto.domain.customer.CustomerId;
+import io.finto.domain.customer.CustomerMobileNumber;
+import io.finto.domain.customer.IdentifierId;
+import io.finto.domain.customer.OpeningCustomer;
+import io.finto.domain.customer.UdfName;
+import io.finto.fineract.sdk.models.CodeValueData;
+import io.finto.fineract.sdk.models.CommonEnumValue;
+import io.finto.fineract.sdk.models.GetClientClientIdAddressesResponse;
+import io.finto.fineract.sdk.models.GetClientsClientIdIdentifiersResponse;
+import io.finto.fineract.sdk.models.GetClientsClientIdResponse;
+import io.finto.fineract.sdk.models.GetClientsClientIdStatus;
+import io.finto.fineract.sdk.models.GetClientsDocumentType;
+import io.finto.fineract.sdk.models.GetClientsTimeline;
+import io.finto.fineract.sdk.models.PostClientsAddressRequest;
+import io.finto.fineract.sdk.models.PostClientsDatatable;
+import io.finto.fineract.sdk.models.PostClientsDatatableData;
+import io.finto.fineract.sdk.models.PostClientsRequest;
+import io.finto.fineract.sdk.models.PutClientsClientIdRequest;
 import io.finto.integration.fineract.dto.CustomerAdditionalFieldsDto;
+import io.finto.integration.fineract.dto.CustomerDetailsUpdateDto;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-import static io.finto.fineract.sdk.Constants.*;
+import static io.finto.fineract.sdk.Constants.DATE_FORMAT_PATTERN;
+import static io.finto.fineract.sdk.Constants.DEFAULT_DATE_FORMATTER;
+import static io.finto.fineract.sdk.Constants.LOCALE;
 import static io.finto.fineract.sdk.CustomDatatableNames.CUSTOMER_ADDITIONAL_FIELDS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -155,7 +177,7 @@ class FineractCustomerMapperTest {
                 .build();
     }
 
-    private Customer generateCustomerDomain(){
+    private Customer generateCustomerDomain() {
         return Customer.builder()
                 .customerId(CustomerId.of(1L))
                 .status("Active")
@@ -209,7 +231,7 @@ class FineractCustomerMapperTest {
                 .build();
     }
 
-    private GetClientsClientIdResponse generateGetClientsClientIdResponse(){
+    private GetClientsClientIdResponse generateGetClientsClientIdResponse() {
         return GetClientsClientIdResponse.builder()
                 .displayName("John Viktorovich Wick")
                 .firstname("John")
@@ -238,7 +260,7 @@ class FineractCustomerMapperTest {
                 .build();
     }
 
-    private GetClientClientIdAddressesResponse generateGetClientClientIdAddressesResponse(){
+    private GetClientClientIdAddressesResponse generateGetClientClientIdAddressesResponse() {
         return GetClientClientIdAddressesResponse.builder()
                 .addressId(1)
                 .addressType("Residence Address")
@@ -252,7 +274,7 @@ class FineractCustomerMapperTest {
                 .build();
     }
 
-    private GetClientsClientIdIdentifiersResponse generateGetClientsClientIdIdentifiersResponse(){
+    private GetClientsClientIdIdentifiersResponse generateGetClientsClientIdIdentifiersResponse() {
         return GetClientsClientIdIdentifiersResponse.builder()
                 .id(1)
                 .documentType(GetClientsDocumentType.builder()
@@ -263,7 +285,7 @@ class FineractCustomerMapperTest {
                 .build();
     }
 
-    private CustomerAdditionalFieldsDto generateCustomerAdditionalFieldsDto(){
+    private CustomerAdditionalFieldsDto generateCustomerAdditionalFieldsDto() {
         return CustomerAdditionalFieldsDto.builder()
                 .kycId("KYC-FINTO-224")
                 .externalCustomerNumber("externalCustomerNumber")
@@ -292,7 +314,7 @@ class FineractCustomerMapperTest {
     }
 
     @Test
-    void test_toDomain(){
+    void test_toDomain() {
         var actual = mapper.toDomain(
                 generateGetClientsClientIdResponse(),
                 List.of(generateGetClientClientIdAddressesResponse()),
@@ -335,5 +357,47 @@ class FineractCustomerMapperTest {
         assertEquals(expected, result);
     }
 
+
+    @Test
+    void toCustomerDetailsUpdateDto_test() {
+        LocalDateTime entityUpdatedAt = LocalDateTime.parse("2000-11-30T19:59:59");
+        String dtoUpdatedAt = "2000-11-30 19:59:59";
+        CustomerDetailsUpdateDto expected = CustomerDetailsUpdateDto.builder()
+                .externalCustomerNumber("externalCustomerNumber")
+                .externalSource(true)
+                .updatedAt(dtoUpdatedAt)
+                .updatedBy("updatedBy")
+                .dateFormat("yyyy-MM-dd HH:mm:ss")
+                .locale("en")
+                .build();
+
+        CustomerDetailsUpdate customerDetailsUpdate = CustomerDetailsUpdate.builder()
+                .externalCustomerNumber(expected.getExternalCustomerNumber())
+                .externalSource(expected.getExternalSource())
+                .updatedAt(entityUpdatedAt)
+                .updatedBy(expected.getUpdatedBy())
+                .build();
+
+        CustomerDetailsUpdateDto actual = mapper.toCustomerDetailsUpdateDto(customerDetailsUpdate);
+        assertEquals(expected, actual);
+
+
+    }
+
+    @Test
+    void toCustomerDetailsUpdateDto_test_dateTimeMapping() {
+        CustomerDetailsUpdate customerDetailsUpdate = CustomerDetailsUpdate.builder().build();
+
+        LocalDateTime dateTime1 = LocalDateTime.parse("2000-11-30T19:59:59");
+        customerDetailsUpdate.setUpdatedAt(dateTime1);
+        CustomerDetailsUpdateDto dto1 = mapper.toCustomerDetailsUpdateDto(customerDetailsUpdate);
+        assertEquals("2000-11-30 19:59:59", dto1.getUpdatedAt());
+
+        LocalDateTime dateTime2 = LocalDateTime.parse("2000-11-30T19:59:59.55555");
+        customerDetailsUpdate.setUpdatedAt(dateTime2);
+        CustomerDetailsUpdateDto dto2 = mapper.toCustomerDetailsUpdateDto(customerDetailsUpdate);
+        assertEquals("2000-11-30 19:59:59", dto2.getUpdatedAt());
+
+    }
 
 }
