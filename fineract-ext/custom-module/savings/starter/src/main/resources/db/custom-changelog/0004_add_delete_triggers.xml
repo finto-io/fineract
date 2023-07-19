@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="finto" id="4">
+        <sql splitStatements="false">
+            CREATE OR REPLACE FUNCTION on_client_delete() RETURNS trigger AS
+$$BEGIN
+            delete from m_address where id in (select id from m_client_address where client_id = old.id);
+            delete from m_client_address where client_id = old.id;
+            delete from m_client_identifier where client_id = old.id;
+            delete from customer_fields where client_id = old.id;
+            return old;
+            END;$$ LANGUAGE plpgsql;
+
+            CREATE TRIGGER client_delete
+                BEFORE DELETE ON m_client FOR EACH ROW
+                EXECUTE PROCEDURE on_client_delete();
+
+            CREATE OR REPLACE FUNCTION on_account_delete() RETURNS trigger AS
+$$BEGIN
+            delete from account_fields where savings_account_id = old.id;
+            return old;
+            END;$$ LANGUAGE plpgsql;
+
+            CREATE TRIGGER account_delete
+                BEFORE DELETE ON m_savings_account FOR EACH ROW
+                EXECUTE PROCEDURE on_account_delete();
+        </sql>
+    </changeSet>
+</databaseChangeLog>
