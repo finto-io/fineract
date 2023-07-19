@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class ErrorResponseHandlerMini implements ErrorResponseHandler {
 
     private final ObjectMapper mapper = JsonMapper.builder().findAndAddModules().build();
-
+    private final FineractBusinessErrorHandler businessErrorHandler = new FineractBusinessErrorHandler();
 
     private String getErrorMessage(CommonErrorResponse error){
         if (error.getErrors() == null || error.getErrors().isEmpty()) {
@@ -45,7 +45,7 @@ public class ErrorResponseHandlerMini implements ErrorResponseHandler {
             }
             switch (failureResponse.code()) {
                 case 400:
-                    return new BadRequestException(BadRequestException.DEFAULT_ERROR_CODE, errorMessage);
+                    return new BadRequestException(BadRequestException.DEFAULT_ERROR_CODE, businessErrorHandler.convertMessage(errorMessage));
                 case 403:
                     return new BadRequestException(BadRequestException.DEFAULT_ERROR_CODE, errorMessage);
                 case 404:
