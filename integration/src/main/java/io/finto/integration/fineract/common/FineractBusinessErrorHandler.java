@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
     public class FineractBusinessErrorHandler {
 
-    private static final String CLIENT_ALREADY_EXISTS_PATTER = "Client (.+) a Id with unique key .*";
+    private static final String CLIENT_ALREADY_EXISTS_PATTER = "Client (.+) a .* with unique key .*";
 
     public String convertMessage(String errorMessage) {
         if (errorMessage.matches(CLIENT_ALREADY_EXISTS_PATTER)){
