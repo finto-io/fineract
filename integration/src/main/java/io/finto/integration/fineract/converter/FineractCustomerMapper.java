@@ -7,12 +7,15 @@ import io.finto.domain.customer.CustomerDetailsUpdate;
 import io.finto.domain.customer.CustomerId;
 import io.finto.domain.customer.CustomerIdentifier;
 import io.finto.domain.customer.CustomerMobileNumber;
+import io.finto.domain.customer.CustomerStatus;
 import io.finto.domain.customer.IdentifierId;
 import io.finto.domain.customer.OpeningCustomer;
 import io.finto.domain.customer.UdfName;
+import io.finto.exceptions.core.FintoApiException;
 import io.finto.fineract.sdk.models.GetClientClientIdAddressesResponse;
 import io.finto.fineract.sdk.models.GetClientsClientIdIdentifiersResponse;
 import io.finto.fineract.sdk.models.GetClientsClientIdResponse;
+import io.finto.fineract.sdk.models.GetClientsClientIdStatus;
 import io.finto.fineract.sdk.models.PostClientsAddressRequest;
 import io.finto.fineract.sdk.models.PostClientsClientIdIdentifiersRequest;
 import io.finto.fineract.sdk.models.PostClientsDatatable;
@@ -179,13 +182,13 @@ public interface FineractCustomerMapper {
         return mobileNo != null ? CustomerMobileNumber.builder().mobileNumber(mobileNo).build() : CustomerMobileNumber.builder().mobileNumber("").build();
     }
 
-    default PutClientsClientIdRequest toUpdateMobileNumberRequest(String newMobileNumber){
+    default PutClientsClientIdRequest toUpdateMobileNumberRequest(String newMobileNumber) {
         return PutClientsClientIdRequest.builder()
                 .mobileNo(newMobileNumber)
                 .build();
     }
 
-    default CustomerDetailsUpdateDto toUpdateTimeRequest(){
+    default CustomerDetailsUpdateDto toUpdateTimeRequest() {
         return CustomerDetailsUpdateDto.builder()
                 .locale(LOCALE)
                 .dateFormat(DATE_TIME_FORMAT_PATTERN)
@@ -194,9 +197,26 @@ public interface FineractCustomerMapper {
                 .build();
     }
 
-    @Mapping(target ="dateFormat", expression = "java(io.finto.fineract.sdk.Constants.DATE_TIME_FORMAT_PATTERN)")
-    @Mapping(target ="updatedAt", expression = "java(customerDetailsUpdate.getUpdatedAt() != null ? io.finto.fineract.sdk.Constants.DEFAULT_DATE_TIME_FORMATTER.format( customerDetailsUpdate.getUpdatedAt()) : null)")
-    @Mapping(target ="locale", expression = "java(io.finto.fineract.sdk.Constants.LOCALE)")
+    @Mapping(target = "dateFormat", expression = "java(io.finto.fineract.sdk.Constants.DATE_TIME_FORMAT_PATTERN)")
+    @Mapping(target = "updatedAt", expression = "java(customerDetailsUpdate.getUpdatedAt() != null ? io.finto.fineract.sdk.Constants.DEFAULT_DATE_TIME_FORMATTER.format( customerDetailsUpdate.getUpdatedAt()) : null)")
+    @Mapping(target = "locale", expression = "java(io.finto.fineract.sdk.Constants.LOCALE)")
     CustomerDetailsUpdateDto toCustomerDetailsUpdateDto(CustomerDetailsUpdate customerDetailsUpdate);
+
+
+    default CustomerStatus toCustomerStatus(GetClientsClientIdStatus statusResponse) {
+        if (statusResponse == null || statusResponse.getValue() == null) {
+            return null;
+        }
+        switch (statusResponse.getValue().toLowerCase()) {
+            case "pending":
+                return CustomerStatus.PENDING;
+            case "active":
+                return CustomerStatus.ACTIVATED;
+            case "closed":
+                return CustomerStatus.CLOSED;
+            default:
+                throw new FintoApiException("424000", "Unrecognized Fineract customer status");
+        }
+    }
 
 }

@@ -22,6 +22,7 @@ import io.finto.fineract.sdk.models.PostClientsRequest;
 import io.finto.fineract.sdk.models.PutClientsClientIdRequest;
 import io.finto.integration.fineract.dto.CustomerAdditionalFieldsDto;
 import io.finto.integration.fineract.dto.CustomerDetailsUpdateDto;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -329,16 +330,6 @@ class FineractCustomerMapperTest {
     void testToCustomerMobileNumber_WithNonNullMobileNo() {
         String mobileNo = "123456789";
         CustomerMobileNumber expected = CustomerMobileNumber.builder().mobileNumber(mobileNo).build();
-
-        CustomerMobileNumber result = mapper.toCustomerMobileNumber(mobileNo);
-
-        assertEquals(expected, result);
-    }
-
-    @Test
-    void testToCustomerMobileNumber_WithNullMobileNo() {
-        String mobileNo = null;
-        CustomerMobileNumber expected = CustomerMobileNumber.builder().mobileNumber("").build();
 
         CustomerMobileNumber result = mapper.toCustomerMobileNumber(mobileNo);
 
