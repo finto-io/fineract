@@ -30,5 +30,7 @@ public class CustomerDetailsUpdateDto {
     private String dateFormat;
     @JsonProperty("locale")
     private String locale;
+    @JsonProperty("update_flag")
+    private String updateFlag;
 
 }
