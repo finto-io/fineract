@@ -129,6 +129,8 @@ public interface FineractCustomerMapper {
     @Mapping(target = "createdBy", source = "customer.timeline.submittedByUsername")
     @Mapping(target = "activatedBy", source = "customer.timeline.activatedByUsername")
     @Mapping(target = "activatedAt", source = "customer.timeline.activatedOnDate")
+    @Mapping(target = "closedBy", source = "customer.timeline.closedByUsername")
+    @Mapping(target = "closedAt", source = "customer.timeline.closedOnDate")
     @Mapping(target = "addresses", source = "addresses")
     @Mapping(target = "identifiers", source = "identifiers")
     @Mapping(target = "kycId", source = "additionalFields.kycId")

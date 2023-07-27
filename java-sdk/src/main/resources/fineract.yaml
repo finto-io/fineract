@@ -28394,7 +28394,7 @@ components:
         status:
           $ref: '#/components/schemas/GetClientsClientIdStatus'
         timeline:
-          $ref: '#/components/schemas/GetClientsTimeline'
+          $ref: '#/components/schemas/ClientTimelineData'
     GetClientsClientIdStatus:
       type: object
       properties:
