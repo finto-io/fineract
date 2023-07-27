@@ -1,5 +1,8 @@
 package io.finto.integration.fineract.converter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import io.finto.domain.customer.Address;
 import io.finto.domain.customer.Customer;
 import io.finto.domain.customer.CustomerAdditionalFields;
@@ -24,6 +27,7 @@ import io.finto.fineract.sdk.models.PostClientsRequest;
 import io.finto.fineract.sdk.models.PutClientsClientIdRequest;
 import io.finto.integration.fineract.dto.CustomerAdditionalFieldsDto;
 import io.finto.integration.fineract.dto.CustomerDetailsUpdateDto;
+import io.finto.integration.fineract.dto.UpdateFlagDataDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
@@ -31,6 +35,7 @@ import org.mapstruct.factory.Mappers;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static io.finto.fineract.sdk.Constants.DATE_FORMAT_PATTERN;
@@ -45,6 +50,7 @@ import static io.finto.fineract.sdk.CustomDatatableNames.CUSTOMER_ADDITIONAL_FIE
 public interface FineractCustomerMapper {
 
     FineractCustomerMapper INSTANCE = Mappers.getMapper(FineractCustomerMapper.class);
+    ObjectMapper objectMapper = JsonMapper.builder().findAndAddModules().build();
 
     default PostClientsRequest toOpeningCustomerDto(OpeningCustomer request, Long genderId, Long countryId, Long profCountryId,
                                                     Long residenceAddressTypeId, Long workAddressTypeId, Long postalCodeId) {
@@ -196,6 +202,26 @@ public interface FineractCustomerMapper {
                 .dateFormat(DATE_TIME_FORMAT_PATTERN)
                 .updatedAt(LocalDateTime.now().format(DEFAULT_DATE_TIME_FORMATTER))
                 .updatedBy(USER)
+                .build();
+    }
+
+    default UpdateFlagDataDto toUpdateFlagDataDto(boolean flag, String clientIp, LocalDateTime timestamp, LocalDateTime ttl) {
+        return UpdateFlagDataDto.builder()
+                .changedBy(clientIp)
+                .changedAt(timestamp.format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT_PATTERN)))
+                .ttl(ttl.format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT_PATTERN)))
+                .active(flag)
+                .build();
+    }
+
+
+    default CustomerDetailsUpdateDto toUpdateFlagRequestDto(boolean flag, String clientIp, LocalDateTime timestamp, LocalDateTime ttl) throws JsonProcessingException {
+        return CustomerDetailsUpdateDto.builder()
+                .locale(LOCALE)
+                .dateFormat(DATE_TIME_FORMAT_PATTERN)
+                .updatedAt(LocalDateTime.now().format(DEFAULT_DATE_TIME_FORMATTER))
+                .updatedBy(USER)
+                .updateFlag(objectMapper.writeValueAsString(toUpdateFlagDataDto(flag, clientIp, timestamp, ttl)))
                 .build();
     }
 

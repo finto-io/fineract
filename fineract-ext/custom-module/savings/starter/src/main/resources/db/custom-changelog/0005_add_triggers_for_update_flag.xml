@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <!-- Changing the update_flag  adding a trigger -->
+    <changeSet author="finto" id="5">
+        <!-- Create a check_update_flag trigger -->
+        <sql splitStatements="false">
+            <![CDATA[
+            CREATE OR REPLACE FUNCTION update_flag_trigger() RETURNS TRIGGER AS
+            $$
+            DECLARE
+            new_update_flag_jsonb JSONB;
+            old_update_flag_jsonb JSONB;
+            BEGIN
+                IF (NEW.update_flag IS NOT NULL) THEN
+                    IF (OLD.update_flag IS NOT NULL) THEN
+                        new_update_flag_jsonb := NEW.update_flag::JSONB;
+                        old_update_flag_jsonb := OLD.update_flag::JSONB;
+
+                        IF (new_update_flag_jsonb->>'Active' = old_update_flag_jsonb->>'Active') THEN
+                            IF (new_update_flag_jsonb->'ChangedAt' IS NOT NULL AND old_update_flag_jsonb->>'Ttl' IS NOT NULL) THEN
+                                IF (TO_TIMESTAMP(old_update_flag_jsonb->>'Ttl', 'YYYY-MM-DD HH24:MI:SS') >= TO_TIMESTAMP(new_update_flag_jsonb->>'ChangedAt', 'YYYY-MM-DD HH24:MI:SS')) THEN
+                                    RAISE EXCEPTION 'The ChangedAt [%] value in update_flag should be later than the current TTL value [%]',
+                                    new_update_flag_jsonb->>'ChangedAt', old_update_flag_jsonb->>'Ttl';
+                                END IF;
+                            END IF;
+                        END IF;
+                    END IF;
+                END IF;
+
+            RETURN NEW;
+            END;
+            $$
+            LANGUAGE plpgsql;
+
+            CREATE TRIGGER check_update_flag
+                BEFORE INSERT OR UPDATE ON customer_fields
+                     FOR EACH ROW
+                     EXECUTE FUNCTION update_flag_trigger();
+            ]]>
+        </sql>
+    </changeSet>
+</databaseChangeLog>

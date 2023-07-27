@@ -1,5 +1,6 @@
 package io.finto.integration.fineract.converter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.finto.domain.customer.Customer;
 import io.finto.domain.customer.CustomerDetailsUpdate;
 import io.finto.domain.customer.CustomerId;
@@ -34,6 +35,7 @@ import static io.finto.fineract.sdk.Constants.DEFAULT_DATE_FORMATTER;
 import static io.finto.fineract.sdk.Constants.LOCALE;
 import static io.finto.fineract.sdk.CustomDatatableNames.CUSTOMER_ADDITIONAL_FIELDS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FineractCustomerMapperTest {
 
@@ -351,13 +353,13 @@ class FineractCustomerMapperTest {
     @Test
     void toCustomerDetailsUpdateDto_test() {
         LocalDateTime entityUpdatedAt = LocalDateTime.parse("2000-11-30T19:59:59");
-        String dtoUpdatedAt = "2000-11-30 19:59:59";
+        String dtoUpdatedAt = "2000-11-30 19:59:59.000";
         CustomerDetailsUpdateDto expected = CustomerDetailsUpdateDto.builder()
                 .externalCustomerNumber("externalCustomerNumber")
                 .externalSource(true)
                 .updatedAt(dtoUpdatedAt)
                 .updatedBy("updatedBy")
-                .dateFormat("yyyy-MM-dd HH:mm:ss")
+                .dateFormat("yyyy-MM-dd HH:mm:ss.SSS")
                 .locale("en")
                 .build();
 
@@ -378,16 +380,53 @@ class FineractCustomerMapperTest {
     void toCustomerDetailsUpdateDto_test_dateTimeMapping() {
         CustomerDetailsUpdate customerDetailsUpdate = CustomerDetailsUpdate.builder().build();
 
-        LocalDateTime dateTime1 = LocalDateTime.parse("2000-11-30T19:59:59");
+        LocalDateTime dateTime1 = LocalDateTime.parse("2000-11-30T19:59:59.000");
         customerDetailsUpdate.setUpdatedAt(dateTime1);
         CustomerDetailsUpdateDto dto1 = mapper.toCustomerDetailsUpdateDto(customerDetailsUpdate);
-        assertEquals("2000-11-30 19:59:59", dto1.getUpdatedAt());
+        assertEquals("2000-11-30 19:59:59.000", dto1.getUpdatedAt());
 
         LocalDateTime dateTime2 = LocalDateTime.parse("2000-11-30T19:59:59.55555");
         customerDetailsUpdate.setUpdatedAt(dateTime2);
         CustomerDetailsUpdateDto dto2 = mapper.toCustomerDetailsUpdateDto(customerDetailsUpdate);
-        assertEquals("2000-11-30 19:59:59", dto2.getUpdatedAt());
+        assertEquals("2000-11-30 19:59:59.555", dto2.getUpdatedAt());
 
+    }
+
+    @Test
+    void testToUpdateFlagDataDto() {
+        boolean flag = true;
+        String clientIp = "127.0.0.1";
+        LocalDateTime timestamp = LocalDateTime.parse("2000-11-30T19:59:53.000");
+        LocalDateTime ttl = LocalDateTime.parse("2000-11-30T19:59:59.000");
+
+        var result = mapper.toUpdateFlagDataDto(flag, clientIp, timestamp, ttl);
+
+        assertEquals(clientIp, result.getChangedBy());
+        assertEquals("2000-11-30 19:59:53.000", result.getChangedAt());
+        assertEquals("2000-11-30 19:59:59.000", result.getTtl());
+        assertTrue(result.isActive());
+    }
+
+    @Test
+    void testToUpdateFlagRequestDto() throws JsonProcessingException {
+        boolean flag = true;
+        String clientIp = "127.0.0.1";
+        LocalDateTime timestamp = LocalDateTime.parse("2000-11-30T19:59:53.000");
+        LocalDateTime ttl = LocalDateTime.parse("2000-11-30T19:59:59.000");
+
+        CustomerDetailsUpdateDto expectedDto = CustomerDetailsUpdateDto.builder()
+                .locale("en")
+                .dateFormat("yyyy-MM-dd HH:mm:ss.SSS")
+                .updatedBy("mifos")
+                .updateFlag("{\"ChangedBy\":\"127.0.0.1\",\"ChangedAt\":\"2000-11-30 19:59:53.000\",\"Ttl\":\"2000-11-30 19:59:59.000\",\"Active\":true}")
+                .build();
+
+        var result = mapper.toUpdateFlagRequestDto(flag, clientIp, timestamp, ttl);
+
+        assertEquals(expectedDto.getLocale(), result.getLocale());
+        assertEquals(expectedDto.getDateFormat(), result.getDateFormat());
+        assertEquals(expectedDto.getUpdatedBy(), result.getUpdatedBy());
+        assertEquals(expectedDto.getUpdateFlag(), result.getUpdateFlag());
     }
 
 }
