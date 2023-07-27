@@ -7,6 +7,7 @@ import io.finto.domain.customer.CustomerMobileNumber;
 import io.finto.domain.customer.IdentifierId;
 import io.finto.domain.customer.OpeningCustomer;
 import io.finto.domain.customer.UdfName;
+import io.finto.fineract.sdk.models.ClientTimelineData;
 import io.finto.fineract.sdk.models.CodeValueData;
 import io.finto.fineract.sdk.models.CommonEnumValue;
 import io.finto.fineract.sdk.models.GetClientClientIdAddressesResponse;
@@ -14,7 +15,6 @@ import io.finto.fineract.sdk.models.GetClientsClientIdIdentifiersResponse;
 import io.finto.fineract.sdk.models.GetClientsClientIdResponse;
 import io.finto.fineract.sdk.models.GetClientsClientIdStatus;
 import io.finto.fineract.sdk.models.GetClientsDocumentType;
-import io.finto.fineract.sdk.models.GetClientsTimeline;
 import io.finto.fineract.sdk.models.PostClientsAddressRequest;
 import io.finto.fineract.sdk.models.PostClientsDatatable;
 import io.finto.fineract.sdk.models.PostClientsDatatableData;
@@ -22,7 +22,6 @@ import io.finto.fineract.sdk.models.PostClientsRequest;
 import io.finto.fineract.sdk.models.PutClientsClientIdRequest;
 import io.finto.integration.fineract.dto.CustomerAdditionalFieldsDto;
 import io.finto.integration.fineract.dto.CustomerDetailsUpdateDto;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -252,7 +251,7 @@ class FineractCustomerMapperTest {
                 .status(GetClientsClientIdStatus.builder()
                         .value("Active")
                         .build())
-                .timeline(GetClientsTimeline.builder()
+                .timeline(ClientTimelineData.builder()
                         .submittedOnDate(LocalDate.parse("2023-01-01", DEFAULT_DATE_FORMATTER))
                         .submittedByUsername("mifos")
                         .activatedOnDate(LocalDate.parse("2023-02-02", DEFAULT_DATE_FORMATTER))
