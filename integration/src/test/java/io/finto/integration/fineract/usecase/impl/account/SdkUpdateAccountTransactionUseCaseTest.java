@@ -1,4 +1,4 @@
-package io.finto.integration.fineract.usecase.impl;
+package io.finto.integration.fineract.usecase.impl.account;
 
 import io.finto.domain.account.AccountId;
 import io.finto.domain.customer.CustomerId;
@@ -7,6 +7,8 @@ import io.finto.fineract.sdk.api.SavingsAccountApi;
 import io.finto.fineract.sdk.models.PostSavingsAccountsAccountIdRequest;
 import io.finto.fineract.sdk.models.PostSavingsAccountsAccountIdResponse;
 import io.finto.integration.fineract.converter.FineractTransactionMapper;
+import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
+import io.finto.integration.fineract.usecase.impl.account.SdkUpdateAccountTransactionUseCase;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

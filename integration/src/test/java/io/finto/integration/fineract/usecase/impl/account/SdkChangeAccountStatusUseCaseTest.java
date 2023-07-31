@@ -1,4 +1,4 @@
-package io.finto.integration.fineract.usecase.impl;
+package io.finto.integration.fineract.usecase.impl.account;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
@@ -6,6 +6,8 @@ import io.finto.domain.account.AccountId;
 import io.finto.fineract.sdk.api.SavingsAccountApi;
 import io.finto.fineract.sdk.models.PostSavingsAccountsAccountIdRequest;
 import io.finto.fineract.sdk.models.PostSavingsAccountsAccountIdResponse;
+import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
+import io.finto.integration.fineract.usecase.impl.account.SdkChangeAccountStatusUseCase;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -121,6 +123,34 @@ class SdkChangeAccountStatusUseCaseTest {
         control.replay();
 
         AccountId actual = useCase.closeAccount(accountId, creditAccountId);
+
+        control.verify();
+
+        Assertions.assertEquals(accountId, actual);
+    }
+    /**
+     * Method under test: {@link SdkChangeAccountStatusUseCase#closeAccount(AccountId, AccountId)}
+     */
+    @Test
+    void test_closeAccount_success_noAccountToCreditProvided() {
+        Call<PostSavingsAccountsAccountIdResponse> executeCommandCall = control.createMock(Call.class);
+        PostSavingsAccountsAccountIdRequest fineractRequest = new PostSavingsAccountsAccountIdRequest();
+        fineractRequest.setLocale("en");
+        fineractRequest.setDateFormat(DATE_FORMAT_PATTERN);
+        fineractRequest.setPaymentTypeId(4L);
+        fineractRequest.setWithdrawBalance(false);
+        fineractRequest.setClosedOnDate(LocalDate.now().format(DEFAULT_DATE_FORMATTER));
+
+        PostSavingsAccountsAccountIdResponse response = new PostSavingsAccountsAccountIdResponse();
+        response.setResourceId(accountId.getValue().intValue());
+
+        expect(context.savingsAccountApi()).andReturn(savingsAccountApi);
+        expect(savingsAccountApi.handleSavingsAccountsCommands(accountId.getValue(), fineractRequest, "close")).andReturn(executeCommandCall);
+        expect(context.getResponseBody(executeCommandCall)).andReturn(response);
+
+        control.replay();
+
+        AccountId actual = useCase.closeAccount(accountId, null);
 
         control.verify();
 

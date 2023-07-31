@@ -1,4 +1,4 @@
-package io.finto.integration.fineract.usecase.impl;
+package io.finto.integration.fineract.usecase.impl.account;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,6 +8,7 @@ import io.finto.domain.account.AccountDetailsUpdate;
 import io.finto.domain.account.AccountId;
 import io.finto.exceptions.core.FintoApiException;
 import io.finto.integration.fineract.converter.FineractAccountMapper;
+import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
 import io.finto.usecase.account.EnrichAccountInfoUseCase;
 import lombok.*;
 

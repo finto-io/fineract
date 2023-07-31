@@ -1,6 +1,7 @@
-package io.finto.integration.fineract.usecase.impl;
+package io.finto.integration.fineract.usecase.impl.account;
 
 import io.finto.domain.account.AccountId;
+import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
 import io.finto.usecase.account.DeleteAccountUseCase;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

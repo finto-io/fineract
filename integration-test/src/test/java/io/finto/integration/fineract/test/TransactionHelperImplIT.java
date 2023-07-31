@@ -6,7 +6,7 @@ import io.finto.integration.fineract.test.helpers.FineractFixture;
 import io.finto.integration.fineract.test.helpers.account.AccountHelper;
 import io.finto.integration.fineract.test.helpers.client.ClientHelper;
 import io.finto.integration.fineract.test.helpers.transaction.TransactionHelper;
-import io.finto.integration.fineract.usecase.impl.SdkFindAccountTransactionsUseCase;
+import io.finto.integration.fineract.usecase.impl.account.SdkFindAccountTransactionsUseCase;
 import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
