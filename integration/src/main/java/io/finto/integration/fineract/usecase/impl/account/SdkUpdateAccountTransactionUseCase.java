@@ -1,4 +1,4 @@
-package io.finto.integration.fineract.usecase.impl;
+package io.finto.integration.fineract.usecase.impl.account;
 
 import io.finto.domain.account.AccountId;
 import io.finto.domain.customer.CustomerId;
@@ -6,6 +6,7 @@ import io.finto.domain.transaction.TransactionsStatus;
 import io.finto.fineract.sdk.models.PostSavingsAccountsAccountIdRequest;
 import io.finto.fineract.sdk.models.PostSavingsAccountsAccountIdResponse;
 import io.finto.integration.fineract.converter.FineractTransactionMapper;
+import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
 import io.finto.usecase.transaction.UpdateAccountTransactionUseCase;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

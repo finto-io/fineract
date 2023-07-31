@@ -1,4 +1,4 @@
-package io.finto.integration.fineract.usecase.impl;
+package io.finto.integration.fineract.usecase.impl.account;
 
 import io.finto.domain.account.AccountId;
 import io.finto.domain.account.AccountType;
@@ -7,6 +7,7 @@ import io.finto.domain.account.OpeningAccount;
 import io.finto.domain.product.Product;
 import io.finto.fineract.sdk.models.PostSavingsAccountsRequest;
 import io.finto.integration.fineract.converter.FineractAccountMapper;
+import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
 import io.finto.usecase.account.CreateAccountUseCase;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

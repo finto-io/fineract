@@ -1,4 +1,4 @@
-package io.finto.integration.fineract.usecase.impl;
+package io.finto.integration.fineract.usecase.impl.account;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +14,8 @@ import io.finto.fineract.sdk.api.SavingsAccountApi;
 import io.finto.fineract.sdk.models.GetSavingsAccountsAccountIdResponse;
 import io.finto.integration.fineract.converter.FineractAccountMapper;
 import io.finto.integration.fineract.dto.AccountAdditionalFieldsDto;
+import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
+import io.finto.integration.fineract.usecase.impl.account.SdkFindAccountUseCase;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

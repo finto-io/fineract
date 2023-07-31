@@ -1,7 +1,8 @@
-package io.finto.integration.fineract.usecase.impl;
+package io.finto.integration.fineract.usecase.impl.account;
 
 import io.finto.domain.account.AccountId;
 import io.finto.fineract.sdk.models.PostSavingsAccountsAccountIdRequest;
+import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
 import io.finto.usecase.account.ChangeAccountStatusUseCase;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,7 +29,7 @@ public class SdkChangeAccountStatusUseCase implements ChangeAccountStatusUseCase
         PostSavingsAccountsAccountIdRequest fineractRequest = new PostSavingsAccountsAccountIdRequest();
         fineractRequest.setDateFormat(DATE_FORMAT_PATTERN);
         fineractRequest.setApprovedOnDate(LocalDate.now().format(DEFAULT_DATE_FORMATTER));
-        fineractRequest.setLocale("en");
+        fineractRequest.setLocale(LOCALE);
         return executeCommand(accountId, fineractRequest, COMMAND_APPROVE);
     }
 
@@ -37,7 +38,7 @@ public class SdkChangeAccountStatusUseCase implements ChangeAccountStatusUseCase
         PostSavingsAccountsAccountIdRequest fineractRequest = new PostSavingsAccountsAccountIdRequest();
         fineractRequest.setDateFormat(DATE_FORMAT_PATTERN);
         fineractRequest.setActivatedOnDate(LocalDate.now().format(DEFAULT_DATE_FORMATTER));
-        fineractRequest.setLocale("en");
+        fineractRequest.setLocale(LOCALE);
         return executeCommand(accountId, fineractRequest, COMMAND_ACTIVATE);
     }
 
@@ -46,10 +47,12 @@ public class SdkChangeAccountStatusUseCase implements ChangeAccountStatusUseCase
         PostSavingsAccountsAccountIdRequest fineractRequest = new PostSavingsAccountsAccountIdRequest();
         fineractRequest.setDateFormat(DATE_FORMAT_PATTERN);
         fineractRequest.setClosedOnDate(LocalDate.now().format(DEFAULT_DATE_FORMATTER));
-        fineractRequest.setLocale("en");
-        fineractRequest.setWithdrawBalance(true);
+        fineractRequest.setLocale(LOCALE);
+        fineractRequest.setWithdrawBalance(creditAccountId != null);
         fineractRequest.setPaymentTypeId(INTERNAL_TRANSFER_PAYMENT_TYPE_ID);
-        fineractRequest.setAccountNumber(creditAccountId.getValue());
+        if (creditAccountId != null) {
+            fineractRequest.setAccountNumber(creditAccountId.getValue());
+        }
         return executeCommand(accountId, fineractRequest, COMMAND_CLOSE);
     }
 

@@ -1,4 +1,4 @@
-package io.finto.integration.fineract.usecase.impl;
+package io.finto.integration.fineract.usecase.impl.customer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.finto.domain.customer.CustomerId;
@@ -9,6 +9,7 @@ import io.finto.fineract.sdk.models.PutClientsClientIdResponse;
 import io.finto.fineract.sdk.models.PutDataTablesAppTableIdResponse;
 import io.finto.integration.fineract.converter.FineractCustomerMapper;
 import io.finto.integration.fineract.dto.CustomerDetailsUpdateDto;
+import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
 import io.finto.integration.fineract.usecase.impl.customer.SdkUpdateCustomerMobileNumberUseCase;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.BeforeEach;
