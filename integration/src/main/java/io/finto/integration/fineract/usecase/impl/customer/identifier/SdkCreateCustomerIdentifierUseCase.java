@@ -1,11 +1,11 @@
-package io.finto.integration.fineract.usecase.impl.customer;
+package io.finto.integration.fineract.usecase.impl.customer.identifier;
 
 import io.finto.domain.customer.CustomerId;
 import io.finto.domain.customer.IdentifierId;
 import io.finto.integration.fineract.converter.FineractCustomerMapper;
 import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
-import io.finto.usecase.customer.CreateCustomerIdentifierUseCase;
 import io.finto.usecase.customer.FindKeyValueDictionaryUseCase;
+import io.finto.usecase.customer.identifier.CreateCustomerIdentifierUseCase;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NonNull;

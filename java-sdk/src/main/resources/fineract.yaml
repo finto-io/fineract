@@ -50729,7 +50729,10 @@ components:
         addressId:
           type: integer
           format: int32
-          example: 67
+          example:
+        isActive:
+          type: boolean
+          example: true
         street:
           type: string
           example: goldensource
@@ -50801,6 +50804,17 @@ components:
       type: object
       description: PutClientsClientIdRequest
       properties:
+        firstname:
+          type: string
+        middlename:
+          type: string
+        lastname:
+          type: string
+        legalFormId:
+          type: integer
+          format: int32
+        isStaff:
+          type: boolean
         externalId:
           type: string
           example: 786444UUUYYH7
@@ -50809,6 +50823,17 @@ components:
           example: 123-456
         mobileNo:
           type: string
+        genderId:
+          type: integer
+          format: int32
+        dateOfBirth:
+          type: string
+        dateFormat:
+          type: string
+          example: yyyy-MM-dd
+        locale:
+          type: string
+          example: en
     PutClientsClientIdResponse:
       type: object
       description: PutClientsClientIdResponse
