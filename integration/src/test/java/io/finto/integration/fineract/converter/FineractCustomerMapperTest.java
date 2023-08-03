@@ -6,8 +6,11 @@ import io.finto.domain.customer.CustomerDetailsUpdate;
 import io.finto.domain.customer.CustomerId;
 import io.finto.domain.customer.CustomerMobileNumber;
 import io.finto.domain.customer.IdentifierId;
+import io.finto.domain.customer.Identity;
 import io.finto.domain.customer.OpeningCustomer;
+import io.finto.domain.customer.PersonalData;
 import io.finto.domain.customer.UdfName;
+import io.finto.domain.customer.UpdatingCustomer;
 import io.finto.fineract.sdk.models.ClientTimelineData;
 import io.finto.fineract.sdk.models.CodeValueData;
 import io.finto.fineract.sdk.models.CommonEnumValue;
@@ -30,9 +33,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-import static io.finto.fineract.sdk.Constants.DATE_FORMAT_PATTERN;
-import static io.finto.fineract.sdk.Constants.DEFAULT_DATE_FORMATTER;
-import static io.finto.fineract.sdk.Constants.LOCALE;
+import static io.finto.fineract.sdk.Constants.*;
 import static io.finto.fineract.sdk.CustomDatatableNames.CUSTOMER_ADDITIONAL_FIELDS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -358,7 +359,7 @@ class FineractCustomerMapperTest {
                 .externalCustomerNumber("externalCustomerNumber")
                 .externalSource(true)
                 .updatedAt(dtoUpdatedAt)
-                .updatedBy("updatedBy")
+                .updatedBy("mifos")
                 .dateFormat("yyyy-MM-dd HH:mm:ss.SSS")
                 .locale("en")
                 .build();
@@ -429,4 +430,98 @@ class FineractCustomerMapperTest {
         assertEquals(expectedDto.getUpdateFlag(), result.getUpdateFlag());
     }
 
+    @Test
+    void toClientUpdateRequest() {
+        Long genderId = 1L;
+        var request = UpdatingCustomer.builder()
+                .staff("Y")
+                .cType("I")
+                .personalData(PersonalData.builder()
+                        .firstName("firstName")
+                        .middleName("middleName")
+                        .lastName("lastName")
+                        .mobileNumber("88005553535")
+                        .dateOfBirth("2000-01-01")
+                        .build())
+                .build();
+        var actual = mapper.toClientUpdateRequest(request, genderId);
+        var expected = PutClientsClientIdRequest.builder()
+                .firstname("firstName")
+                .middlename("middleName")
+                .lastname("lastName")
+                .legalFormId(1)
+                .isStaff(true)
+                .mobileNo("88005553535")
+                .dateOfBirth("2000-01-01")
+                .genderId(genderId.intValue())
+                .dateFormat(DATE_FORMAT_PATTERN)
+                .locale(LOCALE)
+                .build();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void fromUpdatingCustomerToDomain(){
+        var request = UpdatingCustomer.builder()
+                .staff("Y")
+                .deceased("Y")
+                .cType("I")
+                .personalData(PersonalData.builder()
+                        .firstName("firstName")
+                        .middleName("middleName")
+                        .lastName("lastName")
+                        .mobileNumber("88005553535")
+                        .dateOfBirth("2000-01-01")
+                        .sex("F")
+                        .build())
+                .build();
+        var actual = mapper.toDomain(request);
+        var expected = Customer.builder()
+                .firstName("firstName")
+                .middleName("middleName")
+                .lastName("lastName")
+                .mobileNumber("88005553535")
+                .dateOfBirth("2000-01-01")
+                .legalForm("I")
+                .sex("F")
+                .isStaff(true)
+                .deceased(true)
+                .build();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void toCustomerDetailsUpdate(){
+        var customer = UpdatingCustomer.builder()
+                .sName("kycId")
+                .externalCustomerNumber("externalCustomerNumber")
+                .nlty("nationality")
+                .deceased("Y")
+                .frozen("Y")
+                .cifRestricted("Y")
+                .personalData(PersonalData.builder()
+                        .email("email")
+                        .resStatus("Y")
+                        .build())
+                .identity(Identity.builder()
+                        .userId("userId")
+                        .partnerId("partnerId")
+                        .partnerName("partnerName")
+                        .build())
+                .build();
+        var actual = mapper.toCustomerDetailsUpdateDomain(customer);
+        var expected = CustomerDetailsUpdate.builder()
+                .kycId("kycId")
+                .externalCustomerNumber("externalCustomerNumber")
+                .nationality("nationality")
+                .deceased(true)
+                .dormant(true)
+                .isCustomerRestricted(true)
+                .email("email")
+                .userId("userId")
+                .partnerId("partnerId")
+                .partnerName("partnerName")
+                .build();
+        assertEquals(expected, actual);
+    }
 }

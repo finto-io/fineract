@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="finto" id="6">
+        <sql splitStatements="false">
+            CREATE OR REPLACE FUNCTION public.on_address_create() RETURNS trigger as $$BEGIN
+            delete from m_address where id in
+            (select address_id from m_client_address where client_id = new.client_id and address_type_id = new.address_type_id);
+            delete from m_client_address
+            where client_id = new.client_id and address_type_id = new.address_type_id;
+            return new;
+            END;$$ LANGUAGE plpgsql;;
+
+            CREATE TRIGGER address_create BEFORE INSERT ON
+            public.m_client_address for each row execute function on_address_create();
+        </sql>
+    </changeSet>
+</databaseChangeLog>

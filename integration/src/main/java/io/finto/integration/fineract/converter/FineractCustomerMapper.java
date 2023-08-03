@@ -14,6 +14,7 @@ import io.finto.domain.customer.CustomerStatus;
 import io.finto.domain.customer.IdentifierId;
 import io.finto.domain.customer.OpeningCustomer;
 import io.finto.domain.customer.UdfName;
+import io.finto.domain.customer.UpdatingCustomer;
 import io.finto.exceptions.core.FintoApiException;
 import io.finto.fineract.sdk.models.GetClientClientIdAddressesResponse;
 import io.finto.fineract.sdk.models.GetClientsClientIdIdentifiersResponse;
@@ -38,12 +39,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static io.finto.fineract.sdk.Constants.DATE_FORMAT_PATTERN;
-import static io.finto.fineract.sdk.Constants.DATE_TIME_FORMAT_PATTERN;
-import static io.finto.fineract.sdk.Constants.DEFAULT_DATE_FORMATTER;
-import static io.finto.fineract.sdk.Constants.DEFAULT_DATE_TIME_FORMATTER;
-import static io.finto.fineract.sdk.Constants.LOCALE;
-import static io.finto.fineract.sdk.Constants.USER;
+import static io.finto.fineract.sdk.Constants.*;
 import static io.finto.fineract.sdk.CustomDatatableNames.CUSTOMER_ADDITIONAL_FIELDS;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
@@ -227,6 +223,7 @@ public interface FineractCustomerMapper {
 
     @Mapping(target = "dateFormat", expression = "java(io.finto.fineract.sdk.Constants.DATE_TIME_FORMAT_PATTERN)")
     @Mapping(target = "updatedAt", expression = "java(customerDetailsUpdate.getUpdatedAt() != null ? io.finto.fineract.sdk.Constants.DEFAULT_DATE_TIME_FORMATTER.format( customerDetailsUpdate.getUpdatedAt()) : null)")
+    @Mapping(target = "updatedBy", expression = "java(io.finto.fineract.sdk.Constants.USER)")
     @Mapping(target = "locale", expression = "java(io.finto.fineract.sdk.Constants.LOCALE)")
     CustomerDetailsUpdateDto toCustomerDetailsUpdateDto(CustomerDetailsUpdate customerDetailsUpdate);
 
@@ -247,4 +244,43 @@ public interface FineractCustomerMapper {
         }
     }
 
+
+    @Mapping(target = "firstname", source = "request.personalData.firstName")
+    @Mapping(target = "middlename", source = "request.personalData.middleName")
+    @Mapping(target = "lastname", source = "request.personalData.lastName")
+    @Mapping(target = "legalFormId", expression = "java(\"I\".equals(request.getCType()) ? 1 : 2)")
+    @Mapping(target = "isStaff", source = "request.staff")
+    @Mapping(target = "mobileNo", source = "request.personalData.mobileNumber")
+    @Mapping(target = "dateOfBirth", source = "request.personalData.dateOfBirth")
+    @Mapping(target = "genderId", source = "genderId")
+    @Mapping(target = "dateFormat", expression = "java(io.finto.fineract.sdk.Constants.DATE_FORMAT_PATTERN)")
+    @Mapping(target = "locale", expression = "java(io.finto.fineract.sdk.Constants.LOCALE)")
+    PutClientsClientIdRequest toClientUpdateRequest(UpdatingCustomer request, Long genderId);
+
+    @Mapping(target = "firstName", source = "personalData.firstName")
+    @Mapping(target = "middleName", source = "personalData.middleName")
+    @Mapping(target = "lastName", source = "personalData.lastName")
+    @Mapping(target = "mobileNumber", source = "personalData.mobileNumber")
+    @Mapping(target = "dateOfBirth", source = "personalData.dateOfBirth")
+    @Mapping(target = "legalForm", source = "CType")
+    @Mapping(target = "sex", source = "personalData.sex")
+    @Mapping(target = "isStaff", source = "staff")
+    @Mapping(target = "udfDetails", ignore = true)
+    Customer toDomain(UpdatingCustomer customer);
+
+    @Mapping(target = "kycId", source = "SName")
+    @Mapping(target = "externalCustomerNumber", source = "externalCustomerNumber")
+    @Mapping(target = "nationality", source = "nlty")
+    @Mapping(target = "deceased", source = "deceased")
+    @Mapping(target = "dormant", source = "frozen")
+    @Mapping(target = "isCustomerRestricted", source = "cifRestricted")
+    @Mapping(target = "email", source = "personalData.email")
+    @Mapping(target = "userId", source = "identity.userId")
+    @Mapping(target = "partnerId", source = "identity.partnerId")
+    @Mapping(target = "partnerName", source = "identity.partnerName")
+    CustomerDetailsUpdate toCustomerDetailsUpdateDomain(UpdatingCustomer newCustomer);
+
+    default Boolean toBoolean(String value){
+        return value == null ? null : value == "Y";
+    }
 }
