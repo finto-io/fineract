@@ -2,6 +2,7 @@ package io.finto.integration.fineract.usecase.impl.customer.identifier;
 
 import io.finto.domain.customer.CustomerId;
 import io.finto.domain.customer.Details;
+import io.finto.domain.customer.IdentifierType;
 import io.finto.domain.customer.UdfName;
 import io.finto.domain.customer.UpdatingCustomer;
 import io.finto.fineract.sdk.models.GetClientsClientIdIdentifiersResponse;
@@ -17,8 +18,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static io.finto.fineract.sdk.Constants.*;
 
 @AllArgsConstructor
 @Builder
@@ -50,9 +49,9 @@ public class SdkUpdateCustomerIdentifierUseCase implements UpdateCustomerIdentif
                 .stream()
                 .collect(Collectors.toMap(x -> x.getDocumentType().getName(), x -> x));
 
-        updateCustomerIdentifier(customerId, NATION_ID_CODE_NAME, updatingCustomer.getNationId(), identifiers);
-        updateCustomerIdentifier(customerId, PASSPORT_CODE_NAME, updatingCustomer.getUidValue(), identifiers);
-        updateCustomerIdentifier(customerId, DRIVER_ID_CODE_NAME, driverId, identifiers);
+        updateCustomerIdentifier(customerId, IdentifierType.NATION_ID.name(), updatingCustomer.getNationId(), identifiers);
+        updateCustomerIdentifier(customerId, IdentifierType.PASSPORT.name(), updatingCustomer.getUidValue(), identifiers);
+        updateCustomerIdentifier(customerId, IdentifierType.DRIVER_LICENSE.name(), driverId, identifiers);
         identifiers.forEach((key, value) ->
                 context.getResponseBody(context.clientIdentifierApi().deleteClientIdentifier(customerId.getValue(), Long.valueOf(value.getId()))));
     }
@@ -62,18 +61,18 @@ public class SdkUpdateCustomerIdentifierUseCase implements UpdateCustomerIdentif
         if (isNeedToCreateIdentifier(identifierValue, odlIdentifierResponse)) {
             identifierUseCase.createCustomerIdentifier(customerId, identifierKey, identifierValue);
         }
-        if (!isNeedToRemoveOldIdentifier(identifierValue, odlIdentifierResponse)){
+        if (!isNeedToRemoveOldIdentifier(identifierValue, odlIdentifierResponse)) {
             oldIdentifiers.remove(identifierKey);
         }
     }
 
-    private boolean isNeedToCreateIdentifier(String identifierValue, GetClientsClientIdIdentifiersResponse odlIdentifierResponse){
+    private boolean isNeedToCreateIdentifier(String identifierValue, GetClientsClientIdIdentifiersResponse odlIdentifierResponse) {
         return StringUtils.isNoneEmpty(identifierValue) &&
                 (odlIdentifierResponse == null || !identifierValue.equals(odlIdentifierResponse.getDocumentKey()));
     }
 
 
-    private boolean isNeedToRemoveOldIdentifier(String identifierValue, GetClientsClientIdIdentifiersResponse odlIdentifierResponse){
+    private boolean isNeedToRemoveOldIdentifier(String identifierValue, GetClientsClientIdIdentifiersResponse odlIdentifierResponse) {
         return odlIdentifierResponse != null && StringUtils.isNoneEmpty(odlIdentifierResponse.getDocumentKey())
                 && !odlIdentifierResponse.getDocumentKey().equals(identifierValue);
     }
