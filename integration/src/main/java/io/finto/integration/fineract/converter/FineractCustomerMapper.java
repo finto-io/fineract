@@ -145,7 +145,7 @@ public interface FineractCustomerMapper {
     @Mapping(target = "isCustomerRestricted", source = "additionalFields.isCustomerRestricted")
     @Mapping(target = "email", source = "additionalFields.email")
     @Mapping(target = "externalSource", source = "additionalFields.externalSource")
-    @Mapping(target = "updatedAt", expression = "java(additionalFields.getUpdatedAt() != null ? additionalFields.getUpdatedAt().format(io.finto.fineract.sdk.Constants.DEFAULT_DATE_FORMATTER) : null)")
+    @Mapping(target = "updatedAt", expression = "java(additionalFields!=null && additionalFields.getUpdatedAt() != null ? additionalFields.getUpdatedAt().format(io.finto.fineract.sdk.Constants.DEFAULT_DATE_FORMATTER) : null)")
     @Mapping(target = "updatedBy", source = "additionalFields.updatedBy")
     @Mapping(target = "userId", source = "additionalFields.userId")
     @Mapping(target = "partnerId", source = "additionalFields.partnerId")

@@ -2,6 +2,7 @@ package io.finto.integration.fineract.usecase.impl.customer.identifier;
 
 import io.finto.domain.customer.CustomerId;
 import io.finto.domain.customer.IdentifierId;
+import io.finto.domain.customer.IdentifierType;
 import io.finto.fineract.sdk.api.ClientIdentifierApi;
 import io.finto.fineract.sdk.models.PostClientsClientIdIdentifiersRequest;
 import io.finto.fineract.sdk.models.PostClientsClientIdIdentifiersResponse;
@@ -68,7 +69,7 @@ class SdkCreateCustomerIdentifierUseCaseTest {
 
     @Test
     void createPassportIdentifier() {
-        expect(dictionaryUseCase.getOneKeyByValue(DOCUMENT_TYPE_DICTIONARY_ID, PASSPORT_CODE_NAME)).andReturn(documentTypeId);
+        expect(dictionaryUseCase.getOneKeyByValue(DOCUMENT_TYPE_DICTIONARY_ID, IdentifierType.PASSPORT.name())).andReturn(documentTypeId);
         expect(customerMapper.toIdentifierRequestDto(documentTypeId, "documentValue")).andReturn(request);
         expect(context.clientIdentifierApi()).andReturn(clientIdentifierApi);
         expect(clientIdentifierApi.createClientIdentifier(customerId.getValue(), request)).andReturn(call);
@@ -84,7 +85,7 @@ class SdkCreateCustomerIdentifierUseCaseTest {
 
     @Test
     void createNationIdIdentifier() {
-        expect(dictionaryUseCase.getOneKeyByValue(DOCUMENT_TYPE_DICTIONARY_ID, NATION_ID_CODE_NAME)).andReturn(documentTypeId);
+        expect(dictionaryUseCase.getOneKeyByValue(DOCUMENT_TYPE_DICTIONARY_ID, IdentifierType.NATION_ID.name())).andReturn(documentTypeId);
         expect(customerMapper.toIdentifierRequestDto(documentTypeId, "documentValue")).andReturn(request);
         expect(context.clientIdentifierApi()).andReturn(clientIdentifierApi);
         expect(clientIdentifierApi.createClientIdentifier(customerId.getValue(), request)).andReturn(call);
@@ -100,7 +101,7 @@ class SdkCreateCustomerIdentifierUseCaseTest {
 
     @Test
     void createDriverIdIdentifier() {
-        expect(dictionaryUseCase.getOneKeyByValue(DOCUMENT_TYPE_DICTIONARY_ID, DRIVER_ID_CODE_NAME)).andReturn(documentTypeId);
+        expect(dictionaryUseCase.getOneKeyByValue(DOCUMENT_TYPE_DICTIONARY_ID, IdentifierType.DRIVER_LICENSE.name())).andReturn(documentTypeId);
         expect(customerMapper.toIdentifierRequestDto(documentTypeId, "documentValue")).andReturn(request);
         expect(context.clientIdentifierApi()).andReturn(clientIdentifierApi);
         expect(clientIdentifierApi.createClientIdentifier(customerId.getValue(), request)).andReturn(call);
