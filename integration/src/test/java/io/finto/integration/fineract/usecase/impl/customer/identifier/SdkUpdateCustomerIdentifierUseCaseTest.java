@@ -71,12 +71,12 @@ public class SdkUpdateCustomerIdentifierUseCaseTest {
 
     @Test
     void updateCustomerIdentifiers_AddNewIdentifierAndDeleteOldIdentifier() {
-        var oldIdentifiers = List.of(createIdentifier(1, IdentifierType.NATION_ID.name(), "old_nation_id"));
+        var oldIdentifiers = List.of(createIdentifier(1, IdentifierType.NATION_ID.getValue(), "old_nation_id"));
 
         expect(context.clientIdentifierApi()).andStubReturn(clientIdentifierApi);
         expect(clientIdentifierApi.retrieveAllClientIdentifiers(customerId.getValue())).andReturn(call);
         expect(context.getResponseBody(call)).andReturn(oldIdentifiers);
-        expect(identifierUseCase.createCustomerIdentifier(customerId, IdentifierType.NATION_ID.name(), "new_nation_id")).andReturn(null);
+        expect(identifierUseCase.createCustomerIdentifier(customerId, IdentifierType.NATION_ID.getValue(), "new_nation_id")).andReturn(null);
         expect(clientIdentifierApi.deleteClientIdentifier(customerId.getValue(), 1L)).andReturn(call);
         expect(context.getResponseBody(call)).andReturn(null);
         control.replay();
@@ -89,13 +89,13 @@ public class SdkUpdateCustomerIdentifierUseCaseTest {
 
     @Test
     void updateCustomerIdentifiers_theSameIdentifier() {
-        var oldIdentifiers = List.of(createIdentifier(1, IdentifierType.NATION_ID.name(), "old_nation_id"),
-                createIdentifier(2, IdentifierType.PASSPORT.name(), "old_passport"));
+        var oldIdentifiers = List.of(createIdentifier(1, IdentifierType.NATION_ID.getValue(), "old_nation_id"),
+                createIdentifier(2, IdentifierType.PASSPORT.getValue(), "old_passport"));
 
         expect(context.clientIdentifierApi()).andStubReturn(clientIdentifierApi);
         expect(clientIdentifierApi.retrieveAllClientIdentifiers(customerId.getValue())).andReturn(call);
         expect(context.getResponseBody(call)).andReturn(oldIdentifiers);
-        expect(identifierUseCase.createCustomerIdentifier(customerId, IdentifierType.DRIVER_LICENSE.name(), "new_driver_id")).andReturn(null);
+        expect(identifierUseCase.createCustomerIdentifier(customerId, IdentifierType.DRIVER_LICENSE.getValue(), "new_driver_id")).andReturn(null);
         expect(clientIdentifierApi.deleteClientIdentifier(customerId.getValue(), 2L)).andReturn(call);
         expect(context.getResponseBody(call)).andReturn(null);
         control.replay();
@@ -111,9 +111,9 @@ public class SdkUpdateCustomerIdentifierUseCaseTest {
         expect(context.clientIdentifierApi()).andStubReturn(clientIdentifierApi);
         expect(clientIdentifierApi.retrieveAllClientIdentifiers(customerId.getValue())).andReturn(call);
         expect(context.getResponseBody(call)).andReturn(oldIdentifiers);
-        expect(identifierUseCase.createCustomerIdentifier(customerId, IdentifierType.NATION_ID.name(), "new_nation_id")).andReturn(null);
-        expect(identifierUseCase.createCustomerIdentifier(customerId, IdentifierType.PASSPORT.name(), "new_passport")).andReturn(null);
-        expect(identifierUseCase.createCustomerIdentifier(customerId, IdentifierType.DRIVER_LICENSE.name(), "new_driver_id")).andReturn(null);
+        expect(identifierUseCase.createCustomerIdentifier(customerId, IdentifierType.NATION_ID.getValue(), "new_nation_id")).andReturn(null);
+        expect(identifierUseCase.createCustomerIdentifier(customerId, IdentifierType.PASSPORT.getValue(), "new_passport")).andReturn(null);
+        expect(identifierUseCase.createCustomerIdentifier(customerId, IdentifierType.DRIVER_LICENSE.getValue(), "new_driver_id")).andReturn(null);
 
         control.replay();
 

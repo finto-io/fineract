@@ -38,17 +38,17 @@ public class SdkCreateCustomerIdentifierUseCase implements CreateCustomerIdentif
 
     @Override
     public IdentifierId createPassportIdentifier(CustomerId customerId, String documentValue) {
-        return createCustomerIdentifier(customerId, IdentifierType.PASSPORT.name(), documentValue);
+        return createCustomerIdentifier(customerId, IdentifierType.PASSPORT.getValue(), documentValue);
     }
 
     @Override
     public IdentifierId createNationIdIdentifier(CustomerId customerId, String documentValue) {
-        return createCustomerIdentifier(customerId, IdentifierType.NATION_ID.name(), documentValue);
+        return createCustomerIdentifier(customerId, IdentifierType.NATION_ID.getValue(), documentValue);
     }
 
     @Override
     public IdentifierId createDriverIdIdentifier(CustomerId customerId, String documentValue) {
-        return createCustomerIdentifier(customerId, IdentifierType.DRIVER_LICENSE.name(), documentValue);
+        return createCustomerIdentifier(customerId, IdentifierType.DRIVER_LICENSE.getValue(), documentValue);
     }
 
 }

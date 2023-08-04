@@ -49,9 +49,9 @@ public class SdkUpdateCustomerIdentifierUseCase implements UpdateCustomerIdentif
                 .stream()
                 .collect(Collectors.toMap(x -> x.getDocumentType().getName(), x -> x));
 
-        updateCustomerIdentifier(customerId, IdentifierType.NATION_ID.name(), updatingCustomer.getNationId(), identifiers);
-        updateCustomerIdentifier(customerId, IdentifierType.PASSPORT.name(), updatingCustomer.getUidValue(), identifiers);
-        updateCustomerIdentifier(customerId, IdentifierType.DRIVER_LICENSE.name(), driverId, identifiers);
+        updateCustomerIdentifier(customerId, IdentifierType.NATION_ID.getValue(), updatingCustomer.getNationId(), identifiers);
+        updateCustomerIdentifier(customerId, IdentifierType.PASSPORT.getValue(), updatingCustomer.getUidValue(), identifiers);
+        updateCustomerIdentifier(customerId, IdentifierType.DRIVER_LICENSE.getValue(), driverId, identifiers);
         identifiers.forEach((key, value) ->
                 context.getResponseBody(context.clientIdentifierApi().deleteClientIdentifier(customerId.getValue(), Long.valueOf(value.getId()))));
     }

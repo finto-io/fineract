@@ -69,7 +69,7 @@ class SdkCreateCustomerIdentifierUseCaseTest {
 
     @Test
     void createPassportIdentifier() {
-        expect(dictionaryUseCase.getOneKeyByValue(DOCUMENT_TYPE_DICTIONARY_ID, IdentifierType.PASSPORT.name())).andReturn(documentTypeId);
+        expect(dictionaryUseCase.getOneKeyByValue(DOCUMENT_TYPE_DICTIONARY_ID, IdentifierType.PASSPORT.getValue())).andReturn(documentTypeId);
         expect(customerMapper.toIdentifierRequestDto(documentTypeId, "documentValue")).andReturn(request);
         expect(context.clientIdentifierApi()).andReturn(clientIdentifierApi);
         expect(clientIdentifierApi.createClientIdentifier(customerId.getValue(), request)).andReturn(call);
@@ -85,7 +85,7 @@ class SdkCreateCustomerIdentifierUseCaseTest {
 
     @Test
     void createNationIdIdentifier() {
-        expect(dictionaryUseCase.getOneKeyByValue(DOCUMENT_TYPE_DICTIONARY_ID, IdentifierType.NATION_ID.name())).andReturn(documentTypeId);
+        expect(dictionaryUseCase.getOneKeyByValue(DOCUMENT_TYPE_DICTIONARY_ID, IdentifierType.NATION_ID.getValue())).andReturn(documentTypeId);
         expect(customerMapper.toIdentifierRequestDto(documentTypeId, "documentValue")).andReturn(request);
         expect(context.clientIdentifierApi()).andReturn(clientIdentifierApi);
         expect(clientIdentifierApi.createClientIdentifier(customerId.getValue(), request)).andReturn(call);
@@ -101,7 +101,7 @@ class SdkCreateCustomerIdentifierUseCaseTest {
 
     @Test
     void createDriverIdIdentifier() {
-        expect(dictionaryUseCase.getOneKeyByValue(DOCUMENT_TYPE_DICTIONARY_ID, IdentifierType.DRIVER_LICENSE.name())).andReturn(documentTypeId);
+        expect(dictionaryUseCase.getOneKeyByValue(DOCUMENT_TYPE_DICTIONARY_ID, IdentifierType.DRIVER_LICENSE.getValue())).andReturn(documentTypeId);
         expect(customerMapper.toIdentifierRequestDto(documentTypeId, "documentValue")).andReturn(request);
         expect(context.clientIdentifierApi()).andReturn(clientIdentifierApi);
         expect(clientIdentifierApi.createClientIdentifier(customerId.getValue(), request)).andReturn(call);
