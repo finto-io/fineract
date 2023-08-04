@@ -38,6 +38,16 @@ class FineractAddressMapperTest {
     }
 
     @Test
+    void toResidenceAddressDomain_null() {
+        var actual = mapper.toResidenceAddressDomain(null);
+        var expected = Address.builder()
+                .type(RESIDENCE_ADDRESS_CODE_NAME)
+                .build();
+        assertEquals(expected, actual);
+    }
+
+
+    @Test
     void toWorkAddressDomain() {
         var request = Profession.builder()
                 .address1("addressLine1")
@@ -55,6 +65,16 @@ class FineractAddressMapperTest {
                 .build();
         assertEquals(expected, actual);
     }
+
+    @Test
+    void toWorkAddressDomain_null() {
+        var actual = mapper.toWorkAddressDomain(null);
+        var expected = Address.builder()
+                .type(WORK_ADDRESS_CODE_NAME)
+                .build();
+        assertEquals(expected, actual);
+    }
+
 
     @Test
     void toCreateAddressDto() {
