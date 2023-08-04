@@ -7,9 +7,11 @@ import io.finto.fineract.sdk.models.PostClientClientIdAddressesRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
+import org.mapstruct.NullValueMappingStrategy;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
+        nullValueMappingStrategy = NullValueMappingStrategy.RETURN_DEFAULT)
 public interface FineractAddressMapper {
     FineractAddressMapper INSTANCE = Mappers.getMapper(FineractAddressMapper.class);
 
