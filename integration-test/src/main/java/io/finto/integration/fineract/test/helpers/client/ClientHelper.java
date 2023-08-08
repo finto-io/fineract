@@ -12,7 +12,7 @@ public class ClientHelper implements TestClientRepositoryDelegate<ClientHelper>,
     private final TestClientRepository<?> repository;
 
     public ClientHelper(@NonNull FineractClient fineract) {
-        this(TestClientRepositoryImpl.builder().withClientIssuerREST(fineract.getClients()).build());
+        this(TestClientRepositoryImpl.builder().withClientIssuerREST(fineract.getClients(), fineract.getClientIdentifiers() ).build());
     }
 
     @Override

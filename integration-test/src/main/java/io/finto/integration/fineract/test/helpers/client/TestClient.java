@@ -1,7 +1,16 @@
 package io.finto.integration.fineract.test.helpers.client;
 
-import io.finto.fineract.sdk.models.*;
-import lombok.*;
+import io.finto.fineract.sdk.models.PostClientsAddressRequest;
+import io.finto.fineract.sdk.models.PostClientsClientIdRequest;
+import io.finto.fineract.sdk.models.PostClientsDatatable;
+import io.finto.fineract.sdk.models.PostClientsDatatableData;
+import io.finto.fineract.sdk.models.PostClientsRequest;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -34,6 +43,9 @@ public class TestClient {
     private ClientStatus status;
     private String locale;
     private String mobileNo;
+    private String passportNumber;
+    private String nationId;
+    private String driverId;
     private List<TestClientAddress> address;
 
     public PostClientsRequest toClientRequest() {

@@ -59,6 +59,10 @@ public class SdkUpdateCustomerIdentifierUseCase implements UpdateCustomerIdentif
     private void updateCustomerIdentifier(CustomerId customerId, String identifierKey, String identifierValue, Map<String, GetClientsClientIdIdentifiersResponse> oldIdentifiers) {
         var odlIdentifierResponse = oldIdentifiers.get(identifierKey);
         if (isNeedToCreateIdentifier(identifierValue, odlIdentifierResponse)) {
+            if (odlIdentifierResponse != null) {
+                context.getResponseBody(context.clientIdentifierApi().deleteClientIdentifier(customerId.getValue(), Long.valueOf(odlIdentifierResponse.getId())));
+                oldIdentifiers.remove(identifierKey);
+            }
             identifierUseCase.createCustomerIdentifier(customerId, identifierKey, identifierValue);
         }
         if (!isNeedToRemoveOldIdentifier(identifierValue, odlIdentifierResponse)) {

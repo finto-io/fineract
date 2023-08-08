@@ -50834,12 +50834,45 @@ components:
         locale:
           type: string
           example: en
+    PutClientsClientIdChangesResponse:
+      type: object
+      description: PutClientsClientIdRequest
+      properties:
+        firstname:
+          type: string
+        middlename:
+          type: string
+        lastname:
+          type: string
+        legalFormId:
+          $ref: '#/components/schemas/CommonEnumValue'
+        isStaff:
+          type: boolean
+        externalId:
+          type: string
+          example: 786444UUUYYH7
+        resourceExternalId:
+          type: string
+          example: 123-456
+        mobileNo:
+          type: string
+        genderId:
+          type: integer
+          format: int32
+        dateOfBirth:
+          type: string
+        dateFormat:
+          type: string
+          example: yyyy-MM-dd
+        locale:
+          type: string
+          example: en
     PutClientsClientIdResponse:
       type: object
       description: PutClientsClientIdResponse
       properties:
         changes:
-          $ref: '#/components/schemas/PutClientsClientIdRequest'
+          $ref: '#/components/schemas/PutClientsClientIdChangesResponse'
         clientId:
           type: integer
           format: int32

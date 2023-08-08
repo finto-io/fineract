@@ -31,6 +31,9 @@ public class TestClientCreator<T extends TestClientRepository<T>> {
     private ClientStatus status;
     private String locale;
     private String mobileNo;
+    private String passportNumber;
+    private String nationId;
+    private String driverId;
     private List<TestClientAddress> address;
 
     public TestClientCreator<T> withDateFormat(String dateFormat) {
@@ -80,6 +83,21 @@ public class TestClientCreator<T extends TestClientRepository<T>> {
 
     public TestClientCreator<T> withAddress(List<TestClientAddress> address) {
         this.address = address;
+        return this;
+    }
+
+    public TestClientCreator<T> withPassportNumber(String passportNumber) {
+        this.passportNumber = passportNumber;
+        return this;
+    }
+
+    public TestClientCreator<T> withNationId(String nationId) {
+        this.nationId = nationId;
+        return this;
+    }
+
+    public TestClientCreator<T> withDriverId(String driverId) {
+        this.driverId = driverId;
         return this;
     }
 
