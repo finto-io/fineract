@@ -76,9 +76,9 @@ public class SdkUpdateCustomerIdentifierUseCaseTest {
         expect(context.clientIdentifierApi()).andStubReturn(clientIdentifierApi);
         expect(clientIdentifierApi.retrieveAllClientIdentifiers(customerId.getValue())).andReturn(call);
         expect(context.getResponseBody(call)).andReturn(oldIdentifiers);
-        expect(identifierUseCase.createCustomerIdentifier(customerId, IdentifierType.NATION_ID.getValue(), "new_nation_id")).andReturn(null);
         expect(clientIdentifierApi.deleteClientIdentifier(customerId.getValue(), 1L)).andReturn(call);
         expect(context.getResponseBody(call)).andReturn(null);
+        expect(identifierUseCase.createCustomerIdentifier(customerId, IdentifierType.NATION_ID.getValue(), "new_nation_id")).andReturn(null);
         control.replay();
 
         useCase.updateCustomerIdentifiers(getUpdatingCustomer("new_nation_id", null, null));

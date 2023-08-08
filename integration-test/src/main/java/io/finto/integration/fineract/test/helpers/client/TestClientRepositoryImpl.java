@@ -1,6 +1,7 @@
 package io.finto.integration.fineract.test.helpers.client;
 
 import io.finto.fineract.sdk.api.ClientApi;
+import io.finto.fineract.sdk.api.ClientIdentifierApi;
 import lombok.Builder;
 import lombok.NonNull;
 
@@ -27,8 +28,11 @@ public class TestClientRepositoryImpl implements TestClientRepository<TestClient
     }
 
     public static class TestClientRepositoryImplBuilder {
-        public TestClientRepositoryImplBuilder withClientIssuerREST(ClientApi clientApi) {
-            this.issuer = TestClientIssuerFineract.builder().clientApi(clientApi).build();
+        public TestClientRepositoryImplBuilder withClientIssuerREST(ClientApi clientApi, ClientIdentifierApi clientIdentifierApi) {
+            this.issuer = TestClientIssuerFineract.builder()
+                    .clientApi(clientApi)
+                    .clientIdentifierApi(clientIdentifierApi)
+                    .build();
             return this;
         }
 
