@@ -521,6 +521,7 @@ class FineractCustomerMapperTest {
                 .userId("userId")
                 .partnerId("partnerId")
                 .partnerName("partnerName")
+                .updatedAt(actual.getUpdatedAt())
                 .build();
         assertEquals(expected, actual);
     }

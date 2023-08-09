@@ -278,6 +278,7 @@ public interface FineractCustomerMapper {
     @Mapping(target = "userId", source = "identity.userId")
     @Mapping(target = "partnerId", source = "identity.partnerId")
     @Mapping(target = "partnerName", source = "identity.partnerName")
+    @Mapping(target = "updatedAt", expression = "java(java.time.LocalDateTime.now())")
     CustomerDetailsUpdate toCustomerDetailsUpdateDomain(UpdatingCustomer newCustomer);
 
     default Boolean toBoolean(String value){
