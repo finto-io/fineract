@@ -274,7 +274,7 @@ public interface FineractCustomerMapper {
     @Mapping(target = "deceased", source = "deceased")
     @Mapping(target = "dormant", source = "frozen")
     @Mapping(target = "isCustomerRestricted", source = "cifRestricted")
-    @Mapping(target = "email", source = "personalData.email")
+    @Mapping(target = "email", source = "email")
     @Mapping(target = "userId", source = "identity.userId")
     @Mapping(target = "partnerId", source = "identity.partnerId")
     @Mapping(target = "partnerName", source = "identity.partnerName")
