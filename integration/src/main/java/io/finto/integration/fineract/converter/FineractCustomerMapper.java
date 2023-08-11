@@ -32,6 +32,7 @@ import io.finto.integration.fineract.dto.UpdateFlagDataDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
+import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
 import java.time.LocalDate;
@@ -249,7 +250,7 @@ public interface FineractCustomerMapper {
     @Mapping(target = "middlename", source = "request.personalData.middleName")
     @Mapping(target = "lastname", source = "request.personalData.lastName")
     @Mapping(target = "legalFormId", expression = "java(\"I\".equals(request.getCType()) ? 1 : 2)")
-    @Mapping(target = "isStaff", source = "request.staff")
+    @Mapping(target = "isStaff", source = "request.staff", qualifiedByName = "toBoolean")
     @Mapping(target = "mobileNo", source = "request.personalData.mobileNumber")
     @Mapping(target = "dateOfBirth", source = "request.personalData.dateOfBirth")
     @Mapping(target = "genderId", source = "genderId")
@@ -257,23 +258,33 @@ public interface FineractCustomerMapper {
     @Mapping(target = "locale", expression = "java(io.finto.fineract.sdk.Constants.LOCALE)")
     PutClientsClientIdRequest toClientUpdateRequest(UpdatingCustomer request, Long genderId);
 
+    @Mapping(target = "customerId", source = "customerId")
+    @Mapping(target = "deceased", source = "deceased", qualifiedByName = "toBoolean")
+    @Mapping(target = "dormant", source = "frozen", qualifiedByName = "toBoolean")
+    @Mapping(target = "mt920", source = "mt920", qualifiedByName = "toBoolean")
+    @Mapping(target = "treasuryCustomer", source = "trsryCustomer", qualifiedByName = "toBoolean")
+    @Mapping(target = "relationshipPricing", source = "relPricing", qualifiedByName = "toBoolean")
+    @Mapping(target = "isCustomerRestricted", source = "cifRestricted", qualifiedByName = "toBoolean")
+    @Mapping(target = "isStaff", source = "staff", qualifiedByName = "toBoolean")
     @Mapping(target = "firstName", source = "personalData.firstName")
     @Mapping(target = "middleName", source = "personalData.middleName")
     @Mapping(target = "lastName", source = "personalData.lastName")
     @Mapping(target = "mobileNumber", source = "personalData.mobileNumber")
     @Mapping(target = "dateOfBirth", source = "personalData.dateOfBirth")
+    @Mapping(target = "residentStatus", source = "personalData.resStatus")
+    @Mapping(target = "minor", source = "personalData.minor", qualifiedByName = "toBoolean")
     @Mapping(target = "legalForm", source = "CType")
     @Mapping(target = "sex", source = "personalData.sex")
-    @Mapping(target = "isStaff", source = "staff")
     @Mapping(target = "udfDetails", ignore = true)
     Customer toDomain(UpdatingCustomer customer);
 
     @Mapping(target = "kycId", source = "SName")
     @Mapping(target = "externalCustomerNumber", source = "externalCustomerNumber")
     @Mapping(target = "nationality", source = "nlty")
-    @Mapping(target = "deceased", source = "deceased")
-    @Mapping(target = "dormant", source = "frozen")
-    @Mapping(target = "isCustomerRestricted", source = "cifRestricted")
+    @Mapping(target = "deceased", source = "deceased", qualifiedByName = "toBoolean")
+    @Mapping(target = "dormant", source = "frozen", qualifiedByName = "toBoolean")
+    @Mapping(target = "residenceFlag", source = "personalData.resStatus")
+    @Mapping(target = "isCustomerRestricted", source = "cifRestricted", qualifiedByName = "toBoolean")
     @Mapping(target = "email", source = "email")
     @Mapping(target = "userId", source = "identity.userId")
     @Mapping(target = "partnerId", source = "identity.partnerId")
@@ -281,7 +292,8 @@ public interface FineractCustomerMapper {
     @Mapping(target = "updatedAt", expression = "java(java.time.LocalDateTime.now())")
     CustomerDetailsUpdate toCustomerDetailsUpdateDomain(UpdatingCustomer newCustomer);
 
+    @Named("toBoolean")
     default Boolean toBoolean(String value){
-        return value == null ? null : value == "Y";
+        return value == null ? null : "Y".equals(value);
     }
 }
