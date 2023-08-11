@@ -516,6 +516,7 @@ class FineractCustomerMapperTest {
                 .nationality("nationality")
                 .deceased(true)
                 .dormant(true)
+                .residenceFlag("Y")
                 .isCustomerRestricted(true)
                 .email("email")
                 .userId("userId")
