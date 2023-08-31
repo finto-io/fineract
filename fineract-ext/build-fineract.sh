@@ -1,6 +1,6 @@
 #!/bin/bash
 
-FINERACT_EXT_VERSION=1.5.0
+FINERACT_EXT_VERSION=1.6.0
 
 git clone https://github.com/apache/fineract.git
 rm -rf fineract/custom/acme
