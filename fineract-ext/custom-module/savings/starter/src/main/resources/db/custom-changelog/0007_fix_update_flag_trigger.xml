@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <!-- Make update_flag_trigger function watch not all columns in customer_fields, but only update_flag column -->
+    <changeSet author="finto" id="7">
+        <sql splitStatements="false">
+            <![CDATA[
+            DROP TRIGGER IF EXISTS check_update_flag ON customer_fields;
+
+            CREATE TRIGGER check_update_flag
+                BEFORE UPDATE OF update_flag
+                ON customer_fields
+                FOR EACH ROW
+                EXECUTE FUNCTION update_flag_trigger();
+            ]]>
+        </sql>
+    </changeSet>
+</databaseChangeLog>
