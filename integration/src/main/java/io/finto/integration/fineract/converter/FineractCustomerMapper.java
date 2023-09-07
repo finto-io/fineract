@@ -60,7 +60,7 @@ public interface FineractCustomerMapper {
                 .isStaff(request.getStaff())
                 .active(false)
                 .mobileNo(request.getPersonalData().getMobileNumber())
-                .dateOfBirth(LocalDate.parse(request.getPersonalData().getDateOfBirth(), DEFAULT_DATE_FORMATTER))
+                .dateOfBirth(request.getPersonalData().getDateOfBirth() == null ? null : LocalDate.parse(request.getPersonalData().getDateOfBirth(), DEFAULT_DATE_FORMATTER))
                 .genderId(genderId)
                 .submittedOnDate(LocalDate.now().format(DEFAULT_DATE_FORMATTER))
                 .locale(LOCALE)
