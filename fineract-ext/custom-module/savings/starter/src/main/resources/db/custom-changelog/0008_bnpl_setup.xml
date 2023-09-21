@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="finto" id="8">
+        <createTable tableName="loan_product_fields">
+            <column autoIncrement="true" name="loan_product_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValueComputed="NULL" name="partner_id" type="VARCHAR(255)"/>
+            <column defaultValueComputed="NULL" name="partner_name" type="VARCHAR(255)"/>
+            <column defaultValueComputed="NULL" name="external_id" type="VARCHAR(255)"/>
+            <column defaultValueComputed="NULL" name="late_payment_block_user" type="BOOLEAN"/>
+            <column defaultValueComputed="NULL" name="early_settlement_allowed" type="BOOLEAN"/>
+            <column defaultValueComputed="NULL" name="loaded_at" type="DATETIME"/>
+            <column defaultValueComputed="NULL" name="loaded_by" type="VARCHAR(255)"/>
+            <column defaultValueComputed="NULL" name="closed_at" type="DATETIME"/>
+            <column defaultValueComputed="NULL" name="closed_by" type="VARCHAR(255)"/>
+            <column defaultValueComputed="NULL" name="modified_at" type="DATETIME"/>
+            <column defaultValueComputed="NULL" name="modified_by" type="VARCHAR(255)"/>
+        </createTable>
+        <insert tableName="x_registered_table">
+            <column name="registered_table_name" value="loan_fields"/>
+            <column name="application_table_name" value="m_loan"/>
+            <column name="entity_subtype" value="loan_fields"/>
+            <column name="category" valueNumeric="200"/>
+        </insert>
+        <createTable tableName="loan_fields">
+            <column autoIncrement="true" name="loan_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValueComputed="NULL" name="customer_id" type="VARCHAR(255)"/>
+            <column defaultValueComputed="NULL" name="partner_id" type="VARCHAR(255)"/>
+            <column defaultValueComputed="NULL" name="partner_name" type="VARCHAR(255)"/>
+            <column defaultValueComputed="NULL" name="request_id" type="VARCHAR(255)"/>
+            <column defaultValueComputed="NULL" name="offer_id" type="VARCHAR(255)"/>
+            <column defaultValueComputed="NULL" name="modified_at" type="DATETIME"/>
+            <column defaultValueComputed="NULL" name="modified_by" type="VARCHAR(255)"/>
+        </createTable>
+        <insert tableName="x_registered_table">
+            <column name="registered_table_name" value="loan_product_fields"/>
+            <column name="application_table_name" value="m_product_loan"/>
+            <column name="entity_subtype" value="loan_product_fields"/>
+            <column name="category" valueNumeric="200"/>
+        </insert>
+        <insert tableName="acc_gl_account">
+            <column name="id" valueNumeric="1"/>
+            <column name="name" value="ASSET"/>
+            <column name="hierarchy" value="."/>
+            <column name="gl_code" value="1000"/>
+            <column name="disabled" valueBoolean="false"/>
+            <column name="manual_journal_entries_allowed" valueBoolean="false"/>
+            <column name="account_usage" valueNumeric="2"/>
+            <column name="classification_enum" valueNumeric="1"/>
+            <column name="description" value="ASSET"/>
+        </insert>
+        <insert tableName="acc_gl_account">
+            <column name="id" valueNumeric="2"/>
+            <column name="name" value="Fund source"/>
+            <column name="parent_id" value="1"/>
+            <column name="hierarchy" value=".2."/>
+            <column name="gl_code" value="1001"/>
+            <column name="disabled" valueBoolean="false"/>
+            <column name="manual_journal_entries_allowed" valueBoolean="true"/>
+            <column name="account_usage" valueNumeric="1"/>
+            <column name="classification_enum" valueNumeric="1"/>
+            <column name="description" value="Fund source"/>
+        </insert>
+        <insert tableName="acc_gl_account">
+            <column name="id" valueNumeric="3"/>
+            <column name="name" value="Interest Receivable"/>
+            <column name="parent_id" value="1"/>
+            <column name="hierarchy" value=".3."/>
+            <column name="gl_code" value="1701"/>
+            <column name="disabled" valueBoolean="false"/>
+            <column name="manual_journal_entries_allowed" valueBoolean="true"/>
+            <column name="account_usage" valueNumeric="1"/>
+            <column name="classification_enum" valueNumeric="1"/>
+            <column name="description" value="Interest Receivable"/>
+        </insert>
+        <insert tableName="acc_gl_account">
+            <column name="id" valueNumeric="4"/>
+            <column name="name" value="Penalties Receivable"/>
+            <column name="parent_id" value="1"/>
+            <column name="hierarchy" value=".4."/>
+            <column name="gl_code" value="1702"/>
+            <column name="disabled" valueBoolean="false"/>
+            <column name="manual_journal_entries_allowed" valueBoolean="true"/>
+            <column name="account_usage" valueNumeric="1"/>
+            <column name="classification_enum" valueNumeric="1"/>
+            <column name="description" value="Penalties Receivable"/>
+        </insert>
+        <insert tableName="acc_gl_account">
+            <column name="id" valueNumeric="5"/>
+            <column name="name" value="Transfer in suspense"/>
+            <column name="parent_id" value="1"/>
+            <column name="hierarchy" value=".5."/>
+            <column name="gl_code" value="1901"/>
+            <column name="disabled" valueBoolean="false"/>
+            <column name="manual_journal_entries_allowed" valueBoolean="true"/>
+            <column name="account_usage" valueNumeric="1"/>
+            <column name="classification_enum" valueNumeric="1"/>
+            <column name="description" value="Transfer in suspense"/>
+        </insert>
+        <insert tableName="acc_gl_account">
+            <column name="id" valueNumeric="6"/>
+            <column name="name" value="Loan portfolio"/>
+            <column name="parent_id" value="1"/>
+            <column name="hierarchy" value=".6."/>
+            <column name="gl_code" value="1401"/>
+            <column name="disabled" valueBoolean="false"/>
+            <column name="manual_journal_entries_allowed" valueBoolean="true"/>
+            <column name="account_usage" valueNumeric="1"/>
+            <column name="classification_enum" valueNumeric="1"/>
+            <column name="description" value="Loan portfolio"/>
+        </insert>
+        <insert tableName="acc_gl_account">
+            <column name="id" valueNumeric="7"/>
+            <column name="name" value="Fees Receivable"/>
+            <column name="parent_id" value="1"/>
+            <column name="hierarchy" value=".7."/>
+            <column name="gl_code" value="1704"/>
+            <column name="disabled" valueBoolean="false"/>
+            <column name="manual_journal_entries_allowed" valueBoolean="true"/>
+            <column name="account_usage" valueNumeric="1"/>
+            <column name="classification_enum" valueNumeric="1"/>
+            <column name="description" value="Fees Receivable"/>
+        </insert>
+        <insert tableName="acc_gl_account">
+            <column name="id" valueNumeric="8"/>
+            <column name="name" value="Income from Interest"/>
+            <column name="hierarchy" value="."/>
+            <column name="gl_code" value="4001"/>
+            <column name="disabled" valueBoolean="false"/>
+            <column name="manual_journal_entries_allowed" valueBoolean="true"/>
+            <column name="account_usage" valueNumeric="1"/>
+            <column name="classification_enum" valueNumeric="4"/>
+            <column name="description" value="Income from Interest"/>
+        </insert>
+        <insert tableName="acc_gl_account">
+            <column name="id" valueNumeric="9"/>
+            <column name="name" value="Income from penalties"/>
+            <column name="hierarchy" value="."/>
+            <column name="gl_code" value="4002"/>
+            <column name="disabled" valueBoolean="false"/>
+            <column name="manual_journal_entries_allowed" valueBoolean="true"/>
+            <column name="account_usage" valueNumeric="1"/>
+            <column name="classification_enum" valueNumeric="4"/>
+            <column name="description" value="Income from penalties"/>
+        </insert>
+        <insert tableName="acc_gl_account">
+            <column name="id" valueNumeric="10"/>
+            <column name="name" value="Income from fees"/>
+            <column name="hierarchy" value="."/>
+            <column name="gl_code" value="4003"/>
+            <column name="disabled" valueBoolean="false"/>
+            <column name="manual_journal_entries_allowed" valueBoolean="true"/>
+            <column name="account_usage" valueNumeric="1"/>
+            <column name="classification_enum" valueNumeric="4"/>
+            <column name="description" value="Income from fees"/>
+        </insert>
+        <insert tableName="acc_gl_account">
+            <column name="id" valueNumeric="11"/>
+            <column name="name" value="Losses written off"/>
+            <column name="hierarchy" value="."/>
+            <column name="gl_code" value="5001"/>
+            <column name="disabled" valueBoolean="false"/>
+            <column name="manual_journal_entries_allowed" valueBoolean="true"/>
+            <column name="account_usage" valueNumeric="1"/>
+            <column name="classification_enum" valueNumeric="5"/>
+            <column name="description" value="Losses written off"/>
+        </insert>
+        <insert tableName="acc_gl_account">
+            <column name="id" valueNumeric="12"/>
+            <column name="name" value="Over payment liability"/>
+            <column name="hierarchy" value="."/>
+            <column name="gl_code" value="2101"/>
+            <column name="disabled" valueBoolean="false"/>
+            <column name="manual_journal_entries_allowed" valueBoolean="true"/>
+            <column name="account_usage" valueNumeric="1"/>
+            <column name="classification_enum" valueNumeric="2"/>
+            <column name="description" value="Over payment liability"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
