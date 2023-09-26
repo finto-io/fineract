@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="finto" id="8">
+        <createTable tableName="customer_update_flag">
+            <column autoIncrement="true" name="client_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValueComputed="NULL" name="changed_by" type="TEXT"/>
+            <column defaultValueComputed="NULL" name="changed_at" type="DATETIME"/>
+            <column defaultValueComputed="NULL" name="ttl" type="DATETIME"/>
+            <column defaultValueComputed="NULL" name="active" type="BOOLEAN"/>
+        </createTable>
+        <insert tableName="x_registered_table">
+            <column name="registered_table_name" value="customer_update_flag"/>
+            <column name="application_table_name" value="m_client"/>
+            <column name="entity_subtype" value="customer_update_flag"/>
+            <column name="category" valueNumeric="200"/>
+        </insert>
+        <sql splitStatements="false">
+            <![CDATA[
+            -- remove obsolete trigger
+            DROP TRIGGER IF EXISTS check_update_flag ON customer_fields;
+            DROP FUNCTION IF EXISTS update_flag_trigger;
+
+            -- create a new one
+            CREATE OR REPLACE FUNCTION check_update_flag()
+                RETURNS TRIGGER AS $$
+                BEGIN
+                    IF (NEW IS NOT NULL AND OLD IS NOT NULL) THEN
+                        IF (NEW.active AND OLD.active AND NEW.changed_at IS NOT NULL AND OLD.ttl IS NOT NULL) THEN
+                            IF (OLD.ttl >= NEW.changed_at) THEN
+                                RAISE EXCEPTION 'The ChangedAt [%] value in update_flag should be later than the current TTL value [%]', NEW.changed_at, OLD.ttl;
+                            END IF;
+                        END IF;
+                    END IF;
+                RETURN NEW;
+                END;
+            $$
+            LANGUAGE plpgsql;
+
+            CREATE TRIGGER update_flag_trigger
+                BEFORE UPDATE
+                ON customer_update_flag
+                FOR EACH ROW
+                EXECUTE FUNCTION check_update_flag();
+
+
+            -- use the trigger instead of providing data in `datatables` body block in POST /clients
+            -- to insert a corresponding record into the customer_update_flag table
+            CREATE OR REPLACE FUNCTION insert_customer_update_flag()
+            RETURNS TRIGGER AS $$
+                BEGIN
+                    INSERT INTO customer_update_flag (client_id, changed_by, changed_at, ttl, active)
+                    VALUES (NEW.id, NULL, NULL, NULL, NULL);
+                    RETURN NEW;
+                END;
+            $$
+            LANGUAGE plpgsql;
+
+            CREATE TRIGGER trigger_insert_customer_update_flag
+                AFTER INSERT ON m_client
+                FOR EACH ROW
+                EXECUTE FUNCTION insert_customer_update_flag();
+
+            -- add cleaning of customer_update_flag for pre-removing client actions
+            CREATE OR REPLACE FUNCTION on_client_delete() RETURNS TRIGGER AS
+            $$
+            BEGIN
+                DELETE FROM m_address WHERE id IN (SELECT id FROM m_client_address WHERE client_id = old.id);
+                DELETE FROM m_client_address WHERE client_id = old.id;
+                DELETE FROM m_client_identifier WHERE client_id = old.id;
+                DELETE FROM customer_fields WHERE client_id = old.id;
+                DELETE FROM customer_update_flag WHERE client_id = old.id;
+
+                RETURN old;
+            END;
+            $$ LANGUAGE plpgsql;
+
+            -- and the last one: create a customer_update_flag record for each existing customer
+            INSERT INTO customer_update_flag (client_id, changed_by, changed_at, ttl, active)
+            SELECT id, NULL, NULL, NULL, NULL FROM m_client;
+            ]]>
+        </sql>
+        <dropColumn
+            tableName = "customer_fields"
+            columnName = "update_flag"
+        />
+
+    </changeSet>
+</databaseChangeLog>

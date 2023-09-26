@@ -17,7 +17,7 @@ import lombok.ToString;
 import java.time.Clock;
 import java.time.LocalDateTime;
 
-import static io.finto.fineract.sdk.CustomDatatableNames.CUSTOMER_ADDITIONAL_FIELDS;
+import static io.finto.fineract.sdk.CustomDatatableNames.CUSTOMER_UPDATE_FLAG;
 
 @AllArgsConstructor
 @Builder
@@ -42,15 +42,15 @@ public class SdkSetCustomerUpdateFlagUseCase implements SetCustomerUpdateFlagUse
     @Override
     public void setUpdateFlag(CustomerId customerId, boolean flag, String clientIp, long ttlMilliseconds) {
         var timestamp = LocalDateTime.now(Clock.systemUTC());
-        var ttl = timestamp.plusSeconds(ttlMilliseconds/1000);
+        var ttl = timestamp.plusSeconds(ttlMilliseconds / 1000);
 
         try {
             context.getResponseBody(
                     context.dataTablesApi()
                             .updateDatatableEntryOnetoOne(
-                                CUSTOMER_ADDITIONAL_FIELDS,
-                                customerId.getValue(),
-                                objectMapper.writeValueAsString(customerMapper.toUpdateFlagRequestDto(flag, clientIp, timestamp, ttl)))
+                                    CUSTOMER_UPDATE_FLAG,
+                                    customerId.getValue(),
+                                    objectMapper.writeValueAsString(customerMapper.toUpdateFlagRequestDto(customerId.getValue(), flag, clientIp, timestamp, ttl)))
             );
         } catch (JsonProcessingException e) {
             throw new FintoApiException(e);
