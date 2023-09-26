@@ -1,5 +1,6 @@
 package io.finto.integration.fineract.converter;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.finto.domain.customer.Customer;
 import io.finto.domain.customer.CustomerDetailsUpdate;
@@ -26,6 +27,7 @@ import io.finto.fineract.sdk.models.PostClientsRequest;
 import io.finto.fineract.sdk.models.PutClientsClientIdRequest;
 import io.finto.integration.fineract.dto.CustomerAdditionalFieldsDto;
 import io.finto.integration.fineract.dto.CustomerDetailsUpdateDto;
+import io.finto.integration.fineract.dto.UpdateFlagRequest;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -394,40 +396,26 @@ class FineractCustomerMapperTest {
     }
 
     @Test
-    void testToUpdateFlagDataDto() {
+    void testToUpdateFlagRequestDto() {
+        Long clientId = 23L;
         boolean flag = true;
         String clientIp = "127.0.0.1";
         LocalDateTime timestamp = LocalDateTime.parse("2000-11-30T19:59:53.000");
         LocalDateTime ttl = LocalDateTime.parse("2000-11-30T19:59:59.000");
 
-        var result = mapper.toUpdateFlagDataDto(flag, clientIp, timestamp, ttl);
-
-        assertEquals(clientIp, result.getChangedBy());
-        assertEquals("2000-11-30 19:59:53.000", result.getChangedAt());
-        assertEquals("2000-11-30 19:59:59.000", result.getTtl());
-        assertTrue(result.isActive());
-    }
-
-    @Test
-    void testToUpdateFlagRequestDto() throws JsonProcessingException {
-        boolean flag = true;
-        String clientIp = "127.0.0.1";
-        LocalDateTime timestamp = LocalDateTime.parse("2000-11-30T19:59:53.000");
-        LocalDateTime ttl = LocalDateTime.parse("2000-11-30T19:59:59.000");
-
-        CustomerDetailsUpdateDto expectedDto = CustomerDetailsUpdateDto.builder()
+        UpdateFlagRequest expected = UpdateFlagRequest.builder()
                 .locale("en")
                 .dateFormat("yyyy-MM-dd HH:mm:ss.SSS")
-                .updatedBy("mifos")
-                .updateFlag("{\"ChangedBy\":\"127.0.0.1\",\"ChangedAt\":\"2000-11-30 19:59:53.000\",\"Ttl\":\"2000-11-30 19:59:59.000\",\"Active\":true}")
+                .clientId(clientId)
+                .changedBy(clientIp)
+                .changedAt(timestamp.format(DEFAULT_DATE_TIME_FORMATTER))
+                .ttl(ttl.format(DEFAULT_DATE_TIME_FORMATTER))
+                .active(flag)
                 .build();
 
-        var result = mapper.toUpdateFlagRequestDto(flag, clientIp, timestamp, ttl);
+        var actual = mapper.toUpdateFlagRequestDto(clientId, flag, clientIp, timestamp, ttl);
 
-        assertEquals(expectedDto.getLocale(), result.getLocale());
-        assertEquals(expectedDto.getDateFormat(), result.getDateFormat());
-        assertEquals(expectedDto.getUpdatedBy(), result.getUpdatedBy());
-        assertEquals(expectedDto.getUpdateFlag(), result.getUpdateFlag());
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -461,7 +449,7 @@ class FineractCustomerMapperTest {
     }
 
     @Test
-    void fromUpdatingCustomerToDomain(){
+    void fromUpdatingCustomerToDomain() {
         var request = UpdatingCustomer.builder()
                 .staff("Y")
                 .deceased("Y")
@@ -491,7 +479,7 @@ class FineractCustomerMapperTest {
     }
 
     @Test
-    void toCustomerDetailsUpdate(){
+    void toCustomerDetailsUpdate() {
         var customer = UpdatingCustomer.builder()
                 .sName("kycId")
                 .externalCustomerNumber("externalCustomerNumber")
