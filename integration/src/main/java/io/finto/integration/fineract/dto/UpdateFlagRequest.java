@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
 @Data
 @Builder
 public class UpdateFlagRequest {
@@ -22,5 +20,5 @@ public class UpdateFlagRequest {
     @JsonProperty("ttl")
     private final String ttl;
     @JsonProperty("active")
-    private Boolean active;
+    private final Boolean active;
 }

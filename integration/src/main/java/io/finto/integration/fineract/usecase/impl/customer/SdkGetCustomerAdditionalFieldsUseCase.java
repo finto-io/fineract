@@ -6,6 +6,7 @@ import io.finto.domain.customer.CustomerAdditionalFields;
 import io.finto.domain.customer.CustomerId;
 import io.finto.integration.fineract.converter.ConverterUtils;
 import io.finto.integration.fineract.converter.FineractCustomerMapper;
+import io.finto.integration.fineract.dto.CustomerAdditionalFieldsDto;
 import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
 import io.finto.usecase.customer.GetCustomerAdditionalFieldsUseCase;
 import lombok.AllArgsConstructor;
@@ -38,7 +39,7 @@ public class SdkGetCustomerAdditionalFieldsUseCase implements GetCustomerAdditio
     @Override
     public CustomerAdditionalFields getCustomerAdditionalFields(CustomerId customerId) {
         var additionalDetails = ConverterUtils.parseAdditionalFields(objectMapper, context.getResponseBody(context.dataTablesApi()
-                .getDatatableByAppTableId(CUSTOMER_ADDITIONAL_FIELDS, customerId.getValue(), null)));
+                .getDatatableByAppTableId(CUSTOMER_ADDITIONAL_FIELDS, customerId.getValue(), null)), CustomerAdditionalFieldsDto[].class);
         return customerMapper.toAdditionalFields(additionalDetails);
     }
 

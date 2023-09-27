@@ -1,6 +1,5 @@
 package io.finto.integration.fineract.converter;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import io.finto.domain.customer.Address;
@@ -11,6 +10,8 @@ import io.finto.domain.customer.CustomerId;
 import io.finto.domain.customer.CustomerIdentifier;
 import io.finto.domain.customer.CustomerMobileNumber;
 import io.finto.domain.customer.CustomerStatus;
+import io.finto.domain.customer.CustomerUpdateFlag;
+import io.finto.domain.customer.Details;
 import io.finto.domain.customer.IdentifierId;
 import io.finto.domain.customer.OpeningCustomer;
 import io.finto.domain.customer.UdfName;
@@ -29,6 +30,7 @@ import io.finto.fineract.sdk.models.PutClientsClientIdRequest;
 import io.finto.integration.fineract.dto.CustomerAdditionalFieldsDto;
 import io.finto.integration.fineract.dto.CustomerDetailsUpdateDto;
 import io.finto.integration.fineract.dto.UpdateFlagRequest;
+import io.finto.integration.fineract.dto.UpdateFlagResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
@@ -38,8 +40,14 @@ import org.mapstruct.factory.Mappers;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
-import static io.finto.fineract.sdk.Constants.*;
+import static io.finto.fineract.sdk.Constants.DATE_FORMAT_PATTERN;
+import static io.finto.fineract.sdk.Constants.DATE_TIME_FORMAT_PATTERN;
+import static io.finto.fineract.sdk.Constants.DEFAULT_DATE_FORMATTER;
+import static io.finto.fineract.sdk.Constants.DEFAULT_DATE_TIME_FORMATTER;
+import static io.finto.fineract.sdk.Constants.LOCALE;
+import static io.finto.fineract.sdk.Constants.USER;
 import static io.finto.fineract.sdk.CustomDatatableNames.CUSTOMER_ADDITIONAL_FIELDS;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
@@ -95,15 +103,27 @@ public interface FineractCustomerMapper {
                                 .deceased(request.getDeceased())
                                 .dormant(request.getFrozen())
                                 .dormantSinceDate(null)
-                                .isCustomerRestricted(request.getUdfDetails().containsKey(UdfName.RESTRICTED_CIF)
-                                        && !request.getUdfDetails().get(UdfName.RESTRICTED_CIF).equals("0"))
-                                .email(request.getUdfDetails().get(UdfName.SELF_REGISTRATION_EMAIL))
+                                .isCustomerRestricted(
+                                        findUdfValue(request, UdfName.RESTRICTED_CIF) != null &&
+                                                !"0".equals(findUdfValue(request, UdfName.RESTRICTED_CIF))
+                                )
+                                .email(findUdfValue(request, UdfName.SELF_REGISTRATION_EMAIL))
                                 .userId(request.getIdentity().getUserId())
                                 .partnerId(request.getIdentity().getPartnerId())
                                 .partnerName(request.getIdentity().getPartnerName())
                                 .build())
                         .build()))
                 .build();
+    }
+
+    default String findUdfValue(OpeningCustomer request, UdfName udfName) {
+        return request.getUdfDetails()
+                .stream()
+                .filter(Objects::nonNull)
+                .filter(details -> details.getName().equals(udfName.name()))
+                .map(Details::getValue)
+                .findFirst()
+                .orElse(null);
     }
 
     @Mapping(target = "documentKey", source = "documentKey")
@@ -201,8 +221,6 @@ public interface FineractCustomerMapper {
                 .build();
     }
 
-
-
     default UpdateFlagRequest toUpdateFlagRequestDto(Long clientId, boolean flag, String clientIp, LocalDateTime timestamp, LocalDateTime ttl) {
         return UpdateFlagRequest.builder()
                 .locale(LOCALE)
@@ -214,6 +232,8 @@ public interface FineractCustomerMapper {
                 .active(flag)
                 .build();
     }
+
+    CustomerUpdateFlag toCustomerUpdateFlagEntity(UpdateFlagResponse updateFlagDto);
 
     @Mapping(target = "dateFormat", expression = "java(io.finto.fineract.sdk.Constants.DATE_TIME_FORMAT_PATTERN)")
     @Mapping(target = "updatedAt", expression = "java(customerDetailsUpdate.getUpdatedAt() != null ? io.finto.fineract.sdk.Constants.DEFAULT_DATE_TIME_FORMATTER.format( customerDetailsUpdate.getUpdatedAt()) : null)")
@@ -286,7 +306,7 @@ public interface FineractCustomerMapper {
     CustomerDetailsUpdate toCustomerDetailsUpdateDomain(UpdatingCustomer newCustomer);
 
     @Named("toBoolean")
-    default Boolean toBoolean(String value){
+    default Boolean toBoolean(String value) {
         return value == null ? null : "Y".equals(value);
     }
 }

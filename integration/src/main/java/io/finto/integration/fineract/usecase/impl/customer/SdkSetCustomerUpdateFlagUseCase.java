@@ -4,8 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import io.finto.domain.customer.CustomerId;
+import io.finto.domain.customer.CustomerUpdateFlag;
 import io.finto.exceptions.core.FintoApiException;
+import io.finto.integration.fineract.converter.ConverterUtils;
 import io.finto.integration.fineract.converter.FineractCustomerMapper;
+import io.finto.integration.fineract.dto.UpdateFlagRequest;
+import io.finto.integration.fineract.dto.UpdateFlagResponse;
 import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
 import io.finto.usecase.customer.SetCustomerUpdateFlagUseCase;
 import lombok.AllArgsConstructor;
@@ -14,7 +18,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.ToString;
 
-import java.time.Clock;
 import java.time.LocalDateTime;
 
 import static io.finto.fineract.sdk.CustomDatatableNames.CUSTOMER_UPDATE_FLAG;
@@ -40,10 +43,7 @@ public class SdkSetCustomerUpdateFlagUseCase implements SetCustomerUpdateFlagUse
 
 
     @Override
-    public void setUpdateFlag(CustomerId customerId, boolean flag, String clientIp, long ttlMilliseconds) {
-        var timestamp = LocalDateTime.now(Clock.systemUTC());
-        var ttl = timestamp.plusSeconds(ttlMilliseconds / 1000);
-
+    public void setUpdateFlag(CustomerId customerId, boolean flag, String clientIp, LocalDateTime timestamp, LocalDateTime ttl) {
         try {
             context.getResponseBody(
                     context.dataTablesApi()
@@ -55,7 +55,12 @@ public class SdkSetCustomerUpdateFlagUseCase implements SetCustomerUpdateFlagUse
         } catch (JsonProcessingException e) {
             throw new FintoApiException(e);
         }
-
     }
 
+    @Override
+    public CustomerUpdateFlag getUpdateFlag(CustomerId customerId) {
+        var additionalDetails = ConverterUtils.parseAdditionalFields(objectMapper, context.getResponseBody(context.dataTablesApi()
+                .getDatatableByAppTableId(CUSTOMER_UPDATE_FLAG, customerId.getValue(), null)), UpdateFlagResponse[].class);
+        return customerMapper.toCustomerUpdateFlagEntity(additionalDetails);
+    }
 }
