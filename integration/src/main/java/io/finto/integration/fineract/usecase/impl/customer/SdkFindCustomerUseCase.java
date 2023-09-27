@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import io.finto.domain.customer.Customer;
 import io.finto.domain.customer.CustomerId;
 import io.finto.integration.fineract.converter.FineractCustomerMapper;
+import io.finto.integration.fineract.dto.CustomerAdditionalFieldsDto;
 import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
 import io.finto.usecase.customer.FindCustomerUseCase;
 import lombok.AllArgsConstructor;
@@ -44,7 +45,7 @@ public class SdkFindCustomerUseCase implements FindCustomerUseCase {
         var identifiers = context.getResponseBody(context.clientIdentifierApi().
                 retrieveAllClientIdentifiers(customerId.getValue()));
         var additionalDetails = parseAdditionalFields(objectMapper, context.getResponseBody(context.dataTablesApi()
-                .getDatatableByAppTableId(CUSTOMER_ADDITIONAL_FIELDS, customerId.getValue(), null)));
+                .getDatatableByAppTableId(CUSTOMER_ADDITIONAL_FIELDS, customerId.getValue(), null)), CustomerAdditionalFieldsDto[].class);
         return customerMapper.toDomain(client, addresses, identifiers, additionalDetails);
     }
 

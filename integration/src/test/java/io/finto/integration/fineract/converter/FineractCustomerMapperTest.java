@@ -1,16 +1,14 @@
 package io.finto.integration.fineract.converter;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.finto.domain.customer.Customer;
 import io.finto.domain.customer.CustomerDetailsUpdate;
 import io.finto.domain.customer.CustomerId;
 import io.finto.domain.customer.CustomerMobileNumber;
+import io.finto.domain.customer.Details;
 import io.finto.domain.customer.IdentifierId;
 import io.finto.domain.customer.Identity;
 import io.finto.domain.customer.OpeningCustomer;
 import io.finto.domain.customer.PersonalData;
-import io.finto.domain.customer.UdfName;
 import io.finto.domain.customer.UpdatingCustomer;
 import io.finto.fineract.sdk.models.ClientTimelineData;
 import io.finto.fineract.sdk.models.CodeValueData;
@@ -33,12 +31,13 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
-import static io.finto.fineract.sdk.Constants.*;
+import static io.finto.fineract.sdk.Constants.DATE_FORMAT_PATTERN;
+import static io.finto.fineract.sdk.Constants.DEFAULT_DATE_FORMATTER;
+import static io.finto.fineract.sdk.Constants.DEFAULT_DATE_TIME_FORMATTER;
+import static io.finto.fineract.sdk.Constants.LOCALE;
 import static io.finto.fineract.sdk.CustomDatatableNames.CUSTOMER_ADDITIONAL_FIELDS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FineractCustomerMapperTest {
 
@@ -51,6 +50,17 @@ class FineractCustomerMapperTest {
     private Long postalCodeId = 7L;
 
     private OpeningCustomer generateOpeningCustomer() {
+
+        Details selfRegistrationEmail = Details.builder()
+                .name("SELF_REGISTRATION_EMAIL")
+                .value("ahmed.s+18@sitech.me")
+                .build();
+
+        Details restrictedCIF = Details.builder()
+                .name("RESTRICTED_CIF")
+                .value("1")
+                .build();
+
         return OpeningCustomer.builder()
                 .officeId(1)
                 .sName("KYC-FINTO-224")
@@ -119,7 +129,7 @@ class FineractCustomerMapperTest {
                                 .build())
                         .build()
                 )
-                .udfDetails(Map.of(io.finto.domain.customer.UdfName.SELF_REGISTRATION_EMAIL, "ahmed.s+18@sitech.me", UdfName.RESTRICTED_CIF, "1"))
+                .udfDetails(List.of(selfRegistrationEmail, restrictedCIF))
                 .identity(io.finto.domain.customer.Identity.builder()
                         .userId("2067f9dc-6429-47cd-82d3-ca4d313003da")
                         .partnerId("c2529dfb-5cd1-4028-9957-c4e784b1e8e4")
