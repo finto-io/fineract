@@ -39,6 +39,7 @@
         <easymock.version>5.1.0</easymock.version>
         <easymock.classextension.version>3.2</easymock.classextension.version>
         <lombok.mapstruct.binding.version>0.2.0</lombok.mapstruct.binding.version>
+        <dependency.check.maven.version>8.4.0</dependency.check.maven.version>
     </properties>
 
     <dependencyManagement>
@@ -175,6 +176,28 @@
     </dependencyManagement>
 
     <build>
+        <plugins>
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>${dependency.check.maven.version}</version>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>aggregate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <format>XML</format>
+                    <outputDirectory>/var/lib/jenkins/workspace/security/dependency-check-report-send/finto-fineract-integration/${project.artifactId}</outputDirectory>
+                    <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
+                    <nugetconfAnalyzerEnabled>false</nugetconfAnalyzerEnabled>
+                    <nuspecAnalyzerEnabled>false</nuspecAnalyzerEnabled>
+                </configuration>
+            </plugin>
+        </plugins>
         <pluginManagement>
             <plugins>
                 <plugin>
