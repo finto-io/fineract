@@ -27600,6 +27600,9 @@ components:
         code:
           type: string
           example: chargeAppliesTo.shares
+        value:
+          type: string
+          example: Shares
         description:
           type: string
           example: Shares
@@ -27613,6 +27616,9 @@ components:
         code:
           type: string
           example: chargeCalculationType.flat
+        value:
+          type: string
+          example: Flat
         description:
           type: string
           example: Flat
@@ -27626,6 +27632,9 @@ components:
         code:
           type: string
           example: chargepaymentmode.regular
+        value:
+          type: string
+          example: Regular
         description:
           type: string
           example: Regular
@@ -27639,6 +27648,9 @@ components:
         code:
           type: string
           example: chargeTimeType.activation
+        value:
+          type: string
+          example: Share Account Activate
         description:
           type: string
           example: Share Account Activate
@@ -31623,6 +31635,8 @@ components:
           $ref: '#/components/schemas/GetGlAccountMapping'
         receivablePenaltyAccount:
           $ref: '#/components/schemas/GetGlAccountMapping'
+        receivableFeeAccount:
+          $ref: '#/components/schemas/GetGlAccountMapping'
         transfersInSuspenseAccount:
           $ref: '#/components/schemas/GetGlAccountMapping'
         writeOffAccount:
@@ -31842,6 +31856,9 @@ components:
         code:
           type: string
           example: accountingRuleType.cash
+        value:
+          type: string
+          example: CASH BASED
         description:
           type: string
           example: CASH BASED
@@ -31855,6 +31872,9 @@ components:
         code:
           type: string
           example: amortizationType.equal.installments
+        value:
+          type: string
+          example: Equal installments
         description:
           type: string
           example: Equal installments
@@ -32097,6 +32117,9 @@ components:
         code:
           type: string
           example: interestRateFrequency.periodFrequencyType.months
+        value:
+          type: string
+          example: Per month
         description:
           type: string
           example: Per month
@@ -32194,6 +32217,9 @@ components:
         code:
           type: string
           example: interestType.declining.balance
+        value:
+          type: string
+          example: Declining Balance
         description:
           type: string
           example: Declining Balance
@@ -32365,8 +32391,7 @@ components:
           type: array
           example: []
           items:
-            type: integer
-            format: int32
+            $ref: '#/components/schemas/GetProductsCharges'
         currency:
           $ref: '#/components/schemas/GetLoanProductsCurrency'
         delinquencyBucket:
@@ -32386,6 +32411,9 @@ components:
           type: integer
           format: int64
           example: 11
+        isInterestRecalculationEnabled:
+          type: boolean
+          example: true
         includeInBorrowerCycle:
           type: boolean
           example: true
@@ -32393,7 +32421,19 @@ components:
           $ref: '#/components/schemas/GetLoansProductsInterestCalculationPeriodType'
         interestRateFrequencyType:
           $ref: '#/components/schemas/GetLoanProductsInterestRateFrequencyType'
+        daysInMonthType:
+          $ref: '#/components/schemas/GetLoanProductsDaysInMonthType'
+        daysInYearType:
+          $ref: '#/components/schemas/GetLoanProductsDaysInYearType'
         interestRatePerPeriod:
+          type: number
+          format: double
+          example: 5
+        minInterestRatePerPeriod:
+          type: number
+          format: double
+          example: 5
+        maxInterestRatePerPeriod:
           type: number
           format: double
           example: 5
@@ -32429,10 +32469,24 @@ components:
           items:
             type: integer
             format: int32
+        graceOnPrincipalPayment:
+          type: integer
+          format: int32
+          example: 7
+        maxNumberOfRepayments:
+          type: integer
+          format: int32
+          example: 7
+        minNumberOfRepayments:
+          type: integer
+          format: int32
+          example: 7
         numberOfRepayments:
           type: integer
           format: int32
           example: 7
+        allowAttributeOverrides:
+          $ref: '#/components/schemas/AllowAttributeOverrides'
         outstandingLoanBalance:
           type: number
           format: double
@@ -32480,12 +32534,41 @@ components:
         useBorrowerCycle:
           type: boolean
           example: true
+    GetLoanProductsDaysInYearType:
+      type: object
+      properties:
+        code:
+          type: string
+          example: DaysInYearType.actual
+        value:
+          type: string
+          example: Actual
+        id:
+          type: integer
+          format: int64
+          example: 1
+    GetLoanProductsDaysInMonthType:
+      type: object
+      properties:
+        code:
+          type: string
+          example: DaysInYearType.actual
+        value:
+          type: string
+          example: Actual
+        id:
+          type: integer
+          format: int64
+          example: 1
     GetLoanProductsRepaymentFrequencyType:
       type: object
       properties:
         code:
           type: string
           example: repaymentFrequency.periodFrequencyType.days
+        value:
+          type: string
+          example: Days
         description:
           type: string
           example: Days
@@ -34770,6 +34853,9 @@ components:
         code:
           type: string
           example: interestCalculationPeriodType.same.as.repayment.period
+        value:
+          type: string
+          example: Same as repayment period
         description:
           type: string
           example: Same as repayment period
@@ -35489,12 +35575,26 @@ components:
     GetProductsCharges:
       type: object
       properties:
+        freeWithdrawal:
+          type: boolean
+          example: true
+        isPaymentType:
+          type: boolean
+          example: true
         active:
           type: boolean
           example: true
+        minCap:
+          type: number
+          format: double
+          example: 1.75
+        maxCap:
+          type: number
+          format: double
+          example: 1.75
         amount:
-          type: integer
-          format: int32
+          type: number
+          format: double
           example: 1
         chargeAppliesTo:
           $ref: '#/components/schemas/GetChargeAppliesTo'
@@ -35510,6 +35610,18 @@ components:
           type: integer
           format: int32
           example: 20
+        freeWithdrawalChargeFrequency:
+          type: integer
+          format: int32
+          example: 0
+        restartFrequency:
+          type: integer
+          format: int32
+          example: 0
+        restartFrequencyEnum:
+          type: integer
+          format: int32
+          example: 0
         name:
           type: string
           example: Share Account Activation Flat
@@ -45883,6 +45995,14 @@ components:
         penalty:
           type: boolean
           example: false
+        minCap:
+          type: number
+          format: double
+          example: 1000.00
+        maxCap:
+          type: number
+          format: double
+          example: 3000.00
     PostChargesResponse:
       type: object
       description: PostChargesResponse

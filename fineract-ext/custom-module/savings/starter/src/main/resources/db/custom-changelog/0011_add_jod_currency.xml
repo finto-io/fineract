@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="finto" id="11">
+        <delete tableName="m_organisation_currency">
+            <where>code='JOD'</where>
+        </delete>
+        <insert tableName="m_organisation_currency">
+            <column name="code" value="JOD"/>
+            <column name="decimal_places" valueNumeric="3"/>
+            <column name="name" value="Jordanian Dinar"/>
+            <column name="internationalized_name_code" value="currency.JOD"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
