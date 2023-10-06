@@ -1,6 +1,7 @@
 package io.finto.fineract.sdk;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public class Constants {
     public static final String USER = "mifos";
@@ -19,4 +20,24 @@ public class Constants {
     public static final String RESIDENCE_ADDRESS_CODE_NAME = "Residence Address";
     public static final String WORK_ADDRESS_CODE_NAME = "Work Address";
     public static final String CUSTOMER_REQUEST_CODE_NAME = "Customer Request";
+    public static final Long FUND_SOURCE_ID = 2L;
+    public static final Long LOAN_PORTFOLIO_ID = 6L;
+    public static final Long FEES_RECEIVABLE_ID = 7L;
+    public static final Long INTEREST_RECEIVABLE_ID = 3L;
+    public static final Long PENALTIES_RECEIVABLE_ID = 4L;
+    public static final Long TRANSFER_IN_SUSPENSE_ID = 5L;
+    public static final Long INCOME_FROM_INTEREST_ID = 8L;
+    public static final Long INCOME_FROM_FEES_ID = 10L;
+    public static final Long INCOME_FROM_PENALTIES_ID = 9L;
+    public static final Long LOSSES_WRITTEN_OFF_ID = 11L;
+    public static final Long OVER_PAYMENT_LIABILITY_ID = 12L;
+    public static final String DATE_TIME_FORMAT_WITHOUT_SEC_PATTERN = "dd MMMM yyyy HH:mm";
+    public static final DateTimeFormatter DEFAULT_DATE_TIME_WITHOUT_SEC_FORMATTER = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT_WITHOUT_SEC_PATTERN, new Locale("en"));
+    public static final Integer CHARGE_TIME_TYPE_FEES_ID = 1;
+    public static final Integer CHARGE_TIME_TYPE_LATE_PAYMENT_ID = 9;
+    public static final Integer CHARGE_TIME_TYPE_EARLY_SETTLEMENT_ID = 2;
+    public static final Integer CHARGE_CALCULATION_TYPE_FIXED_ID = 1;
+    public static final Integer CHARGE_CALCULATION_TYPE_PERCENTAGE_ID = 2;
+    public static final Integer INTEREST_TYPE_FIXED_ID = 1;
+    public static final Integer INTEREST_TYPE_REDUCING_ID = 0;
 }
