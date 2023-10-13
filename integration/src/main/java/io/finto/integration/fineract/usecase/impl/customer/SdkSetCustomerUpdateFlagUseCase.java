@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import io.finto.domain.customer.CustomerId;
 import io.finto.domain.customer.CustomerUpdateFlag;
 import io.finto.exceptions.core.FintoApiException;
+import io.finto.exceptions.core.generic.EntityNotFoundException;
+import io.finto.exceptions.core.specific.CustomerNotFoundException;
 import io.finto.integration.fineract.converter.ConverterUtils;
 import io.finto.integration.fineract.converter.FineractCustomerMapper;
 import io.finto.integration.fineract.dto.UpdateFlagRequest;
@@ -54,13 +56,19 @@ public class SdkSetCustomerUpdateFlagUseCase implements SetCustomerUpdateFlagUse
             );
         } catch (JsonProcessingException e) {
             throw new FintoApiException(e);
+        } catch (EntityNotFoundException e) {
+            throw new CustomerNotFoundException(e);
         }
     }
 
     @Override
     public CustomerUpdateFlag getUpdateFlag(CustomerId customerId) {
-        var additionalDetails = ConverterUtils.parseAdditionalFields(objectMapper, context.getResponseBody(context.dataTablesApi()
-                .getDatatableByAppTableId(CUSTOMER_UPDATE_FLAG, customerId.getValue(), null)), UpdateFlagResponse[].class);
-        return customerMapper.toCustomerUpdateFlagEntity(additionalDetails);
+        try {
+            var additionalDetails = ConverterUtils.parseAdditionalFields(objectMapper, context.getResponseBody(context.dataTablesApi()
+                    .getDatatableByAppTableId(CUSTOMER_UPDATE_FLAG, customerId.getValue(), null)), UpdateFlagResponse[].class);
+            return customerMapper.toCustomerUpdateFlagEntity(additionalDetails);
+        } catch (EntityNotFoundException e) {
+            throw new CustomerNotFoundException(e);
+        }
     }
 }
