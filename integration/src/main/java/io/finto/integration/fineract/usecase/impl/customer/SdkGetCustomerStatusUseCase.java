@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import io.finto.domain.customer.CustomerId;
 import io.finto.domain.customer.CustomerStatus;
+import io.finto.exceptions.core.generic.EntityNotFoundException;
+import io.finto.exceptions.core.specific.CustomerNotFoundException;
 import io.finto.integration.fineract.converter.FineractCustomerMapper;
 import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
 import io.finto.usecase.customer.GetCustomerStatusUseCase;
@@ -34,9 +36,13 @@ public class SdkGetCustomerStatusUseCase implements GetCustomerStatusUseCase {
 
     @Override
     public CustomerStatus getCustomerStatus(CustomerId customerId) {
-        var client = context.getResponseBody(context.clientApi()
-                .retrieveOneClient(customerId.getValue(), false, "status"));
-        return customerMapper.toCustomerStatus(client.getStatus());
+        try {
+            var client = context.getResponseBody(context.clientApi()
+                    .retrieveOneClient(customerId.getValue(), false, "status"));
+            return customerMapper.toCustomerStatus(client.getStatus());
+        } catch (EntityNotFoundException e) {
+            throw new CustomerNotFoundException(e);
+        }
     }
 
 }
