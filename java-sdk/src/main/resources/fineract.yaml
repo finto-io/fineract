@@ -32453,6 +32453,10 @@ components:
           type: integer
           format: int32
           example: 3
+        graceOnInterestPayment:
+          type: integer
+          format: int32
+          example: 3
         minPrincipal:
           type: number
           format: double
@@ -48355,46 +48359,114 @@ components:
         dueDate:
           type: string
           format: date
+        fromDate:
+          type: string
+          format: date
+        obligationsMetOnDate:
+          type: string
+          format: date
+        complete:
+          type: boolean
+          example: false
         feeChargesDue:
-          type: integer
-          format: int64
+          type: number
           example: 0
+        totalInstallmentAmountForPeriod:
+          type: number
+        principalOriginalDue:
+          type: number
+        principalDue:
+          type: number
+        principalOutstanding:
+          type: number
+        interestOriginalDue:
+          type: number
+        interestDue:
+          type: number
+        interestOutstanding:
+          type: number
+        penaltyChargesDue:
+          type: number
+        feeChargesPaid:
+          type: number
+        feeChargesWaived:
+          type: number
+        feeChargesWrittenOff:
+          type: number
+        interestPaid:
+          type: number
+        interestWaived:
+          type: number
+        interestWrittenOff:
+          type: number
+        penaltyChargesOutstanding:
+          type: number
+        penaltyChargesPaid:
+          type: number
+        penaltyChargesWaived:
+          type: number
+        penaltyChargesWrittenOff:
+          type: number
+        principalPaid:
+          type: number
+        principalWrittenOff:
+          type: number
+        totalPaidInAdvanceForPeriod:
+          type: number
+        totalPaidLateForPeriod:
+          type: number
+        totalWaivedForPeriod:
+          type: number
+        totalWrittenOffForPeriod:
+          type: number
         feeChargesOutstanding:
-          type: integer
-          format: int64
+          type: number
           example: 0
+        daysInPeriod:
+          type: integer
+          format: int32
+          example: 1
         period:
           type: integer
           format: int32
           example: 0
         principalDisbursed:
-          type: integer
-          format: int64
+          type: number
           example: 100000
         principalLoanBalanceOutstanding:
-          type: integer
-          format: int64
+          type: number
           example: 100000
+        totalPaidForPeriod:
+          type: number
+          example: 0
         totalActualCostOfLoanForPeriod:
-          type: integer
-          format: int64
+          type: number
           example: 0
         totalDueForPeriod:
-          type: integer
-          format: int64
+          type: number
           example: 0
         totalOriginalDueForPeriod:
-          type: integer
-          format: int64
+          type: number
           example: 0
         totalOutstandingForPeriod:
-          type: integer
-          format: int64
+          type: number
+          example: 0
+        totalCredits:
+          type: number
           example: 0
         totalOverdue:
+          type: number
+          example: 0
+    PostLoansChargeRequest:
+      type: object
+      description: PostLoansChargeRequest
+      properties:
+        chargeId:
           type: integer
           format: int64
-          example: 0
+          example: 1
+        amount:
+          type: number
     PostLoansRequest:
       type: object
       description: PostLoansRequest
@@ -48421,6 +48493,11 @@ components:
           description: List of PostLoansDisbursementData
           items:
             $ref: '#/components/schemas/PostLoansDisbursementData'
+        charges:
+          type: array
+          description: List of PostLoansChargeRequest
+          items:
+            $ref: '#/components/schemas/PostLoansChargeRequest'
         expectedDisbursementDate:
           type: string
           example: 20 September 2011
@@ -48537,49 +48614,47 @@ components:
           type: integer
           format: int64
           example: 1
+        totalCredits:
+          type: number
+          example: 5.5
+        totalPaidInAdvance:
+          type: number
+          example: 5.5
+        totalPaidLate:
+          type: number
+          example: 5.5
         totalFeeChargesCharged:
-          type: integer
-          format: int64
+          type: number
           example: 0
         totalInterestCharged:
           type: number
-          format: double
           example: 13471.52
         totalOutstanding:
-          type: integer
-          format: int64
+          type: number
           example: 0
         totalPenaltyChargesCharged:
-          type: integer
-          format: int64
+          type: number
           example: 0
         totalPrincipalDisbursed:
-          type: integer
-          format: int64
+          type: number
           example: 100000
         totalPrincipalExpected:
-          type: integer
-          format: int64
+          type: number
           example: 100000
         totalPrincipalPaid:
-          type: integer
-          format: int64
+          type: number
           example: 0
         totalRepayment:
-          type: integer
-          format: int64
+          type: number
           example: 0
         totalRepaymentExpected:
           type: number
-          format: double
           example: 113471.52
         totalWaived:
-          type: integer
-          format: int64
+          type: number
           example: 0
         totalWrittenOff:
-          type: integer
-          format: int64
+          type: number
           example: 0
     PostMakerCheckersResponse:
       type: object

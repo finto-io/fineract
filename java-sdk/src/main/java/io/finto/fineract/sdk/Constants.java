@@ -40,4 +40,7 @@ public class Constants {
     public static final Integer CHARGE_CALCULATION_TYPE_PERCENTAGE_ID = 2;
     public static final Integer INTEREST_TYPE_FIXED_ID = 1;
     public static final Integer INTEREST_TYPE_REDUCING_ID = 0;
+    public static final String CALCULATE_LOAN_SCHEDULE = "calculateLoanSchedule";
+    public static final String SCHEDULE_DATE_FORMAT_PATTERN = "dd MMMM yyyy";
+    public static final DateTimeFormatter SCHEDULE_DATE_FORMATTER = DateTimeFormatter.ofPattern(SCHEDULE_DATE_FORMAT_PATTERN, new Locale("en"));
 }

@@ -1,7 +1,12 @@
 package io.finto.integration.fineract.converter;
 
+import io.finto.domain.bnpl.enums.InstallmentFrequency;
+import io.finto.domain.bnpl.schedule.Period;
+import io.finto.domain.bnpl.schedule.Schedule;
+import io.finto.domain.bnpl.schedule.ScheduleCalculate;
 import io.finto.domain.charge.ChargeCreate;
 import io.finto.domain.id.fineract.ChargeId;
+import io.finto.domain.id.fineract.LoanProductId;
 import io.finto.domain.loanproduct.AccountingMapping;
 import io.finto.domain.loanproduct.AccountingMappings;
 import io.finto.domain.loanproduct.Fee;
@@ -34,6 +39,10 @@ import io.finto.fineract.sdk.models.GetLoanProductsRepaymentFrequencyType;
 import io.finto.fineract.sdk.models.GetLoansProductsInterestCalculationPeriodType;
 import io.finto.fineract.sdk.models.GetProductsCharges;
 import io.finto.fineract.sdk.models.PostLoanProductsRequest;
+import io.finto.fineract.sdk.models.PostLoansChargeRequest;
+import io.finto.fineract.sdk.models.PostLoansRepaymentSchedulePeriods;
+import io.finto.fineract.sdk.models.PostLoansRequest;
+import io.finto.fineract.sdk.models.PostLoansResponse;
 import io.finto.integration.fineract.dto.LoanProductDetailsCreateDto;
 import io.finto.integration.fineract.dto.LoanProductDetailsDto;
 import org.junit.jupiter.api.Test;
@@ -42,11 +51,16 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -257,12 +271,12 @@ class FineractLoanProductMapperTest {
 
     @Test
     void testToDomain_Fee() {
-        assertEquals(generateFee(), mapper.toDomain(generateGetProductsCharges()));
+        assertEquals(generateFee(5L), mapper.toDomain(generateGetProductsCharges(5)));
     }
 
-    private Fee generateFee() {
+    private Fee generateFee(Long id) {
         return Fee.builder()
-                .internalFeeId(5L)
+                .internalFeeId(id)
                 .feeCalcType(FeeCalcType.PERCENTAGE)
                 .feeAmount(BigDecimal.valueOf(3.0))
                 .fromRange(BigDecimal.valueOf(1.0))
@@ -272,7 +286,7 @@ class FineractLoanProductMapperTest {
                 .build();
     }
 
-    private GetProductsCharges generateGetProductsCharges() {
+    private GetProductsCharges generateGetProductsCharges(Integer id) {
         return GetProductsCharges.builder()
                 .active(true)
                 .minCap(1D)
@@ -306,7 +320,7 @@ class FineractLoanProductMapperTest {
                         .displaySymbol("displaySymbol")
                         .nameCode("nameCode")
                         .build())
-                .id(5)
+                .id(id)
                 .name("name1234")
                 .penalty(true)
                 .build();
@@ -326,147 +340,147 @@ class FineractLoanProductMapperTest {
                 mapper.toDomain(generateGetLoanProductsProductIdResponse(), generateLoanProductDetailsDto(dt)));
     }
 
-        private LoanProduct generateLoanProduct(ZonedDateTime dt) {
-            return LoanProduct.builder()
-                    .internalId(1L)
-                    .name("name")
-                    .shortName("shortName")
-                    .active(false)
-                    .currencyCode("code")
-                    .principal(BigDecimal.valueOf(4.0))
-                    .minPrincipal(BigDecimal.valueOf(2.0))
-                    .maxPrincipal(BigDecimal.valueOf(3.0))
-                    .numberOfRepayments(5)
-                    .minNumberOfRepayments(6)
-                    .maxNumberOfRepayments(7)
-                    .repaymentEvery(8)
-                    .repaymentFrequencyType(Type.builder()
-                            .id(9L)
-                            .value("value9")
-                            .build())
-                    .interest(BigDecimal.valueOf(10.0))
-                    .minInterestRatePerPeriod(BigDecimal.valueOf(11.0))
-                    .maxInterestRatePerPeriod(BigDecimal.valueOf(12.0))
-                    .interestRateFrequencyType(Type.builder()
-                            .id(13L)
-                            .value("value13")
-                            .build())
-                    .amortizationType(Type.builder()
-                            .id(14L)
-                            .value("value14")
-                            .build())
-                    .interestType(Type.builder()
-                            .id(15L)
-                            .value("REDUCING")
-                            .build())
-                    .interestCalculationPeriodType(Type.builder()
-                            .id(16L)
-                            .value("value16")
-                            .build())
-                    .transactionProcessingStrategy(TransactionProcessingStrategy.builder()
-                            .code("setTransactionProcessingStrategyCode")
-                            .value("setTransactionProcessingStrategyName")
-                            .build())
-                    .installmentGracePeriod(17)
-                    .daysInMonthType(Type.builder()
-                            .id(18L)
-                            .value("value18")
-                            .build())
-                    .daysInYearType(Type.builder()
-                            .id(19L)
-                            .value("value19")
-                            .build())
-                    .isInterestRecalculationEnabled(true)
-                    .accountingRule(Type.builder()
-                            .id(20L)
-                            .value("value20")
-                            .build())
-                    .accountingMappings(AccountingMappings.builder()
-                            .fundSourceAccount(AccountingMapping.builder()
-                                    .id(21L)
-                                    .name("name21")
-                                    .glCode("glCode21")
-                                    .build())
-                            .loanPortfolioAccount(AccountingMapping.builder()
-                                    .id(27L)
-                                    .name("name27")
-                                    .glCode("glCode27")
-                                    .build())
-                            .transfersInSuspenseAccount(AccountingMapping.builder()
-                                    .id(31L)
-                                    .name("name31")
-                                    .glCode("glCode31")
-                                    .build())
-                            .receivableInterestAccount(AccountingMapping.builder()
-                                    .id(29L)
-                                    .name("name29")
-                                    .glCode("glCode29")
-                                    .build())
-                            .receivableFeeAccount(AccountingMapping.builder()
-                                    .id(33L)
-                                    .name("name33")
-                                    .glCode("glCode33")
-                                    .build())
-                            .receivablePenaltyAccount(AccountingMapping.builder()
-                                    .id(30L)
-                                    .name("name30")
-                                    .glCode("glCode30")
-                                    .build())
-                            .interestOnLoanAccount(AccountingMapping.builder()
-                                    .id(26L)
-                                    .name("name26")
-                                    .glCode("glCode26")
-                                    .build())
-                            .incomeFromFeeAccount(AccountingMapping.builder()
-                                    .id(23L)
-                                    .name("name23")
-                                    .glCode("glCode23")
-                                    .build())
-                            .incomeFromPenaltyAccount(AccountingMapping.builder()
-                                    .id(24L)
-                                    .name("name24")
-                                    .glCode("glCode24")
-                                    .build())
-                            .incomeFromRecoveryAccount(AccountingMapping.builder()
-                                    .id(25L)
-                                    .name("name25")
-                                    .glCode("glCode25")
-                                    .build())
-                            .writeOffAccount(AccountingMapping.builder()
-                                    .id(32L)
-                                    .name("name32")
-                                    .glCode("glCode32")
-                                    .build())
-                            .overpaymentLiabilityAccount(AccountingMapping.builder()
-                                    .id(28L)
-                                    .name("name28")
-                                    .glCode("glCode28")
-                                    .build())
-                            .build())
-                    .allowAttributeOverrides(io.finto.domain.loanproduct.AllowAttributeOverrides.builder()
-                            .amortizationType(true)
-                            .interestType(true)
-                            .transactionProcessingStrategyCode(true)
-                            .interestCalculationPeriodType(true)
-                            .inArrearsTolerance(true)
-                            .repaymentEvery(true)
-                            .graceOnPrincipalAndInterestPayment(true)
-                            .graceOnArrearsAgeing(true)
-                            .build())
-                    .fees(List.of(generateFee()))
-                    .createdAt(dt.format(io.finto.fineract.sdk.Constants.DEFAULT_DATE_FORMATTER))
-                    .createdBy("loadedBy")
-                    .closedAt(dt.format(io.finto.fineract.sdk.Constants.DEFAULT_DATE_FORMATTER))
-                    .closedBy("closedBy")
-                    .updatedAt(dt.format(io.finto.fineract.sdk.Constants.DEFAULT_DATE_FORMATTER))
-                    .updatedBy("modifiedBy")
-                    .partnerId("partnerId")
-                    .partnerName("partnerName")
-                    .externalId("externalId")
-                    .latePaymentBlockUser(true)
-                    .earlySettlementAllowed(true)
-                    .build();
-        }
+    private LoanProduct generateLoanProduct(ZonedDateTime dt) {
+        return LoanProduct.builder()
+                .internalId(1L)
+                .name("name")
+                .shortName("shortName")
+                .active(false)
+                .currencyCode("code")
+                .principal(BigDecimal.valueOf(4.0))
+                .minPrincipal(BigDecimal.valueOf(2.0))
+                .maxPrincipal(BigDecimal.valueOf(3.0))
+                .numberOfRepayments(5)
+                .minNumberOfRepayments(6)
+                .maxNumberOfRepayments(7)
+                .repaymentEvery(8)
+                .repaymentFrequencyType(Type.builder()
+                        .id(9L)
+                        .value("value9")
+                        .build())
+                .interest(BigDecimal.valueOf(10.0))
+                .minInterestRatePerPeriod(BigDecimal.valueOf(11.0))
+                .maxInterestRatePerPeriod(BigDecimal.valueOf(12.0))
+                .interestRateFrequencyType(Type.builder()
+                        .id(13L)
+                        .value("value13")
+                        .build())
+                .amortizationType(Type.builder()
+                        .id(14L)
+                        .value("value14")
+                        .build())
+                .interestType(Type.builder()
+                        .id(15L)
+                        .value("REDUCING")
+                        .build())
+                .interestCalculationPeriodType(Type.builder()
+                        .id(16L)
+                        .value("value16")
+                        .build())
+                .transactionProcessingStrategy(TransactionProcessingStrategy.builder()
+                        .code("setTransactionProcessingStrategyCode")
+                        .value("setTransactionProcessingStrategyName")
+                        .build())
+                .installmentGracePeriod(11)
+                .daysInMonthType(Type.builder()
+                        .id(18L)
+                        .value("value18")
+                        .build())
+                .daysInYearType(Type.builder()
+                        .id(19L)
+                        .value("value19")
+                        .build())
+                .isInterestRecalculationEnabled(true)
+                .accountingRule(Type.builder()
+                        .id(20L)
+                        .value("value20")
+                        .build())
+                .accountingMappings(AccountingMappings.builder()
+                        .fundSourceAccount(AccountingMapping.builder()
+                                .id(21L)
+                                .name("name21")
+                                .glCode("glCode21")
+                                .build())
+                        .loanPortfolioAccount(AccountingMapping.builder()
+                                .id(27L)
+                                .name("name27")
+                                .glCode("glCode27")
+                                .build())
+                        .transfersInSuspenseAccount(AccountingMapping.builder()
+                                .id(31L)
+                                .name("name31")
+                                .glCode("glCode31")
+                                .build())
+                        .receivableInterestAccount(AccountingMapping.builder()
+                                .id(29L)
+                                .name("name29")
+                                .glCode("glCode29")
+                                .build())
+                        .receivableFeeAccount(AccountingMapping.builder()
+                                .id(33L)
+                                .name("name33")
+                                .glCode("glCode33")
+                                .build())
+                        .receivablePenaltyAccount(AccountingMapping.builder()
+                                .id(30L)
+                                .name("name30")
+                                .glCode("glCode30")
+                                .build())
+                        .interestOnLoanAccount(AccountingMapping.builder()
+                                .id(26L)
+                                .name("name26")
+                                .glCode("glCode26")
+                                .build())
+                        .incomeFromFeeAccount(AccountingMapping.builder()
+                                .id(23L)
+                                .name("name23")
+                                .glCode("glCode23")
+                                .build())
+                        .incomeFromPenaltyAccount(AccountingMapping.builder()
+                                .id(24L)
+                                .name("name24")
+                                .glCode("glCode24")
+                                .build())
+                        .incomeFromRecoveryAccount(AccountingMapping.builder()
+                                .id(25L)
+                                .name("name25")
+                                .glCode("glCode25")
+                                .build())
+                        .writeOffAccount(AccountingMapping.builder()
+                                .id(32L)
+                                .name("name32")
+                                .glCode("glCode32")
+                                .build())
+                        .overpaymentLiabilityAccount(AccountingMapping.builder()
+                                .id(28L)
+                                .name("name28")
+                                .glCode("glCode28")
+                                .build())
+                        .build())
+                .allowAttributeOverrides(io.finto.domain.loanproduct.AllowAttributeOverrides.builder()
+                        .amortizationType(true)
+                        .interestType(true)
+                        .transactionProcessingStrategyCode(true)
+                        .interestCalculationPeriodType(true)
+                        .inArrearsTolerance(true)
+                        .repaymentEvery(true)
+                        .graceOnPrincipalAndInterestPayment(true)
+                        .graceOnArrearsAgeing(true)
+                        .build())
+                .fees(List.of(generateFee(5L), generateFee(1L)))
+                .createdAt(dt.format(io.finto.fineract.sdk.Constants.DEFAULT_DATE_FORMATTER))
+                .createdBy("loadedBy")
+                .closedAt(dt.format(io.finto.fineract.sdk.Constants.DEFAULT_DATE_FORMATTER))
+                .closedBy("closedBy")
+                .updatedAt(dt.format(io.finto.fineract.sdk.Constants.DEFAULT_DATE_FORMATTER))
+                .updatedBy("modifiedBy")
+                .partnerId("partnerId")
+                .partnerName("partnerName")
+                .externalId("externalId")
+                .latePaymentBlockUser(true)
+                .earlySettlementAllowed(true)
+                .build();
+    }
 
     private LoanProductDetailsDto generateLoanProductDetailsDto(ZonedDateTime dateTime) {
         return LoanProductDetailsDto.builder()
@@ -489,8 +503,7 @@ class FineractLoanProductMapperTest {
 
     private GetLoanProductsProductIdResponse generateGetLoanProductsProductIdResponse() {
         var result = new GetLoanProductsProductIdResponse();
-        var a = new GetProductsCharges();
-        result.setCharges(List.of(generateGetProductsCharges()));
+        result.setCharges(List.of(generateGetProductsCharges(5), generateGetProductsCharges(1)));
         result.setId(1L);
         result.setName("name");
         result.setShortName("shortName");
@@ -634,6 +647,453 @@ class FineractLoanProductMapperTest {
                 .repaymentEvery(true)
                 .transactionProcessingStrategyCode(true)
                 .build());
+        result.setGraceOnPrincipalPayment(11);
+        result.setGraceOnInterestPayment(22);
         return result;
+    }
+
+    @Test
+    void testFromLocalDate() {
+        var localDate = LocalDate.now();
+        assertEquals(localDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy", new Locale("en"))), mapper.fromLocalDate(localDate));
+        assertNull(mapper.fromLocalDate(null));
+    }
+
+    @Test
+    void testLoanScheduleCalculationFineractRequest() {
+        var localDate = LocalDate.now();
+        assertEquals(generatePostLoansRequest(localDate),
+                mapper.loanScheduleCalculationFineractRequest(LoanProductId.of(321L),
+                        generateScheduleCalculate(localDate),
+                        generateGetLoanProductsProductIdResponse()));
+        assertNull(mapper.fromLocalDate(null));
+    }
+
+    private PostLoansRequest generatePostLoansRequest(LocalDate localDate) {
+        return PostLoansRequest.builder()
+                .dateFormat("dd MMMM yyyy")
+                .locale("en")
+                .clientId(111L)
+                .productId(321)
+                .submittedOnDate(localDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy", new Locale("en"))))
+                .expectedDisbursementDate(localDate.format(DateTimeFormatter.ofPattern("dd MMMM yyyy", new Locale("en"))))
+                .principal(BigDecimal.valueOf(444))
+                .loanType("individual")
+                .loanTermFrequency(21)
+                .loanTermFrequencyType(9)
+                .numberOfRepayments(21)
+                .repaymentEvery(8)
+                .repaymentFrequencyType(9)
+                .interestRatePerPeriod(10)
+                .amortizationType(14)
+                .interestType(15)
+                .interestCalculationPeriodType(16)
+                .transactionProcessingStrategyCode("setTransactionProcessingStrategyCode")
+                .graceOnPrincipalPayment(11)
+                .graceOnInterestPayment(22)
+                .charges(List.of(PostLoansChargeRequest.builder()
+                        .chargeId(1L)
+                        .amount(BigDecimal.valueOf(3.0))
+                        .build()))
+                .build();
+    }
+
+    private ScheduleCalculate generateScheduleCalculate(LocalDate localDate) {
+        return ScheduleCalculate.builder()
+                .internalCustomerId(111L)
+                .requestDate(localDate)
+                .expectedDisbursementDate(localDate)
+                .amount(BigDecimal.valueOf(444))
+                .numberOfInstallments(21)
+                .digitsAfterDecimal(3)
+                .build();
+    }
+
+    @Test
+    void testCalculateApr() {
+        assertEquals(new BigDecimal("18250.000"),
+                mapper.calculateApr(BigDecimal.valueOf(3),
+                        BigDecimal.valueOf(4),
+                        BigDecimal.valueOf(5),
+                        BigDecimal.valueOf(6),
+                        4, 3));
+        assertEquals(new BigDecimal("11.864"),
+                mapper.calculateApr(new BigDecimal("10.0"),
+                        new BigDecimal("0.0"),
+                        new BigDecimal("0.921"),
+                        new BigDecimal("100.0"),
+                        336, 3));
+    }
+
+    @Test
+    void testToNumberOfInstallments() {
+        var localDate = LocalDate.now();
+        assertEquals(3, mapper.toNumberOfInstallments(generatePostLoansRepaymentSchedulePeriodsSet(localDate)));
+        assertNull(mapper.toNumberOfInstallments(null));
+    }
+
+    private Set<PostLoansRepaymentSchedulePeriods> generatePostLoansRepaymentSchedulePeriodsSet(LocalDate localDate) {
+        var localDate1 = localDate.minus(1, ChronoUnit.DAYS);
+        var localDate2 = localDate.plus(1, ChronoUnit.DAYS);
+        var item1 = PostLoansRepaymentSchedulePeriods.builder()
+                .dueDate(localDate1)
+                .fromDate(localDate1)
+                .obligationsMetOnDate(localDate1)
+                .complete(true)
+                .feeChargesDue(BigDecimal.valueOf(101))
+                .totalInstallmentAmountForPeriod(BigDecimal.valueOf(102))
+                .principalOriginalDue(BigDecimal.valueOf(103))
+                .principalDue(BigDecimal.valueOf(104))
+                .principalOutstanding(BigDecimal.valueOf(105))
+                .interestOriginalDue(BigDecimal.valueOf(106))
+                .interestDue(BigDecimal.valueOf(107))
+                .interestOutstanding(BigDecimal.valueOf(108))
+                .penaltyChargesDue(BigDecimal.valueOf(109))
+                .feeChargesPaid(BigDecimal.valueOf(110))
+                .feeChargesWaived(BigDecimal.valueOf(111))
+                .feeChargesWrittenOff(BigDecimal.valueOf(112))
+                .interestPaid(BigDecimal.valueOf(113))
+                .interestWaived(BigDecimal.valueOf(114))
+                .interestWrittenOff(BigDecimal.valueOf(115))
+                .penaltyChargesOutstanding(BigDecimal.valueOf(116))
+                .penaltyChargesPaid(BigDecimal.valueOf(117))
+                .penaltyChargesWaived(BigDecimal.valueOf(118))
+                .penaltyChargesWrittenOff(BigDecimal.valueOf(119))
+                .principalPaid(BigDecimal.valueOf(120))
+                .principalWrittenOff(BigDecimal.valueOf(121))
+                .totalPaidInAdvanceForPeriod(BigDecimal.valueOf(122))
+                .totalPaidLateForPeriod(BigDecimal.valueOf(123))
+                .totalWaivedForPeriod(BigDecimal.valueOf(124))
+                .totalWrittenOffForPeriod(BigDecimal.valueOf(125))
+                .feeChargesOutstanding(BigDecimal.valueOf(126))
+                .daysInPeriod(127)
+                .period(1)
+                .principalDisbursed(BigDecimal.valueOf(129))
+                .principalLoanBalanceOutstanding(BigDecimal.valueOf(130))
+                .totalPaidForPeriod(BigDecimal.valueOf(131))
+                .totalActualCostOfLoanForPeriod(BigDecimal.valueOf(132))
+                .totalDueForPeriod(BigDecimal.valueOf(133))
+                .totalOriginalDueForPeriod(BigDecimal.valueOf(134))
+                .totalOutstandingForPeriod(BigDecimal.valueOf(135))
+                .totalCredits(BigDecimal.valueOf(136))
+                .totalOverdue(BigDecimal.valueOf(137))
+                .build();
+        var item2 = PostLoansRepaymentSchedulePeriods.builder()
+                .dueDate(localDate2)
+                .fromDate(localDate2)
+                .obligationsMetOnDate(localDate2)
+                .complete(true)
+                .feeChargesDue(BigDecimal.valueOf(201))
+                .totalInstallmentAmountForPeriod(BigDecimal.valueOf(202))
+                .principalOriginalDue(BigDecimal.valueOf(203))
+                .principalDue(BigDecimal.valueOf(204))
+                .principalOutstanding(BigDecimal.valueOf(205))
+                .interestOriginalDue(BigDecimal.valueOf(206))
+                .interestDue(BigDecimal.valueOf(207))
+                .interestOutstanding(BigDecimal.valueOf(208))
+                .penaltyChargesDue(BigDecimal.valueOf(209))
+                .feeChargesPaid(BigDecimal.valueOf(210))
+                .feeChargesWaived(BigDecimal.valueOf(211))
+                .feeChargesWrittenOff(BigDecimal.valueOf(212))
+                .interestPaid(BigDecimal.valueOf(213))
+                .interestWaived(BigDecimal.valueOf(214))
+                .interestWrittenOff(BigDecimal.valueOf(215))
+                .penaltyChargesOutstanding(BigDecimal.valueOf(216))
+                .penaltyChargesPaid(BigDecimal.valueOf(217))
+                .penaltyChargesWaived(BigDecimal.valueOf(218))
+                .penaltyChargesWrittenOff(BigDecimal.valueOf(219))
+                .principalPaid(BigDecimal.valueOf(220))
+                .principalWrittenOff(BigDecimal.valueOf(221))
+                .totalPaidInAdvanceForPeriod(BigDecimal.valueOf(222))
+                .totalPaidLateForPeriod(BigDecimal.valueOf(223))
+                .totalWaivedForPeriod(BigDecimal.valueOf(224))
+                .totalWrittenOffForPeriod(BigDecimal.valueOf(225))
+                .feeChargesOutstanding(BigDecimal.valueOf(226))
+                .daysInPeriod(227)
+                .period(2)
+                .principalDisbursed(BigDecimal.valueOf(229))
+                .principalLoanBalanceOutstanding(BigDecimal.valueOf(230))
+                .totalPaidForPeriod(BigDecimal.valueOf(231))
+                .totalActualCostOfLoanForPeriod(BigDecimal.valueOf(232))
+                .totalDueForPeriod(BigDecimal.valueOf(233))
+                .totalOriginalDueForPeriod(BigDecimal.valueOf(234))
+                .totalOutstandingForPeriod(BigDecimal.valueOf(235))
+                .totalCredits(BigDecimal.valueOf(236))
+                .totalOverdue(BigDecimal.valueOf(237))
+                .build();
+        var item3 = PostLoansRepaymentSchedulePeriods.builder()
+                .dueDate(localDate)
+                .fromDate(localDate)
+                .obligationsMetOnDate(localDate)
+                .complete(true)
+                .feeChargesDue(BigDecimal.valueOf(301))
+                .totalInstallmentAmountForPeriod(BigDecimal.valueOf(302))
+                .principalOriginalDue(BigDecimal.valueOf(303))
+                .principalDue(BigDecimal.valueOf(304))
+                .principalOutstanding(BigDecimal.valueOf(305))
+                .interestOriginalDue(BigDecimal.valueOf(306))
+                .interestDue(BigDecimal.valueOf(307))
+                .interestOutstanding(BigDecimal.valueOf(308))
+                .penaltyChargesDue(BigDecimal.valueOf(309))
+                .feeChargesPaid(BigDecimal.valueOf(310))
+                .feeChargesWaived(BigDecimal.valueOf(311))
+                .feeChargesWrittenOff(BigDecimal.valueOf(312))
+                .interestPaid(BigDecimal.valueOf(313))
+                .interestWaived(BigDecimal.valueOf(314))
+                .interestWrittenOff(BigDecimal.valueOf(315))
+                .penaltyChargesOutstanding(BigDecimal.valueOf(316))
+                .penaltyChargesPaid(BigDecimal.valueOf(317))
+                .penaltyChargesWaived(BigDecimal.valueOf(318))
+                .penaltyChargesWrittenOff(BigDecimal.valueOf(319))
+                .principalPaid(BigDecimal.valueOf(320))
+                .principalWrittenOff(BigDecimal.valueOf(321))
+                .totalPaidInAdvanceForPeriod(BigDecimal.valueOf(322))
+                .totalPaidLateForPeriod(BigDecimal.valueOf(323))
+                .totalWaivedForPeriod(BigDecimal.valueOf(324))
+                .totalWrittenOffForPeriod(BigDecimal.valueOf(325))
+                .feeChargesOutstanding(BigDecimal.valueOf(326))
+                .daysInPeriod(327)
+                .period(3)
+                .principalDisbursed(BigDecimal.valueOf(329))
+                .principalLoanBalanceOutstanding(BigDecimal.valueOf(330))
+                .totalPaidForPeriod(BigDecimal.valueOf(331))
+                .totalActualCostOfLoanForPeriod(BigDecimal.valueOf(332))
+                .totalDueForPeriod(BigDecimal.valueOf(333))
+                .totalOriginalDueForPeriod(BigDecimal.valueOf(334))
+                .totalOutstandingForPeriod(BigDecimal.valueOf(335))
+                .totalCredits(BigDecimal.valueOf(336))
+                .totalOverdue(BigDecimal.valueOf(337))
+                .build();
+        return Set.of(item1, item2, item3);
+    }
+
+    @Test
+    void testToInstallmentFrequency() {
+        assertEquals(InstallmentFrequency.DAILY, mapper.toInstallmentFrequency(0));
+        assertEquals(InstallmentFrequency.WEEKLY, mapper.toInstallmentFrequency(1));
+        assertEquals(InstallmentFrequency.MONTHLY, mapper.toInstallmentFrequency(2));
+        assertEquals(InstallmentFrequency.UNKNOWN, mapper.toInstallmentFrequency(3));
+    }
+
+    @Test
+    void testToInstallmentStartDate() {
+        var localDate = LocalDate.now();
+        assertEquals(localDate.minus(1, ChronoUnit.DAYS),
+                mapper.toInstallmentStartDate(generatePostLoansRepaymentSchedulePeriodsSet(localDate)));
+        assertNull(mapper.toInstallmentStartDate(null));
+    }
+
+    @Test
+    void testToInstallmentEndDate() {
+        var localDate = LocalDate.now();
+        assertEquals(localDate.plus(1, ChronoUnit.DAYS),
+                mapper.toInstallmentEndDate(generatePostLoansRepaymentSchedulePeriodsSet(localDate)));
+        assertNull(mapper.toInstallmentEndDate(null));
+    }
+
+    @Test
+    void testToFirstInstallmentAmount() {
+        var localDate = LocalDate.now();
+        assertEquals(BigDecimal.valueOf(102),
+                mapper.toFirstInstallmentAmount(generatePostLoansRepaymentSchedulePeriodsSet(localDate)));
+        assertNull(mapper.toFirstInstallmentAmount(null));
+    }
+
+    @Test
+    void testToSubSeqInstallmentAmount() {
+        var localDate = LocalDate.now();
+        assertEquals(BigDecimal.valueOf(202),
+                mapper.toSubSeqInstallmentAmount(generatePostLoansRepaymentSchedulePeriodsSet(localDate)));
+        assertNull(mapper.toSubSeqInstallmentAmount(null));
+    }
+
+    private PostLoansRepaymentSchedulePeriods generatePostLoansRepaymentSchedulePeriods(LocalDate localDate) {
+        return PostLoansRepaymentSchedulePeriods.builder()
+                .dueDate(localDate)
+                .fromDate(localDate)
+                .obligationsMetOnDate(localDate)
+                .complete(true)
+                .feeChargesDue(BigDecimal.valueOf(301))
+                .totalInstallmentAmountForPeriod(BigDecimal.valueOf(302))
+                .principalOriginalDue(BigDecimal.valueOf(303))
+                .principalDue(BigDecimal.valueOf(304))
+                .principalOutstanding(BigDecimal.valueOf(305))
+                .interestOriginalDue(BigDecimal.valueOf(306))
+                .interestDue(BigDecimal.valueOf(307))
+                .interestOutstanding(BigDecimal.valueOf(308))
+                .penaltyChargesDue(BigDecimal.valueOf(309))
+                .feeChargesPaid(BigDecimal.valueOf(310))
+                .feeChargesWaived(BigDecimal.valueOf(311))
+                .feeChargesWrittenOff(BigDecimal.valueOf(312))
+                .interestPaid(BigDecimal.valueOf(313))
+                .interestWaived(BigDecimal.valueOf(314))
+                .interestWrittenOff(BigDecimal.valueOf(315))
+                .penaltyChargesOutstanding(BigDecimal.valueOf(316))
+                .penaltyChargesPaid(BigDecimal.valueOf(317))
+                .penaltyChargesWaived(BigDecimal.valueOf(318))
+                .penaltyChargesWrittenOff(BigDecimal.valueOf(319))
+                .principalPaid(BigDecimal.valueOf(320))
+                .principalWrittenOff(BigDecimal.valueOf(321))
+                .totalPaidInAdvanceForPeriod(BigDecimal.valueOf(322))
+                .totalPaidLateForPeriod(BigDecimal.valueOf(323))
+                .totalWaivedForPeriod(BigDecimal.valueOf(324))
+                .totalWrittenOffForPeriod(BigDecimal.valueOf(325))
+                .feeChargesOutstanding(BigDecimal.valueOf(326))
+                .daysInPeriod(327)
+                .period(1)
+                .principalDisbursed(BigDecimal.valueOf(329))
+                .principalLoanBalanceOutstanding(BigDecimal.valueOf(330))
+                .totalPaidForPeriod(BigDecimal.valueOf(331))
+                .totalActualCostOfLoanForPeriod(BigDecimal.valueOf(332))
+                .totalDueForPeriod(BigDecimal.valueOf(333))
+                .totalOriginalDueForPeriod(BigDecimal.valueOf(334))
+                .totalOutstandingForPeriod(BigDecimal.valueOf(335))
+                .totalCredits(BigDecimal.valueOf(336))
+                .totalOverdue(BigDecimal.valueOf(337))
+                .build();
+    }
+
+    @Test
+    void testToPeriod() {
+        var localDate = LocalDate.now();
+        assertEquals(generatePeriod(localDate),
+                mapper.toPeriod(generatePostLoansRepaymentSchedulePeriods(localDate)));
+    }
+
+    private Period generatePeriod(LocalDate localDate) {
+        return Period.builder()
+                .dueDate(localDate)
+                .fromDate(localDate)
+                .obligationsMetOnDate(localDate)
+                .isComplete(true)
+                .feeChargesDue(BigDecimal.valueOf(301))
+                .totalInstallmentAmountForPeriod(BigDecimal.valueOf(302))
+                .principalOriginalDue(BigDecimal.valueOf(303))
+                .principalDue(BigDecimal.valueOf(304))
+                .principalOutstanding(BigDecimal.valueOf(305))
+                .interestOriginalDue(BigDecimal.valueOf(306))
+                .interestDue(BigDecimal.valueOf(307))
+                .interestOutstanding(BigDecimal.valueOf(308))
+                .penaltyChargesDue(BigDecimal.valueOf(309))
+                .feeChargesPaid(BigDecimal.valueOf(310))
+                .feeChargesWaived(BigDecimal.valueOf(311))
+                .feeChargesWrittenOff(BigDecimal.valueOf(312))
+                .interestPaid(BigDecimal.valueOf(313))
+                .interestWaived(BigDecimal.valueOf(314))
+                .interestWrittenOff(BigDecimal.valueOf(315))
+                .penaltyChargesOutstanding(BigDecimal.valueOf(316))
+                .penaltyChargesPaid(BigDecimal.valueOf(317))
+                .penaltyChargesWaived(BigDecimal.valueOf(318))
+                .penaltyChargesWrittenOff(BigDecimal.valueOf(319))
+                .principalPaid(BigDecimal.valueOf(320))
+                .principalWrittenOff(BigDecimal.valueOf(321))
+                .totalPaidInAdvanceForPeriod(BigDecimal.valueOf(322))
+                .totalPaidLateForPeriod(BigDecimal.valueOf(323))
+                .totalWaivedForPeriod(BigDecimal.valueOf(324))
+                .totalWrittenOffForPeriod(BigDecimal.valueOf(325))
+                .feeChargesOutstanding(BigDecimal.valueOf(326))
+                .daysInPeriod(327)
+                .period(1)
+                .principalDisbursed(BigDecimal.valueOf(329))
+                .principalLoanBalanceOutstanding(BigDecimal.valueOf(330))
+                .totalPaidForPeriod(BigDecimal.valueOf(331))
+                .totalActualCostOfLoanForPeriod(BigDecimal.valueOf(332))
+                .totalDueForPeriod(BigDecimal.valueOf(333))
+                .totalOriginalDueForPeriod(BigDecimal.valueOf(334))
+                .totalOutstandingForPeriod(BigDecimal.valueOf(335))
+                .totalCredits(BigDecimal.valueOf(336))
+                .totalOverdue(BigDecimal.valueOf(337))
+                .build();
+    }
+
+    @Test
+    void testToSchedule() {
+        var localDate = LocalDate.now();
+        assertEquals(generateSchedule(localDate),
+                mapper.toSchedule(generatePostLoansRequest(localDate), generatePostLoansResponse(localDate), 3));
+    }
+
+    private Schedule generateSchedule(LocalDate localDate) {
+        return Schedule.builder()
+                .internalCustomerId(111L)
+                .internalProductId(321L)
+                .amount(BigDecimal.valueOf(444))
+                .numberOfInstallments(1)
+                .loanTermInDays(3)
+                .interestRate(BigDecimal.valueOf(10))
+                .apr(new BigDecimal("29012.821"))
+                .installmentFrequency(InstallmentFrequency.UNKNOWN)
+                .installmentStartDate(localDate)
+                .installmentEndDate(localDate)
+                .firstInstallmentAmount(BigDecimal.valueOf(302))
+                .subSeqInstallmentAmount(null)
+                .totalPrincipalDisbursed(BigDecimal.valueOf(13))
+                .totalPrincipalExpected(BigDecimal.valueOf(14))
+                .totalPrincipalPaid(BigDecimal.valueOf(15))
+                .totalInterestCharged(BigDecimal.valueOf(10))
+                .totalFeeChargesCharged(BigDecimal.valueOf(9))
+                .totalPenaltyChargesCharged(BigDecimal.valueOf(12))
+                .totalRepaymentExpected(BigDecimal.valueOf(17))
+                .totalOutstanding(BigDecimal.valueOf(11))
+                .totalCredits(BigDecimal.valueOf(6))
+                .totalPaidInAdvance(BigDecimal.valueOf(7))
+                .totalPaidLate(BigDecimal.valueOf(8))
+                .totalRepayment(BigDecimal.valueOf(16))
+                .totalWaived(BigDecimal.valueOf(18))
+                .totalWrittenOff(BigDecimal.valueOf(19))
+                .periods(List.of(generatePeriod(localDate)))
+                .build();
+    }
+
+    private PostLoansResponse generatePostLoansResponse(LocalDate localDate) {
+        return PostLoansResponse.builder()
+                .clientId(1)
+                .currency(null)
+                .loanId(2L)
+                .loanTermInDays(3)
+                .officeId(4)
+                .periods(Set.of(generatePostLoansRepaymentSchedulePeriods(localDate)))
+                .resourceExternalId("resourceExternalId")
+                .resourceId(5L)
+                .totalCredits(BigDecimal.valueOf(6))
+                .totalPaidInAdvance(BigDecimal.valueOf(7))
+                .totalPaidLate(BigDecimal.valueOf(8))
+                .totalFeeChargesCharged(BigDecimal.valueOf(9))
+                .totalInterestCharged(BigDecimal.valueOf(10))
+                .totalOutstanding(BigDecimal.valueOf(11))
+                .totalPenaltyChargesCharged(BigDecimal.valueOf(12))
+                .totalPrincipalDisbursed(BigDecimal.valueOf(13))
+                .totalPrincipalExpected(BigDecimal.valueOf(14))
+                .totalPrincipalPaid(BigDecimal.valueOf(15))
+                .totalRepayment(BigDecimal.valueOf(16))
+                .totalRepaymentExpected(BigDecimal.valueOf(17))
+                .totalWaived(BigDecimal.valueOf(18))
+                .totalWrittenOff(BigDecimal.valueOf(19))
+                .build();
+    }
+
+    @Test
+    void testToPostLoansChargeRequest() {
+        var getProductsCharges = List.of(GetProductsCharges.builder()
+                        .id(1)
+                        .amount(1D)
+                        .build(),
+                GetProductsCharges.builder()
+                        .id(2)
+                        .build(),
+                GetProductsCharges.builder()
+                        .id(3)
+                        .amount(3D)
+                        .build());
+        var expected = List.of(PostLoansChargeRequest.builder()
+                        .chargeId(1L)
+                        .amount(BigDecimal.valueOf(1D))
+                        .build(),
+                PostLoansChargeRequest.builder()
+                        .chargeId(2L)
+                        .amount(BigDecimal.valueOf(0))
+                        .build());
+        assertEquals(expected, mapper.toPostLoansChargeRequest(getProductsCharges));
+        assertNull(mapper.toPostLoansChargeRequest(null));
     }
 }

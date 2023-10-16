@@ -1,7 +1,12 @@
 package io.finto.integration.fineract.converter;
 
+import io.finto.domain.bnpl.enums.InstallmentFrequency;
+import io.finto.domain.bnpl.schedule.Period;
+import io.finto.domain.bnpl.schedule.Schedule;
+import io.finto.domain.bnpl.schedule.ScheduleCalculate;
 import io.finto.domain.charge.ChargeCreate;
 import io.finto.domain.id.fineract.ChargeId;
+import io.finto.domain.id.fineract.LoanProductId;
 import io.finto.domain.loanproduct.Fee;
 import io.finto.domain.loanproduct.FeeCalcType;
 import io.finto.domain.loanproduct.FeeCreate;
@@ -13,6 +18,10 @@ import io.finto.fineract.sdk.models.ChargeData;
 import io.finto.fineract.sdk.models.GetLoanProductsProductIdResponse;
 import io.finto.fineract.sdk.models.GetProductsCharges;
 import io.finto.fineract.sdk.models.PostLoanProductsRequest;
+import io.finto.fineract.sdk.models.PostLoansChargeRequest;
+import io.finto.fineract.sdk.models.PostLoansRepaymentSchedulePeriods;
+import io.finto.fineract.sdk.models.PostLoansRequest;
+import io.finto.fineract.sdk.models.PostLoansResponse;
 import io.finto.integration.fineract.dto.LoanProductDetailsCreateDto;
 import io.finto.integration.fineract.dto.LoanProductDetailsDto;
 import org.mapstruct.Mapper;
@@ -21,10 +30,17 @@ import org.mapstruct.MappingConstants;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static io.finto.fineract.sdk.Constants.*;
@@ -222,4 +238,169 @@ public interface FineractLoanProductMapper {
     @Mapping(target = "latePaymentBlockUser", source = "additionalDetails.latePaymentBlockUser")
     @Mapping(target = "earlySettlementAllowed", source = "additionalDetails.earlySettlementAllowed")
     LoanProduct toDomain(GetLoanProductsProductIdResponse loanProduct, LoanProductDetailsDto additionalDetails);
+
+    @Named("fromLocalDate")
+    default String fromLocalDate(LocalDate value) {
+        if (value == null) {
+            return null;
+        }
+        return value.format(SCHEDULE_DATE_FORMATTER);
+    }
+
+    @Named("toPostLoansChargeRequest")
+    default List<PostLoansChargeRequest> toPostLoansChargeRequest(List<GetProductsCharges> value) {
+        if (value == null) {
+            return null;
+        }
+        return value.stream().filter(item -> item.getId() != null &&
+                        (item.getId() == 1 ||
+                                item.getId() == 2 ||
+                                item.getId() == 8))
+                .map(item -> PostLoansChargeRequest.builder()
+                        .chargeId(Long.valueOf(item.getId()))
+                        .amount(item.getAmount() == null ? BigDecimal.valueOf(0) : BigDecimal.valueOf(item.getAmount()))
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    @Mapping(target = "dateFormat", expression = "java(io.finto.fineract.sdk.Constants.SCHEDULE_DATE_FORMAT_PATTERN)")
+    @Mapping(target = "locale", constant = "en")
+    @Mapping(target = "clientId", source = "request.internalCustomerId")
+    @Mapping(target = "productId", source = "loanProductId.value")
+    @Mapping(target = "submittedOnDate", source = "request.requestDate", qualifiedByName = "fromLocalDate")
+    @Mapping(target = "expectedDisbursementDate", source = "request.expectedDisbursementDate", qualifiedByName = "fromLocalDate")
+    @Mapping(target = "principal", source = "request.amount")
+    @Mapping(target = "loanType", constant = "individual")
+    @Mapping(target = "loanTermFrequency", source = "request.numberOfInstallments")
+    @Mapping(target = "loanTermFrequencyType", source = "loanProduct.repaymentFrequencyType.id")
+    @Mapping(target = "numberOfRepayments", source = "request.numberOfInstallments")
+    @Mapping(target = "repaymentEvery", source = "loanProduct.repaymentEvery")
+    @Mapping(target = "repaymentFrequencyType", source = "loanProduct.repaymentFrequencyType.id")
+    @Mapping(target = "interestRatePerPeriod", source = "loanProduct.interestRatePerPeriod")
+    @Mapping(target = "amortizationType", source = "loanProduct.amortizationType.id")
+    @Mapping(target = "interestType", source = "loanProduct.interestType.id")
+    @Mapping(target = "interestCalculationPeriodType", source = "loanProduct.interestCalculationPeriodType.id")
+    @Mapping(target = "transactionProcessingStrategyCode", source = "loanProduct.transactionProcessingStrategyCode")
+    @Mapping(target = "daysInYearType", expression = "java(null)")
+    @Mapping(target = "fixedPrincipalPercentagePerInstallment", expression = "java(null)")
+    @Mapping(target = "graceOnPrincipalPayment", source = "loanProduct.graceOnPrincipalPayment")
+    @Mapping(target = "graceOnInterestPayment", source = "loanProduct.graceOnInterestPayment")
+    @Mapping(target = "charges", source = "loanProduct.charges", qualifiedByName = "toPostLoansChargeRequest")
+    PostLoansRequest loanScheduleCalculationFineractRequest(LoanProductId loanProductId,
+                                                            ScheduleCalculate request,
+                                                            GetLoanProductsProductIdResponse loanProduct);
+
+    @Named("toNumberOfInstallments")
+    default Integer toNumberOfInstallments(Set<PostLoansRepaymentSchedulePeriods> value) {
+        if (value == null) {
+            return null;
+        }
+        var intArray = value.stream().map(PostLoansRepaymentSchedulePeriods::getPeriod)
+                .filter(Objects::nonNull).collect(Collectors.toList());
+        return intArray.stream().max(Comparator.comparing(Integer::intValue)).orElse(null);
+    }
+
+    default BigDecimal calculateApr(BigDecimal totalFeeChargesCharged,
+                                    BigDecimal totalPenaltyChargesCharged,
+                                    BigDecimal totalInterestCharged,
+                                    BigDecimal totalPrincipalDisbursed,
+                                    Integer loanTermInDays,
+                                    Integer digitsAfterDecimal) {
+        return totalFeeChargesCharged.add(totalPenaltyChargesCharged).add(totalInterestCharged)
+                .multiply(BigDecimal.valueOf(365))
+                .multiply(BigDecimal.valueOf(100))
+                .divide(totalPrincipalDisbursed, digitsAfterDecimal, RoundingMode.HALF_UP)
+                .divide(BigDecimal.valueOf(loanTermInDays), digitsAfterDecimal, RoundingMode.HALF_UP)
+                .setScale(digitsAfterDecimal, RoundingMode.HALF_UP);
+    }
+
+    @Named("toInstallmentFrequency")
+    default InstallmentFrequency toInstallmentFrequency(Integer value) {
+        switch (value) {
+            case 0:
+                return InstallmentFrequency.DAILY;
+            case 1:
+                return InstallmentFrequency.WEEKLY;
+            case 2:
+                return InstallmentFrequency.MONTHLY;
+            default:
+                return InstallmentFrequency.UNKNOWN;
+        }
+    }
+
+    @Named("toInstallmentStartDate")
+    default LocalDate toInstallmentStartDate(Set<PostLoansRepaymentSchedulePeriods> value) {
+        if (value == null) {
+            return null;
+        }
+        return value.stream().map(PostLoansRepaymentSchedulePeriods::getDueDate)
+                .filter(Objects::nonNull)
+                .min(LocalDate::compareTo).orElse(null);
+    }
+
+    @Named("toInstallmentEndDate")
+    default LocalDate toInstallmentEndDate(Set<PostLoansRepaymentSchedulePeriods> value) {
+        if (value == null) {
+            return null;
+        }
+        return value.stream().map(PostLoansRepaymentSchedulePeriods::getDueDate)
+                .filter(Objects::nonNull)
+                .max(LocalDate::compareTo).orElse(null);
+    }
+
+    @Named("toFirstInstallmentAmount")
+    default BigDecimal toFirstInstallmentAmount(Set<PostLoansRepaymentSchedulePeriods> value) {
+        if (value == null) {
+            return null;
+        }
+
+        return value.stream().filter(item -> item.getPeriod() != null && item.getPeriod() == 1).findFirst()
+                .map(PostLoansRepaymentSchedulePeriods::getTotalInstallmentAmountForPeriod).orElse(null);
+    }
+
+    @Named("toSubSeqInstallmentAmount")
+    default BigDecimal toSubSeqInstallmentAmount(Set<PostLoansRepaymentSchedulePeriods> value) {
+        if (value == null || value.size() < 2) {
+            return null;
+        }
+
+        return value.stream().filter(item -> item.getPeriod() != null && item.getPeriod() == 2).findFirst()
+                .map(PostLoansRepaymentSchedulePeriods::getTotalInstallmentAmountForPeriod).orElse(null);
+    }
+
+    @Mapping(target = "isComplete", source = "complete")
+    Period toPeriod(PostLoansRepaymentSchedulePeriods sorce);
+
+    @Mapping(target = "internalCustomerId", source = "request.clientId")
+    @Mapping(target = "internalProductId", source = "request.productId")
+    @Mapping(target = "amount", source = "request.principal")
+    @Mapping(target = "numberOfInstallments", source = "response.periods", qualifiedByName = "toNumberOfInstallments")
+    @Mapping(target = "loanTermInDays", source = "response.loanTermInDays")
+    @Mapping(target = "interestRate", source = "request.interestRatePerPeriod")
+    @Mapping(target = "apr", expression = "java(calculateApr(response.getTotalFeeChargesCharged()," +
+            "response.getTotalPenaltyChargesCharged()," +
+            "response.getTotalInterestCharged()," +
+            "response.getTotalPrincipalDisbursed()," +
+            "response.getLoanTermInDays()," +
+            "digitsAfterDecimal))")
+    @Mapping(target = "installmentFrequency", source = "request.repaymentFrequencyType", qualifiedByName = "toInstallmentFrequency")
+    @Mapping(target = "installmentStartDate", source = "response.periods", qualifiedByName = "toInstallmentStartDate")
+    @Mapping(target = "installmentEndDate", source = "response.periods", qualifiedByName = "toInstallmentEndDate")
+    @Mapping(target = "firstInstallmentAmount", source = "response.periods", qualifiedByName = "toFirstInstallmentAmount")
+    @Mapping(target = "subSeqInstallmentAmount", source = "response.periods", qualifiedByName = "toSubSeqInstallmentAmount")
+    @Mapping(target = "totalPrincipalDisbursed", source = "response.totalPrincipalDisbursed")
+    @Mapping(target = "totalPrincipalExpected", source = "response.totalPrincipalExpected")
+    @Mapping(target = "totalPrincipalPaid", source = "response.totalPrincipalPaid")
+    @Mapping(target = "totalInterestCharged", source = "response.totalInterestCharged")
+    @Mapping(target = "totalFeeChargesCharged", source = "response.totalFeeChargesCharged")
+    @Mapping(target = "totalPenaltyChargesCharged", source = "response.totalPenaltyChargesCharged")
+    @Mapping(target = "totalRepaymentExpected", source = "response.totalRepaymentExpected")
+    @Mapping(target = "totalOutstanding", source = "response.totalOutstanding")
+    @Mapping(target = "totalCredits", source = "response.totalCredits")
+    @Mapping(target = "totalPaidInAdvance", source = "response.totalPaidInAdvance")
+    @Mapping(target = "totalPaidLate", source = "response.totalPaidLate")
+    @Mapping(target = "totalRepayment", source = "response.totalRepayment")
+    @Mapping(target = "totalWaived", source = "response.totalWaived")
+    @Mapping(target = "totalWrittenOff", source = "response.totalWrittenOff")
+    Schedule toSchedule(PostLoansRequest request, PostLoansResponse response, Integer digitsAfterDecimal);
 }
