@@ -40,6 +40,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -98,29 +99,46 @@ public interface FineractLoanProductMapper {
         return value.stream().map(item -> ChargeData.builder().id(item.getValue()).build()).collect(Collectors.toList());
     }
 
-    @Mapping(target = "numberOfRepayments", expression = "java(getNumberOfRepayments(request.getMinimumPeriod(), request.getMaximumPeriod(), request.getNumberOfRepayments()))")
-    @Mapping(target = "minNumberOfRepayments", source = "request.minimumPeriod")
-    @Mapping(target = "maxNumberOfRepayments", source = "request.maximumPeriod")
+    @Named("fromOptional")
+    default <T> T fromOptional(Optional<T> value) {
+        return value.orElse(null);
+    }
+
+    @Mapping(target = "numberOfRepayments", expression = "java(getNumberOfRepayments(request.getMinimumPeriod().orElse(null), request.getMaximumPeriod().orElse(null), request.getNumberOfRepayments().orElse(null)))")
+    @Mapping(target = "minNumberOfRepayments", source = "request.minimumPeriod", qualifiedByName = "fromOptional")
+    @Mapping(target = "currencyCode", source = "request.currencyCode", qualifiedByName = "fromOptional")
+    @Mapping(target = "amortizationType", source = "request.amortizationType", qualifiedByName = "fromOptional")
+    //@Mapping(target = "partnerName", source = "request.partnerName", qualifiedByName = "fromOptional")
+    //@Mapping(target = "externalId", source = "request.externalId", qualifiedByName = "fromOptional")
+    //@Mapping(target = "latePaymentBlockUser", source = "request.latePaymentBlockUser", qualifiedByName = "fromOptional")
+    //@Mapping(target = "earlySettlementAllowed", source = "request.earlySettlementAllowed", qualifiedByName = "fromOptional")
+    @Mapping(target = "accountingRule", source = "request.accountingRule", qualifiedByName = "fromOptional")
+    @Mapping(target = "daysInMonthType", source = "request.daysInMonthType", qualifiedByName = "fromOptional")
+    @Mapping(target = "daysInYearType", source = "request.daysInYearType", qualifiedByName = "fromOptional")
+    @Mapping(target = "digitsAfterDecimal", source = "request.digitsAfterDecimal", qualifiedByName = "fromOptional")
+    @Mapping(target = "interestCalculationPeriodType", source = "request.interestCalculationPeriodType", qualifiedByName = "fromOptional")
+    @Mapping(target = "transactionProcessingStrategyCode", source = "request.transactionProcessingStrategyCode", qualifiedByName = "fromOptional")
+    @Mapping(target = "maxNumberOfRepayments", source = "request.maximumPeriod", qualifiedByName = "fromOptional")
     @Mapping(target = "repaymentEvery", constant = "1")
     @Mapping(target = "repaymentFrequencyType", constant = "2")
     @Mapping(target = "interestRatePerPeriod", source = "request.interest")
     @Mapping(target = "interestRateFrequencyType", constant = "3")
     @Mapping(target = "interestType", source = "request.interestType", qualifiedByName = "toInterestType")
-    @Mapping(target = "graceOnPrincipalPayment", source = "request.installmentGracePeriod")
-    @Mapping(target = "graceOnInterestPayment", source = "request.installmentGracePeriod")
+    @Mapping(target = "graceOnPrincipalPayment", source = "request.installmentGracePeriod", qualifiedByName = "fromOptional")
+    @Mapping(target = "graceOnInterestPayment", source = "request.installmentGracePeriod", qualifiedByName = "fromOptional")
     @Mapping(target = "isInterestRecalculationEnabled", constant = "false")
-    @Mapping(target = "fundSourceAccountId", expression = "java(request.getAccountingRule() == 1 ? null : io.finto.fineract.sdk.Constants.FUND_SOURCE_ID)")
-    @Mapping(target = "loanPortfolioAccountId", expression = "java(request.getAccountingRule() == 1 ? null : io.finto.fineract.sdk.Constants.LOAN_PORTFOLIO_ID)")
-    @Mapping(target = "receivableFeeAccountId", expression = "java(request.getAccountingRule() == 1 ? null : io.finto.fineract.sdk.Constants.FEES_RECEIVABLE_ID)")
-    @Mapping(target = "receivableInterestAccountId", expression = "java(request.getAccountingRule() == 1 ? null : io.finto.fineract.sdk.Constants.INTEREST_RECEIVABLE_ID)")
-    @Mapping(target = "receivablePenaltyAccountId", expression = "java(request.getAccountingRule() == 1 ? null : io.finto.fineract.sdk.Constants.PENALTIES_RECEIVABLE_ID)")
-    @Mapping(target = "transfersInSuspenseAccountId", expression = "java(request.getAccountingRule() == 1 ? null : io.finto.fineract.sdk.Constants.TRANSFER_IN_SUSPENSE_ID)")
-    @Mapping(target = "interestOnLoanAccountId", expression = "java(request.getAccountingRule() == 1 ? null : io.finto.fineract.sdk.Constants.INCOME_FROM_INTEREST_ID)")
-    @Mapping(target = "incomeFromFeeAccountId", expression = "java(request.getAccountingRule() == 1 ? null : io.finto.fineract.sdk.Constants.INCOME_FROM_FEES_ID)")
-    @Mapping(target = "incomeFromPenaltyAccountId", expression = "java(request.getAccountingRule() == 1 ? null : io.finto.fineract.sdk.Constants.INCOME_FROM_PENALTIES_ID)")
-    @Mapping(target = "incomeFromRecoveryAccountId", expression = "java(request.getAccountingRule() == 1 ? null : io.finto.fineract.sdk.Constants.INCOME_FROM_PENALTIES_ID)")
-    @Mapping(target = "writeOffAccountId", expression = "java(request.getAccountingRule() == 1 ? null : io.finto.fineract.sdk.Constants.LOSSES_WRITTEN_OFF_ID)")
-    @Mapping(target = "overpaymentLiabilityAccountId", expression = "java(request.getAccountingRule() == 1 ? null : io.finto.fineract.sdk.Constants.OVER_PAYMENT_LIABILITY_ID)")
+    @Mapping(target = "fundSourceAccountId", expression = "java(request.getAccountingRule().orElse(0) == 1 ? null : io.finto.fineract.sdk.Constants.FUND_SOURCE_ID)")
+    @Mapping(target = "loanPortfolioAccountId", expression = "java(request.getAccountingRule().orElse(0) == 1 ? null : io.finto.fineract.sdk.Constants.LOAN_PORTFOLIO_ID)")
+    @Mapping(target = "receivableFeeAccountId", expression = "java(request.getAccountingRule().orElse(0) == 1 ? null : io.finto.fineract.sdk.Constants.FEES_RECEIVABLE_ID)")
+    @Mapping(target = "receivableInterestAccountId", expression = "java(request.getAccountingRule().orElse(0) == 1 ? null : io.finto.fineract.sdk.Constants.INTEREST_RECEIVABLE_ID)")
+    @Mapping(target = "receivablePenaltyAccountId", expression = "java(request.getAccountingRule().orElse(0) == 1 ? null : io.finto.fineract.sdk.Constants.PENALTIES_RECEIVABLE_ID)")
+    @Mapping(target = "transfersInSuspenseAccountId", expression = "java(request.getAccountingRule().orElse(0) == 1 ? null : io.finto.fineract.sdk.Constants.TRANSFER_IN_SUSPENSE_ID)")
+    @Mapping(target = "interestOnLoanAccountId", expression = "java(request.getAccountingRule().orElse(0) == 1 ? null : io.finto.fineract.sdk.Constants.INCOME_FROM_INTEREST_ID)")
+    @Mapping(target = "incomeFromFeeAccountId", expression = "java(request.getAccountingRule().orElse(0) == 1 ? null : io.finto.fineract.sdk.Constants.INCOME_FROM_FEES_ID)")
+    @Mapping(target = "incomeFromPenaltyAccountId", expression = "java(request.getAccountingRule().orElse(0) == 1 ? null : io.finto.fineract.sdk.Constants.INCOME_FROM_PENALTIES_ID)")
+    @Mapping(target = "incomeFromRecoveryAccountId", expression = "java(request.getAccountingRule().orElse(0) == 1 ? null : io.finto.fineract.sdk.Constants.INCOME_FROM_PENALTIES_ID)")
+    @Mapping(target = "writeOffAccountId", expression = "java(request.getAccountingRule().orElse(0) == 1 ? null : io.finto.fineract.sdk.Constants.LOSSES_WRITTEN_OFF_ID)")
+    @Mapping(target = "overpaymentLiabilityAccountId", expression = "java(request.getAccountingRule().orElse(0) == 1 ? null : io.finto.fineract.sdk.Constants.OVER_PAYMENT_LIABILITY_ID)")
     @Mapping(target = "charges", source = "charges", qualifiedByName = "toCharges")
     @Mapping(target = "locale", constant = "en")
     PostLoanProductsRequest loanProductCreationFineractRequest(LoanProductCreate request, List<ChargeId> charges);
@@ -133,10 +151,10 @@ public interface FineractLoanProductMapper {
     @Mapping(target = "loadedAt", expression = "java(io.finto.fineract.sdk.Constants.DEFAULT_DATE_TIME_WITHOUT_SEC_FORMATTER.format(localDateTime))")
     @Mapping(target = "loadedBy", expression = "java(io.finto.fineract.sdk.Constants.USER)")
     @Mapping(target = "partnerId", source = "request.partnerId")
-    @Mapping(target = "partnerName", source = "request.partnerName")
-    @Mapping(target = "externalId", source = "request.externalId")
-    @Mapping(target = "latePaymentBlockUser", source = "request.latePaymentBlockUser")
-    @Mapping(target = "earlySettlementAllowed", source = "request.earlySettlementAllowed")
+    @Mapping(target = "partnerName", source = "request.partnerName", qualifiedByName = "fromOptional")
+    @Mapping(target = "externalId", source = "request.externalId", qualifiedByName = "fromOptional")
+    @Mapping(target = "latePaymentBlockUser", source = "request.latePaymentBlockUser", qualifiedByName = "fromOptional")
+    @Mapping(target = "earlySettlementAllowed", source = "request.earlySettlementAllowed", qualifiedByName = "fromOptional")
     LoanProductDetailsCreateDto toLoanProductDetailsCreateDto(LoanProductCreate request, LocalDateTime localDateTime);
 
     @Named("toActive")
