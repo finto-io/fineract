@@ -7,6 +7,7 @@ import io.finto.domain.id.fineract.ChargeId;
 import io.finto.domain.id.fineract.LoanProductId;
 import io.finto.domain.loanproduct.FeeCreate;
 import io.finto.domain.loanproduct.LoanProductCreate;
+import io.finto.exceptions.core.generic.BadRequestException;
 import io.finto.fineract.sdk.api.DataTablesApi;
 import io.finto.fineract.sdk.api.LoanProductsApi;
 import io.finto.fineract.sdk.models.PostDataTablesAppTableIdResponse;
@@ -26,6 +27,7 @@ import java.util.function.Function;
 
 import static io.finto.fineract.sdk.CustomDatatableNames.LOAN_PRODUCT_FIELDS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.easymock.EasyMock.*;
 
 class SdkCreateLoanProductUseCaseTest {
@@ -68,9 +70,12 @@ class SdkCreateLoanProductUseCaseTest {
         PostDataTablesAppTableIdResponse postDataTablesAppTableIdResponse = control.createMock(PostDataTablesAppTableIdResponse.class);
 
         expect(request.getFees()).andReturn(List.of(feeCreate));
+        expect(feeCreate.getFeeName()).andReturn("feeName");
         expect(request.getShortName()).andReturn("shortName");
         expect(loanProductMapper.toChargeCreate(feeCreate, "shortName")).andReturn(chargeCreate);
         expect(loanProductMapper.loanProductCreationFineractRequest(request, List.of(chargeId))).andReturn(fineractRequest);
+        expect(fineractRequest.getGraceOnPrincipalPayment()).andReturn(2);
+        expect(fineractRequest.getNumberOfRepayments()).andReturn(3);
         expect(context.loanProductApi()).andReturn(loanProductsApi);
         expect(loanProductsApi.createLoanProduct(fineractRequest)).andReturn(response);
         expect(context.getResponseBody(response)).andReturn(responseBody);
@@ -90,6 +95,49 @@ class SdkCreateLoanProductUseCaseTest {
         control.verify();
 
         assertThat(actual).isEqualTo(LoanProductId.of(10L));
+    }
+
+    /**
+     * Method under test: {@link SdkCreateLoanProductUseCase#createLoanProduct(LoanProductCreate)}
+     */
+    @Test
+    void test_createLoanProduct_invalidFee() {
+        LoanProductCreate request = control.createMock(LoanProductCreate.class);
+        FeeCreate feeCreate1 = control.createMock(FeeCreate.class);
+        FeeCreate feeCreate2 = control.createMock(FeeCreate.class);
+
+        expect(request.getFees()).andReturn(List.of(feeCreate1, feeCreate2));
+        expect(feeCreate1.getFeeName()).andReturn("feeName");
+        expect(feeCreate2.getFeeName()).andReturn("feeName");
+        control.replay();
+
+        assertThatThrownBy(() -> useCase.createLoanProduct(request)).isInstanceOf(BadRequestException.class);
+
+        control.verify();
+    }
+
+    /**
+     * Method under test: {@link SdkCreateLoanProductUseCase#createLoanProduct(LoanProductCreate)}
+     */
+    @Test
+    void test_createLoanProduct_invalidGraceOnPrincipalPayment() {
+        LoanProductCreate request = control.createMock(LoanProductCreate.class);
+        FeeCreate feeCreate = control.createMock(FeeCreate.class);
+        ChargeCreate chargeCreate = control.createMock(ChargeCreate.class);
+        PostLoanProductsRequest fineractRequest = control.createMock(PostLoanProductsRequest.class);
+
+        expect(request.getFees()).andReturn(List.of(feeCreate));
+        expect(feeCreate.getFeeName()).andReturn("feeName");
+        expect(request.getShortName()).andReturn("shortName");
+        expect(loanProductMapper.toChargeCreate(feeCreate, "shortName")).andReturn(chargeCreate);
+        expect(loanProductMapper.loanProductCreationFineractRequest(request, List.of(chargeId))).andReturn(fineractRequest);
+        expect(fineractRequest.getGraceOnPrincipalPayment()).andReturn(3);
+        expect(fineractRequest.getNumberOfRepayments()).andReturn(3);
+        control.replay();
+
+        assertThatThrownBy(() -> useCase.createLoanProduct(request)).isInstanceOf(BadRequestException.class);
+
+        control.verify();
     }
 
 }

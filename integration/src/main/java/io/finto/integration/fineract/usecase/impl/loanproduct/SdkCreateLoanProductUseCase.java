@@ -9,6 +9,7 @@ import io.finto.domain.id.fineract.LoanProductId;
 import io.finto.domain.loanproduct.FeeCreate;
 import io.finto.domain.loanproduct.LoanProductCreate;
 import io.finto.exceptions.core.FintoApiException;
+import io.finto.exceptions.core.generic.BadRequestException;
 import io.finto.fineract.sdk.models.PostLoanProductsRequest;
 import io.finto.integration.fineract.converter.FineractLoanProductMapper;
 import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static io.finto.fineract.sdk.CustomDatatableNames.LOAN_PRODUCT_FIELDS;
 
@@ -53,16 +55,19 @@ public class SdkCreateLoanProductUseCase implements CreateLoanProductUseCase {
         try {
             List<ChargeId> chargeIds = null;
             var fees = request.getFees();
-            if (fees != null) {
-                chargeIds = new ArrayList<>();
-                for (FeeCreate feeCreate : fees) {
-                    chargeIds.add(createCharge.apply(loanProductMapper.toChargeCreate(feeCreate, request.getShortName())));
-                }
+
+            validateFee(fees);
+
+            chargeIds = new ArrayList<>();
+            for (FeeCreate feeCreate : fees) {
+                chargeIds.add(createCharge.apply(loanProductMapper.toChargeCreate(feeCreate, request.getShortName())));
             }
 
             PostLoanProductsRequest fineractRequest = loanProductMapper.loanProductCreationFineractRequest(
                     request, chargeIds
             );
+
+            validateLoanProductsRequest(fineractRequest);
 
             var productId = LoanProductId.of(
                     Objects.requireNonNull(context
@@ -81,6 +86,27 @@ public class SdkCreateLoanProductUseCase implements CreateLoanProductUseCase {
             return productId;
         } catch (JsonProcessingException e) {
             throw new FintoApiException(e);
+        }
+    }
+
+    private void validateLoanProductsRequest(PostLoanProductsRequest request) {
+        var graceOnPrincipalPayment = request.getGraceOnPrincipalPayment();
+        var numberOfRepayments = request.getNumberOfRepayments();
+        if (graceOnPrincipalPayment != null &&
+                numberOfRepayments != null &&
+                graceOnPrincipalPayment >= numberOfRepayments) {
+            throw new BadRequestException(BadRequestException.DEFAULT_ERROR_CODE,
+                    "[InstallmentGracePeriod] can't be equal or more than [NumberOfRepayments]");
+        }
+    }
+
+    private void validateFee(List<FeeCreate> fees) {
+        if (fees != null && !fees.isEmpty()) {
+            var nameSet = fees.stream().map(FeeCreate::getFeeName).collect(Collectors.toSet());
+            if (nameSet.size() != fees.size()) {
+                throw new BadRequestException(BadRequestException.DEFAULT_ERROR_CODE,
+                        "Fees can't have identical names");
+            }
         }
     }
 
