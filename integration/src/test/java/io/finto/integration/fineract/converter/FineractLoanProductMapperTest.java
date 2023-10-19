@@ -1082,15 +1082,14 @@ class FineractLoanProductMapperTest {
                         .id(2)
                         .build(),
                 GetProductsCharges.builder()
-                        .id(3)
-                        .amount(3D)
+                        .id(8)
                         .build());
         var expected = List.of(PostLoansChargeRequest.builder()
                         .chargeId(1L)
                         .amount(BigDecimal.valueOf(1D))
                         .build(),
                 PostLoansChargeRequest.builder()
-                        .chargeId(2L)
+                        .chargeId(8L)
                         .amount(BigDecimal.valueOf(0))
                         .build());
         assertEquals(expected, mapper.toPostLoansChargeRequest(getProductsCharges));
