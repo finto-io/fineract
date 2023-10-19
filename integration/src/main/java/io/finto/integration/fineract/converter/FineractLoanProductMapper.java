@@ -271,9 +271,7 @@ public interface FineractLoanProductMapper {
             return null;
         }
         return value.stream().filter(item -> item.getId() != null &&
-                        (item.getId() == 1 ||
-                                item.getId() == 2 ||
-                                item.getId() == 8))
+                        (item.getId() == 1 || item.getId() == 8))
                 .map(item -> PostLoansChargeRequest.builder()
                         .chargeId(Long.valueOf(item.getId()))
                         .amount(item.getAmount() == null ? BigDecimal.valueOf(0) : BigDecimal.valueOf(item.getAmount()))
