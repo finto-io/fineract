@@ -51,8 +51,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -308,7 +306,7 @@ class FineractLoanProductMapperTest {
                         .description("description3")
                         .build())
                 .chargeTimeType(GetChargeTimeType.builder()
-                        .id(4)
+                        .id(1)
                         .code("code4")
                         .description("description4")
                         .build())
@@ -329,7 +327,7 @@ class FineractLoanProductMapperTest {
     @Test
     void testFromZonedDateTime() {
         var dt = ZonedDateTime.now();
-        assertEquals(dt.format(io.finto.fineract.sdk.Constants.DEFAULT_DATE_FORMATTER), mapper.fromZonedDateTime(dt));
+        assertEquals(dt.format(io.finto.fineract.sdk.Constants.LOAN_PRODUCT_DATE_TIME_FORMATTER), mapper.fromZonedDateTime(dt));
         assertNull(mapper.fromZonedDateTime(null));
     }
 
@@ -468,11 +466,11 @@ class FineractLoanProductMapperTest {
                         .graceOnArrearsAgeing(true)
                         .build())
                 .fees(List.of(generateFee(5L), generateFee(1L)))
-                .createdAt(dt.format(io.finto.fineract.sdk.Constants.DEFAULT_DATE_FORMATTER))
+                .createdAt(dt.format(io.finto.fineract.sdk.Constants.LOAN_PRODUCT_DATE_TIME_FORMATTER))
                 .createdBy("loadedBy")
-                .closedAt(dt.format(io.finto.fineract.sdk.Constants.DEFAULT_DATE_FORMATTER))
+                .closedAt(dt.format(io.finto.fineract.sdk.Constants.LOAN_PRODUCT_DATE_TIME_FORMATTER))
                 .closedBy("closedBy")
-                .updatedAt(dt.format(io.finto.fineract.sdk.Constants.DEFAULT_DATE_FORMATTER))
+                .updatedAt(dt.format(io.finto.fineract.sdk.Constants.LOAN_PRODUCT_DATE_TIME_FORMATTER))
                 .updatedBy("modifiedBy")
                 .partnerId("partnerId")
                 .partnerName("partnerName")
@@ -692,9 +690,13 @@ class FineractLoanProductMapperTest {
                 .graceOnPrincipalPayment(11)
                 .graceOnInterestPayment(22)
                 .charges(List.of(PostLoansChargeRequest.builder()
-                        .chargeId(1L)
-                        .amount(BigDecimal.valueOf(3.0))
-                        .build()))
+                                .chargeId(5L)
+                                .amount(BigDecimal.valueOf(3.0))
+                                .build(),
+                        PostLoansChargeRequest.builder()
+                                .chargeId(1L)
+                                .amount(BigDecimal.valueOf(3.0))
+                                .build()))
                 .build();
     }
 
@@ -1075,22 +1077,27 @@ class FineractLoanProductMapperTest {
     @Test
     void testToPostLoansChargeRequest() {
         var getProductsCharges = List.of(GetProductsCharges.builder()
-                        .id(1)
+                        .id(111)
                         .amount(1D)
+                        .chargeTimeType(GetChargeTimeType.builder()
+                                .id(1)
+                                .build())
                         .build(),
                 GetProductsCharges.builder()
-                        .id(2)
+                        .id(222)
                         .build(),
                 GetProductsCharges.builder()
-                        .id(8)
+                        .id(888)
+                        .chargeTimeType(GetChargeTimeType.builder()
+                                .id(8)
+                                .build())
                         .build());
         var expected = List.of(PostLoansChargeRequest.builder()
-                        .chargeId(1L)
+                        .chargeId(111L)
                         .amount(BigDecimal.valueOf(1D))
                         .build(),
                 PostLoansChargeRequest.builder()
-                        .chargeId(8L)
-                        .amount(BigDecimal.valueOf(0))
+                        .chargeId(888L)
                         .build());
         assertEquals(expected, mapper.toPostLoansChargeRequest(getProductsCharges));
         assertNull(mapper.toPostLoansChargeRequest(null));
