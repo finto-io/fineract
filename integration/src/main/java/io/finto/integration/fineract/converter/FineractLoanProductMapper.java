@@ -210,7 +210,7 @@ public interface FineractLoanProductMapper {
         if (value == null) {
             return null;
         }
-        return value.format(io.finto.fineract.sdk.Constants.DEFAULT_DATE_FORMATTER);
+        return value.format(io.finto.fineract.sdk.Constants.LOAN_PRODUCT_DATE_TIME_FORMATTER);
     }
 
     @Mapping(target = "fees", source = "loanProduct.charges")
@@ -270,12 +270,20 @@ public interface FineractLoanProductMapper {
         if (value == null) {
             return null;
         }
-        return value.stream().filter(item -> item.getId() != null &&
-                        (item.getId() == 1 || item.getId() == 8))
-                .map(item -> PostLoansChargeRequest.builder()
-                        .chargeId(Long.valueOf(item.getId()))
-                        .amount(item.getAmount() == null ? BigDecimal.valueOf(0) : BigDecimal.valueOf(item.getAmount()))
-                        .build())
+        return value.stream().filter(item -> item.getChargeTimeType() != null &&
+                        item.getChargeTimeType().getId() != null &&
+                        (item.getChargeTimeType().getId() == 1 || item.getChargeTimeType().getId() == 8))
+                .map(item -> {
+                    var builder = PostLoansChargeRequest.builder();
+                    if (item.getId() != null) {
+                        builder.chargeId(Long.valueOf(item.getId()));
+                    }
+                    if (item.getAmount() != null) {
+                        builder.amount(BigDecimal.valueOf(item.getAmount()));
+                    }
+                    return builder.build();
+
+                })
                 .collect(Collectors.toList());
     }
 
