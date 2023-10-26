@@ -22,7 +22,7 @@ public class SdkCreateLoanUseCase implements CreateLoanUseCase {
     @NonNull
     private final FineractLoanProductMapper loanProductMapper;
 
-    public static class SdkCreateLoanProductUseCaseBuilder {
+    public static class SdkCreateLoanUseCaseBuilder {
         private FineractLoanProductMapper loanProductMapper = FineractLoanProductMapper.INSTANCE;
     }
 
