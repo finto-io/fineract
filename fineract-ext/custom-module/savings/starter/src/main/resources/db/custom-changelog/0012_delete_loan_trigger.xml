@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="finto" id="12">
+        <sql splitStatements="false">
+            CREATE OR REPLACE FUNCTION delete_from_loan_fields() RETURNS trigger AS
+            $$BEGIN
+                delete from m_loan_fields where id = old.id;
+                return old;
+            END;$$ LANGUAGE plpgsql;
+
+            CREATE TRIGGER on_loan_delete
+                BEFORE DELETE ON m_loan FOR EACH ROW
+                EXECUTE PROCEDURE delete_from_loan_fields();
+        </sql>
+    </changeSet>
+</databaseChangeLog>
