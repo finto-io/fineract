@@ -65,7 +65,7 @@ public class SdkSetCustomerUpdateFlagUseCase implements SetCustomerUpdateFlagUse
     public CustomerUpdateFlag getUpdateFlag(CustomerId customerId) {
         try {
             var additionalDetails = ConverterUtils.parseAdditionalFields(objectMapper, context.getResponseBody(context.dataTablesApi()
-                    .getDatatableByAppTableId(CUSTOMER_UPDATE_FLAG, customerId.getValue(), null)), UpdateFlagResponse[].class);
+                    .getDatatableByAppTableId(CUSTOMER_UPDATE_FLAG, customerId.getValue(), null, null)), UpdateFlagResponse[].class);
             return customerMapper.toCustomerUpdateFlagEntity(additionalDetails);
         } catch (EntityNotFoundException e) {
             throw new CustomerNotFoundException(e);

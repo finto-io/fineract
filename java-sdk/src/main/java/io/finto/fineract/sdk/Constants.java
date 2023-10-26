@@ -48,4 +48,5 @@ public class Constants {
     public static final DateTimeFormatter SCHEDULE_DATE_FORMATTER = DateTimeFormatter.ofPattern(SCHEDULE_DATE_FORMAT_PATTERN, new Locale("en"));
     public static final String LOAN_PRODUCT_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm";
     public static final DateTimeFormatter LOAN_PRODUCT_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(LOAN_PRODUCT_DATE_TIME_FORMAT, new Locale("en"));
+    public static final String INDIVIDUAL = "individual";
 }

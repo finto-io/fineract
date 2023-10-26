@@ -54,7 +54,7 @@ public class AccountHelperImplIT {
         var id = helper.buildSavingAccount().withRandomParams().withIban(iban).create(clientId, PRODUCT_ID).getLastSavingAccountId();
 
         var account = Calls.ok(client.retrieveOneSavingsAccount(Long.valueOf(id), null, null, null));
-        var additionalFields = Calls.ok(dataTablesApi.getDatatableByAppTableId("account_fields", 1L, null));
+        var additionalFields = Calls.ok(dataTablesApi.getDatatableByAppTableId("account_fields", 1L, null, null));
         Assertions.assertEquals(clientId, account.getClientId());
         Assertions.assertEquals(PRODUCT_ID, account.getSavingsProductId());
         Assertions.assertTrue(additionalFields.contains("\"iban\": \"" + iban + "\""));

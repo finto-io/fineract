@@ -39,7 +39,7 @@ public class SdkGetCustomerAdditionalFieldsUseCase implements GetCustomerAdditio
     @Override
     public CustomerAdditionalFields getCustomerAdditionalFields(CustomerId customerId) {
         var additionalDetails = ConverterUtils.parseAdditionalFields(objectMapper, context.getResponseBody(context.dataTablesApi()
-                .getDatatableByAppTableId(CUSTOMER_ADDITIONAL_FIELDS, customerId.getValue(), null)), CustomerAdditionalFieldsDto[].class);
+                .getDatatableByAppTableId(CUSTOMER_ADDITIONAL_FIELDS, customerId.getValue(), null, null)), CustomerAdditionalFieldsDto[].class);
         return customerMapper.toAdditionalFields(additionalDetails);
     }
 

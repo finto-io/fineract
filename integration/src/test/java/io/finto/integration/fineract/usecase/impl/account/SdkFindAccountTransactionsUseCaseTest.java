@@ -78,7 +78,7 @@ class SdkFindAccountTransactionsUseCaseTest {
                 .andReturn(savingCall);
         expect(context.getResponseBody(savingCall)).andReturn(savedAccount);
         expect(context.dataTablesApi()).andReturn(dataTablesApi);
-        expect(dataTablesApi.getDatatableByAppTableId("account_fields", accountId.getValue(), null))
+        expect(dataTablesApi.getDatatableByAppTableId("account_fields", accountId.getValue(), null, null))
                 .andReturn(callDataTables);
         expect(context.getResponseBody(callDataTables)).andReturn(additionalDetailsContent);
 
@@ -107,7 +107,7 @@ class SdkFindAccountTransactionsUseCaseTest {
                 .andReturn(savingCall);
         expect(context.getResponseBody(savingCall)).andReturn(savedAccount);
         expect(context.dataTablesApi()).andReturn(dataTablesApi);
-        expect(dataTablesApi.getDatatableByAppTableId("account_fields", accountId.getValue(), null))
+        expect(dataTablesApi.getDatatableByAppTableId("account_fields", accountId.getValue(), null, null))
                 .andReturn(callDataTables);
         expect(context.getResponseBody(callDataTables)).andReturn(additionalDetailsContent);
         expect(fineractAccountMapper.toAccount(savedAccount, null, bankSwift.get(), bankName.get()))
@@ -139,7 +139,7 @@ class SdkFindAccountTransactionsUseCaseTest {
                 .andReturn(savingCall);
         expect(context.getResponseBody(savingCall)).andReturn(savedAccount);
         expect(context.dataTablesApi()).andReturn(dataTablesApi);
-        expect(dataTablesApi.getDatatableByAppTableId("account_fields", accountId.getValue(), null))
+        expect(dataTablesApi.getDatatableByAppTableId("account_fields", accountId.getValue(), null, null))
                 .andReturn(callDataTables);
         expect(context.getResponseBody(callDataTables)).andReturn(additionalDetailsContent);
         expect(fineractAccountMapper.toAccount(savedAccount, additionalFields, bankSwift.get(), bankName.get()))
