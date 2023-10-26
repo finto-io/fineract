@@ -62,7 +62,7 @@ class SdkFindLoanProductUseCaseTest {
         expect(loanProductsApi.retrieveLoanProductDetails(loanProductId.getValue())).andReturn(response);
         expect(context.getResponseBody(response)).andReturn(responseBody);
         expect(context.dataTablesApi()).andReturn(dataTablesApi);
-        expect(dataTablesApi.getDatatableByAppTableId(LOAN_PRODUCT_FIELDS, loanProductId.getValue(), null))
+        expect(dataTablesApi.getDatatableByAppTableId(LOAN_PRODUCT_FIELDS, loanProductId.getValue(), null, null))
                 .andReturn(responseDataTable);
         expect(context.getResponseBody(responseDataTable)).andReturn(responseBodyDataTable);
         expect(mapper.readValue(responseBodyDataTable, LoanProductDetailsDto[].class)).andReturn(array);

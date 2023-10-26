@@ -51,7 +51,7 @@ public class SdkFindAccountUseCase implements FindAccountUseCase {
 
         GetSavingsAccountsAccountIdResponse savedAccount = context.getResponseBody(initAccountCall);
         DataTablesApi dataTablesApi = context.dataTablesApi();
-        Call<String> callDataTables = dataTablesApi.getDatatableByAppTableId(ACCOUNT_ADDITIONAL_FIELDS, id.getValue(), null);
+        Call<String> callDataTables = dataTablesApi.getDatatableByAppTableId(ACCOUNT_ADDITIONAL_FIELDS, id.getValue(), null, null);
 
         String additionalDetailsContent = context.getResponseBody(callDataTables);
         AccountAdditionalFieldsDto accountAdditionalFields = parseAdditionalFields(additionalDetailsContent);

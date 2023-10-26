@@ -5473,6 +5473,11 @@ paths:
           name: order
           schema:
             type: string
+        - description: genericResultSet
+          in: query
+          name: genericResultSet
+          schema:
+            type: boolean
       responses:
         '200':
           content:
@@ -33848,146 +33853,84 @@ components:
           format: date
         feeChargesDue:
           type: number
-          format: double
-          example: 0
         feeChargesOutstanding:
           type: number
-          format: double
-          example: 20
         feeChargesPaid:
           type: number
-          format: double
-          example: 20
         feeChargesWaived:
           type: number
-          format: double
-          example: 20
         feeChargesWrittenOff:
           type: number
-          format: double
-          example: 20
         fromDate:
           type: string
           format: date
         interestDue:
           type: number
-          format: double
-          example: 0
         interestOriginalDue:
           type: number
-          format: double
-          example: 0
         interestOutstanding:
           type: number
-          format: double
-          example: 0
         interestPaid:
           type: number
-          format: double
-          example: 0
         interestWaived:
           type: number
-          format: double
-          example: 0
+        principalDisbursed:
+          type: number
+        totalOverdue:
+          type: number
         interestWrittenOff:
           type: number
-          format: double
-          example: 0
         obligationsMetOnDate:
           type: string
           format: date
         penaltyChargesDue:
           type: number
-          format: double
-          example: 20
         penaltyChargesOutstanding:
           type: number
-          format: double
-          example: 20
         penaltyChargesPaid:
           type: number
-          format: double
-          example: 20
         penaltyChargesWaived:
           type: number
-          format: double
-          example: 20
         penaltyChargesWrittenOff:
           type: number
-          format: double
-          example: 20
         period:
           type: integer
           format: int32
           example: 1
         principalDue:
           type: number
-          format: double
-          example: 200
         principalLoanBalanceOutstanding:
           type: number
-          format: double
-          example: 20
         principalOriginalDue:
           type: number
-          format: double
-          example: 200
         principalOutstanding:
           type: number
-          format: double
-          example: 20
         principalPaid:
           type: number
-          format: double
-          example: 200
         principalWrittenOff:
           type: number
-          format: double
-          example: 0
         totalActualCostOfLoanForPeriod:
           type: number
-          format: double
-          example: 20
         totalCredits:
           type: number
-          format: double
-          example: 2
         totalDueForPeriod:
           type: number
-          format: double
-          example: 20
         totalInstallmentAmountForPeriod:
           type: number
-          format: double
-          example: 200
         totalOriginalDueForPeriod:
           type: number
-          format: double
-          example: 20
         totalOutstandingForPeriod:
           type: number
-          format: double
-          example: 200
         totalPaidForPeriod:
           type: number
-          format: double
-          example: 20
         totalPaidInAdvanceForPeriod:
           type: number
-          format: double
-          example: 20
         totalPaidLateForPeriod:
           type: number
-          format: double
-          example: 20
         totalWaivedForPeriod:
           type: number
-          format: double
-          example: 20
         totalWrittenOffForPeriod:
           type: number
-          format: double
-          example: 20
     GetLoansLoanIdRepaymentSchedule:
       type: object
       properties:
@@ -33995,7 +33938,7 @@ components:
           $ref: '#/components/schemas/GetLoansLoanIdCurrency'
         loanTermInDays:
           type: integer
-          format: int64
+          format: int32
           example: 30
         periods:
           type: array
@@ -34003,52 +33946,32 @@ components:
             $ref: '#/components/schemas/GetLoansLoanIdRepaymentPeriod'
         totalFeeChargesCharged:
           type: number
-          format: double
-          example: 0
         totalInterestCharged:
           type: number
-          format: double
-          example: 0
         totalOutstanding:
           type: number
-          format: double
-          example: 0
         totalPaidInAdvance:
           type: number
-          format: double
-          example: 200
         totalPaidLate:
           type: number
-          format: double
-          example: 0
         totalPenaltyChargesCharged:
           type: number
-          format: double
-          example: 0
         totalPrincipalDisbursed:
           type: number
-          format: double
-          example: 200
         totalPrincipalExpected:
           type: number
-          format: double
-          example: 200
         totalPrincipalPaid:
           type: number
-          format: double
-          example: 200
         totalRepaymentExpected:
           type: number
-          format: double
-          example: 200
         totalWaived:
           type: number
-          format: double
-          example: 0
         totalWrittenOff:
           type: number
-          format: double
-          example: 0
+        totalCredits:
+          type: number
+        totalRepayment:
+          type: number
     GetLoansLoanIdResponse:
       type: object
       description: GetLoansLoanIdResponse
@@ -34070,6 +33993,12 @@ components:
         chargedOff:
           type: boolean
           example: false
+        inArrears:
+          type: boolean
+          example: false
+        isNPA:
+          type: boolean
+          example: false
         charges:
           type: array
           description: Set of charges
@@ -34080,7 +34009,7 @@ components:
           example: 5e77989e-aa11-11bc-b109-0242ac120004
         clientId:
           type: integer
-          format: int32
+          format: int64
           example: 1
         clientName:
           type: string
@@ -34122,9 +34051,7 @@ components:
         interestRateFrequencyType:
           $ref: '#/components/schemas/GetLoansLoanIdInterestRateFrequencyType'
         interestRatePerPeriod:
-          type: integer
-          format: int32
-          example: 24
+          type: number
         interestType:
           $ref: '#/components/schemas/GetLoansLoanIdInterestType'
         isFloatingInterestRate:
@@ -34145,7 +34072,7 @@ components:
           example: Typical Kampala loan product with cash accounting enabled for testing.
         loanProductId:
           type: integer
-          format: int32
+          format: int64
           example: 1
         loanProductName:
           type: string
@@ -34161,8 +34088,6 @@ components:
           $ref: '#/components/schemas/GetLoansLoanIdLoanType'
         netDisbursalAmount:
           type: number
-          format: double
-          example: 200
         numberOfRepayments:
           type: integer
           format: int32
@@ -34175,8 +34100,8 @@ components:
           example: 1000000
         proposedPrincipal:
           type: number
-          format: double
-          example: 1001
+        proposedPrincipal:
+          type: number
         repaymentEvery:
           type: integer
           format: int32
@@ -34199,8 +34124,6 @@ components:
           $ref: '#/components/schemas/GetLoansLoanIdTimeline'
         totalOverpaid:
           type: number
-          format: double
-          example: 250
         transactionProcessingStrategyCode:
           type: string
           example: mifos-standard-strategy
@@ -34230,6 +34153,9 @@ components:
         code:
           type: string
           example: loanStatusType.active
+        value:
+          type: string
+          example: Active
         description:
           type: string
           example: Active
@@ -34506,6 +34432,9 @@ components:
     GetLoansLoanIdTimeline:
       type: object
       properties:
+        closedByName:
+          type: string
+          example: App
         actualDisbursementDate:
           type: string
           format: date
@@ -34579,8 +34508,6 @@ components:
           example: acct123
         amount:
           type: number
-          format: double
-          example: 100
         bankNumber:
           type: integer
           format: int32
@@ -34602,20 +34529,14 @@ components:
           example: '3'
         feeChargesPortion:
           type: number
-          format: double
-          example: 100
         fixedEmiAmount:
           type: number
-          format: double
-          example: 100
         id:
           type: integer
           format: int64
           example: 1
         interestPortion:
           type: number
-          format: double
-          example: 100
         loanChargePaidByList:
           type: array
           description: List of GetLoansLoanIdLoanChargePaidByData
@@ -34633,8 +34554,6 @@ components:
           type: boolean
         netDisbursalAmount:
           type: number
-          format: double
-          example: 100
         numberOfRepayments:
           type: integer
           format: int32
@@ -34648,12 +34567,8 @@ components:
           example: Head Office
         outstandingLoanBalance:
           type: number
-          format: double
-          example: 100
         overpaymentPortion:
           type: number
-          format: double
-          example: 100
         paymentDetailData:
           $ref: '#/components/schemas/GetLoansLoanIdPaymentDetailData'
         paymentTypeId:
@@ -34667,15 +34582,11 @@ components:
             $ref: '#/components/schemas/GetLoansLoanIdPaymentType'
         penaltyChargesPortion:
           type: number
-          format: double
-          example: 100
         possibleNextRepaymentDate:
           type: string
           format: date
         principalPortion:
           type: number
-          format: double
-          example: 100
         receiptNumber:
           type: integer
           format: int32
@@ -34695,8 +34606,6 @@ components:
           format: date
         transactionAmount:
           type: number
-          format: double
-          example: 100
         transactionDate:
           type: string
           format: date
@@ -34713,8 +34622,8 @@ components:
           $ref: '#/components/schemas/GetLoansLoanIdLoanTransactionEnumData'
         unrecognizedIncomePortion:
           type: number
-          format: double
-          example: 100
+        interestPortion:
+          type: number
         writeOffReasonOptions:
           type: array
           description: List of GetLoansLoanIdCodeValueData
@@ -48488,6 +48397,30 @@ components:
           enum:
             - null
           example: 360
+        datatables:
+          type: array
+          items:
+            type: object
+            properties:
+              registeredTableName:
+                type: string
+                example: loan_fields
+              data:
+                type: object
+                properties:
+                  locale:
+                    type: string
+                    example: en
+                  request_id:
+                    type: string
+                  offer_id:
+                    type: string
+                  customer_id:
+                    type: string
+                  partner_id:
+                    type: string
+                  partner_name:
+                    type: string
         disbursementData:
           type: array
           description: List of PostLoansDisbursementData

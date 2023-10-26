@@ -45,7 +45,7 @@ public class SdkFindCustomerUseCase implements FindCustomerUseCase {
         var identifiers = context.getResponseBody(context.clientIdentifierApi().
                 retrieveAllClientIdentifiers(customerId.getValue()));
         var additionalDetails = parseAdditionalFields(objectMapper, context.getResponseBody(context.dataTablesApi()
-                .getDatatableByAppTableId(CUSTOMER_ADDITIONAL_FIELDS, customerId.getValue(), null)), CustomerAdditionalFieldsDto[].class);
+                .getDatatableByAppTableId(CUSTOMER_ADDITIONAL_FIELDS, customerId.getValue(), null, null)), CustomerAdditionalFieldsDto[].class);
         return customerMapper.toDomain(client, addresses, identifiers, additionalDetails);
     }
 
