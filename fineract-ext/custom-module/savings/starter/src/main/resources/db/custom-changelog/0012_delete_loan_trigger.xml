@@ -6,7 +6,7 @@
         <sql splitStatements="false">
             CREATE OR REPLACE FUNCTION delete_from_loan_fields() RETURNS trigger AS
             $$BEGIN
-                delete from m_loan_fields where id = old.id;
+                delete from loan_fields where id = old.id;
                 return old;
             END;$$ LANGUAGE plpgsql;
 
