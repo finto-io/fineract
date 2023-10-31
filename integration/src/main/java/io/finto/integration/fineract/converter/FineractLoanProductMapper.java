@@ -492,7 +492,7 @@ public interface FineractLoanProductMapper {
 
         var dateArray = (int[]) additionalDetails.getData().get(0).getRow().get(position);
 
-        return LocalDate.of(dateArray[0], dateArray[1], dateArray[2]);
+        return dateArray == null ? null : LocalDate.of(dateArray[0], dateArray[1], dateArray[2]);
     }
 
     @Nullable

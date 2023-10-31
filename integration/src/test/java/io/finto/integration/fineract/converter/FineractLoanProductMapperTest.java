@@ -74,6 +74,8 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -1235,6 +1237,19 @@ class FineractLoanProductMapperTest {
         assertNull(mapper.fromDataTablesToLocalDate(null, "partner_id"
         ));
         assertNull(mapper.fromDataTablesToLocalDate(null, "partner_name"
+        ));
+        List<Object> nullList = new ArrayList<>();
+        nullList.add(null);
+        assertNull(mapper.fromDataTablesToLocalDate(RunReportsResponse.builder()
+                .columnHeaders(List.of(
+                        ResultsetColumnHeaderData.builder()
+                                .columnName("modified_at")
+                                .build()
+                ))
+                .data(List.of(ResultsetRowData.builder()
+                        .row(nullList)
+                        .build()))
+                .build(), "modified_at"
         ));
     }
 
