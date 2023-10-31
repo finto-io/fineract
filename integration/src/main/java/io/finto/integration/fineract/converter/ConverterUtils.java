@@ -6,12 +6,9 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.finto.exceptions.core.FintoApiException;
-import io.finto.integration.fineract.dto.CustomerAdditionalFieldsDto;
 
 import java.io.IOException;
-import java.time.Instant;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
 public class ConverterUtils {
