@@ -33983,13 +33983,9 @@ components:
         amortizationType:
           $ref: '#/components/schemas/GetLoansLoanIdAmortizationType'
         annualInterestRate:
-          type: integer
-          format: int32
-          example: 24
+          type: number
         approvedPrincipal:
           type: number
-          format: double
-          example: 1000
         chargedOff:
           type: boolean
           example: false
