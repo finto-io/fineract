@@ -29,7 +29,7 @@ public class SdkFindAccountsUseCase implements FindAccountsUseCase {
     public List<Account> findAccounts(CustomerId customerId) {
         Set<GetClientsSavingsAccounts> clientAccounts = Objects.requireNonNull(
                 context.getResponseBody(
-                        context.clientApi().retrieveAssociatedAccounts(customerId.getValue())
+                        context.clientApi().retrieveAssociatedAccounts(customerId.getValue(), null)
                 )
         ).getSavingsAccounts();
         if (clientAccounts == null) {

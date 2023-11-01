@@ -55,7 +55,7 @@ class SdkFindAccountsUseCaseTest {
         CustomerId customerId = CustomerId.of(32L);
 
         expect(context.clientApi()).andReturn(clientApi);
-        expect(clientApi.retrieveAssociatedAccounts(customerId.getValue())).andReturn(apiCall);
+        expect(clientApi.retrieveAssociatedAccounts(customerId.getValue(), null)).andReturn(apiCall);
         expect(context.getResponseBody(apiCall)).andReturn(new GetClientsClientIdAccountsResponse());
         control.replay();
 
@@ -79,7 +79,7 @@ class SdkFindAccountsUseCaseTest {
         apiResponse.addSavingsAccountsItem(account);
 
         expect(context.clientApi()).andReturn(clientApi);
-        expect(clientApi.retrieveAssociatedAccounts(customerId.getValue())).andReturn(apiCall);
+        expect(clientApi.retrieveAssociatedAccounts(customerId.getValue(), null)).andReturn(apiCall);
         expect(context.getResponseBody(apiCall)).andReturn(apiResponse);
         expect(findAccountUseCase.findAccount(AccountId.of(account.getId()))).andReturn(Account.builder().id(AccountId.of(account.getId())).productId(ProductId.of(1)).build());
         control.replay();

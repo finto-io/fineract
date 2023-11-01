@@ -190,7 +190,7 @@ class FineractLoanProductMapperTest {
         result.setInterestCalculationPeriodType(4);
         result.setInterestOnLoanAccountId(8L);
         result.setInterestRateFrequencyType(3);
-        result.setInterestRatePerPeriod(8.0D);
+        result.setInterestRatePerPeriod(new BigDecimal("8"));
         result.setInterestType(1);
         result.setIsInterestRecalculationEnabled(false);
         result.setLoanPortfolioAccountId(6L);
@@ -376,7 +376,7 @@ class FineractLoanProductMapperTest {
                         .id(9L)
                         .value("value9")
                         .build())
-                .interest(BigDecimal.valueOf(10.0))
+                .interest(BigDecimal.valueOf(10))
                 .minInterestRatePerPeriod(BigDecimal.valueOf(11.0))
                 .maxInterestRatePerPeriod(BigDecimal.valueOf(12.0))
                 .interestRateFrequencyType(Type.builder()
@@ -546,7 +546,7 @@ class FineractLoanProductMapperTest {
                 .code("code9")
                 .value("value9")
                 .build());
-        result.setInterestRatePerPeriod(10D);
+        result.setInterestRatePerPeriod(new BigDecimal("10"));
         result.setMinInterestRatePerPeriod(11D);
         result.setMaxInterestRatePerPeriod(12D);
         result.setInterestRateFrequencyType(GetLoanProductsInterestRateFrequencyType.builder()
@@ -702,7 +702,7 @@ class FineractLoanProductMapperTest {
                 .numberOfRepayments(21)
                 .repaymentEvery(8)
                 .repaymentFrequencyType(9)
-                .interestRatePerPeriod(10)
+                .interestRatePerPeriod(new BigDecimal("10"))
                 .amortizationType(14)
                 .interestType(15)
                 .interestCalculationPeriodType(16)
@@ -1181,7 +1181,7 @@ class FineractLoanProductMapperTest {
                 .numberOfRepayments(3)
                 .repaymentEvery(8)
                 .repaymentFrequencyType(9)
-                .interestRatePerPeriod(10)
+                .interestRatePerPeriod(new BigDecimal("10"))
                 .amortizationType(14)
                 .interestType(15)
                 .interestCalculationPeriodType(16)
