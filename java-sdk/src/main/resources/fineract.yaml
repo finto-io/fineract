@@ -3625,6 +3625,11 @@ paths:
           schema:
             type: integer
             format: int64
+        - description: fields
+          in: query
+          name: fields
+          schema:
+            type: string
       responses:
         '200':
           content:
@@ -28563,11 +28568,11 @@ components:
           example: '000000001'
         externalId:
           type: integer
-          format: int32
+          format: int64
           example: 456
         id:
           type: integer
-          format: int32
+          format: int64
           example: 1
         loanCycle:
           type: integer
@@ -28577,7 +28582,7 @@ components:
           $ref: '#/components/schemas/GetClientsLoanAccountsType'
         productId:
           type: integer
-          format: int32
+          format: int64
           example: 1
         productName:
           type: string
@@ -32432,8 +32437,6 @@ components:
           $ref: '#/components/schemas/GetLoanProductsDaysInYearType'
         interestRatePerPeriod:
           type: number
-          format: double
-          example: 5
         minInterestRatePerPeriod:
           type: number
           format: double
@@ -32648,8 +32651,6 @@ components:
           $ref: '#/components/schemas/GetLoanProductsInterestRateFrequencyType'
         interestRatePerPeriod:
           type: number
-          format: double
-          example: 15
         interestRateVariationsForBorrowerCycle:
           type: array
           example: []
@@ -40003,9 +40004,7 @@ components:
         interestRateFrequencyType:
           $ref: '#/components/schemas/GetLoansLoanIdInterestRateFrequencyType'
         interestRatePerPeriod:
-          type: integer
-          format: int32
-          example: 24
+          type: number
         interestType:
           $ref: '#/components/schemas/GetLoansLoanIdInterestType'
         loanOfficerId:
@@ -47523,8 +47522,6 @@ components:
           example: 2
         interestRatePerPeriod:
           type: number
-          format: double
-          example: 1.75
         interestRateVariationsForBorrowerCycle:
           type: array
           example: []
@@ -48457,9 +48454,7 @@ components:
           format: int32
           example: 1
         interestRatePerPeriod:
-          type: integer
-          format: int32
-          example: 2
+          type: number
         interestType:
           type: integer
           format: int32
@@ -49897,9 +49892,7 @@ components:
           format: int32
           example: 1
         interestRatePerPeriod:
-          type: integer
-          format: int32
-          example: 10
+          type: number
         interestType:
           type: integer
           format: int32
@@ -51921,8 +51914,6 @@ components:
           example: 2
         interestRatePerPeriod:
           type: number
-          format: double
-          example: 1.75
         interestRateVariationsForBorrowerCycle:
           type: array
           example: []
@@ -52277,9 +52268,7 @@ components:
         interestChargedFromDate:
           type: string
         interestRatePerPeriod:
-          type: integer
-          format: int32
-          example: 2
+          type: number
         interestType:
           type: integer
           format: int32
@@ -52951,9 +52940,7 @@ components:
           format: int32
           example: 0
         interestRatePerPeriod:
-          type: integer
-          format: int32
-          example: 2
+          type: number
         interestType:
           type: integer
           format: int32
