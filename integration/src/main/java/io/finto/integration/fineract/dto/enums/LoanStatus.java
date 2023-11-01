@@ -10,7 +10,7 @@ public enum LoanStatus {
             case REJECTED:
                 return "reject";
             case WITHDRAWN:
-                return "withdraw";
+                return "withdrawnByApplicant";
             case ACTIVATED:
                 return "disburse";
             default:
