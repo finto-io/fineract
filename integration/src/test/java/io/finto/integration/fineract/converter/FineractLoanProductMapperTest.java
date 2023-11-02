@@ -1,5 +1,6 @@
 package io.finto.integration.fineract.converter;
 
+import io.finto.domain.bnpl.enums.AvailableLoanStatus;
 import io.finto.domain.bnpl.enums.InstallmentFrequency;
 import io.finto.domain.bnpl.loan.Loan;
 import io.finto.domain.bnpl.loan.LoanCreate;
@@ -1661,5 +1662,22 @@ class FineractLoanProductMapperTest {
                 .totalCredits(BigDecimal.valueOf(336))
                 .totalOverdue(BigDecimal.valueOf(337))
                 .build();
+    }
+
+    @Test
+    void testToAvailableLoanStatus() {
+        assertEquals(AvailableLoanStatus.NEW, mapper.toAvailableLoanStatus(100));
+        assertEquals(AvailableLoanStatus.APPROVED, mapper.toAvailableLoanStatus(200));
+        assertEquals(AvailableLoanStatus.REJECTED, mapper.toAvailableLoanStatus(300));
+        assertEquals(AvailableLoanStatus.WITHDRAWN, mapper.toAvailableLoanStatus(301));
+        assertEquals(AvailableLoanStatus.ACTIVE, mapper.toAvailableLoanStatus(302));
+        assertEquals(AvailableLoanStatus.OVERDUE, mapper.toAvailableLoanStatus(400));
+        assertEquals(AvailableLoanStatus.NPA, mapper.toAvailableLoanStatus(500));
+        assertEquals(AvailableLoanStatus.CLOSED, mapper.toAvailableLoanStatus(600));
+        assertEquals(AvailableLoanStatus.WRITTENOFF, mapper.toAvailableLoanStatus(601));
+        assertEquals(AvailableLoanStatus.RESCHEDULED, mapper.toAvailableLoanStatus(602));
+        assertEquals(AvailableLoanStatus.OVERPAID, mapper.toAvailableLoanStatus(700));
+        assertNull(mapper.toAvailableLoanStatus(null));
+        assertNull(mapper.toAvailableLoanStatus(800));
     }
 }
