@@ -1,5 +1,6 @@
 package io.finto.integration.fineract.converter;
 
+import io.finto.domain.bnpl.enums.AvailableLoanStatus;
 import io.finto.domain.bnpl.enums.InstallmentFrequency;
 import io.finto.domain.bnpl.loan.Loan;
 import io.finto.domain.bnpl.loan.LoanCreate;
@@ -634,4 +635,36 @@ public interface FineractLoanProductMapper {
     @Mapping(target = "isReversed", source = "manuallyReversed")
     @Mapping(target = "reversalDate", source = "reversedOnDate")
     Transaction toTransaction(GetLoansLoanIdTransactions source);
+
+    default AvailableLoanStatus toAvailableLoanStatus(Integer value) {
+        if (value == null) {
+            return null;
+        }
+        switch (value) {
+            case 100:
+                return AvailableLoanStatus.NEW;
+            case 200:
+                return AvailableLoanStatus.APPROVED;
+            case 300:
+                return AvailableLoanStatus.REJECTED;
+            case 301:
+                return AvailableLoanStatus.WITHDRAWN;
+            case 302:
+                return AvailableLoanStatus.ACTIVE;
+            case 400:
+                return AvailableLoanStatus.OVERDUE;
+            case 500:
+                return AvailableLoanStatus.NPA;
+            case 600:
+                return AvailableLoanStatus.CLOSED;
+            case 601:
+                return AvailableLoanStatus.WRITTENOFF;
+            case 602:
+                return AvailableLoanStatus.RESCHEDULED;
+            case 700:
+                return AvailableLoanStatus.OVERPAID;
+            default:
+                return null;
+        }
+    }
 }
