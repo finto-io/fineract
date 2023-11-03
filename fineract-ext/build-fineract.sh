@@ -1,6 +1,6 @@
 #!/bin/bash
 
-FINERACT_EXT_VERSION=1.11.0
+FINERACT_EXT_VERSION=1.12.0
 
 git clone https://github.com/apache/fineract.git
 cd fineract || exit

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="finto" id="13">
+        <update tableName="m_working_days">
+            <column name="recurrence" value="FREQ=WEEKLY;INTERVAL=1;BYDAY=MO,TU,WE,TH,SU"/>
+            <column name="repayment_rescheduling_enum" value="2"/>
+            <column name="extend_term_daily_repayments" value="false"/>
+            <column name="extend_term_holiday_repayment" value="false"/>
+            <where>id='1'</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>
