@@ -7,6 +7,7 @@ public class Constants {
     public static final String USER = "mifos";
     public static final String LOCALE = "en";
     public static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd";
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN);
     public static final String DATE_TIME_FORMAT_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
 
     public static final DateTimeFormatter DEFAULT_DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
@@ -46,4 +47,6 @@ public class Constants {
     public static final String LOAN_PRODUCT_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm";
     public static final DateTimeFormatter LOAN_PRODUCT_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(LOAN_PRODUCT_DATE_TIME_FORMAT, new Locale("en"));
     public static final String INDIVIDUAL = "individual";
+    public static final String REPAYMENT = "repayment";
+    public static final String FORECLOSURE = "foreclosure";
 }

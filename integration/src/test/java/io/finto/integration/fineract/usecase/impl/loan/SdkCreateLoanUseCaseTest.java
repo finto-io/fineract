@@ -1,4 +1,4 @@
-package io.finto.integration.fineract.usecase.impl.loanproduct;
+package io.finto.integration.fineract.usecase.impl.loan;
 
 import io.finto.domain.bnpl.loan.LoanCreate;
 import io.finto.domain.id.CustomerInternalId;
@@ -11,6 +11,8 @@ import io.finto.fineract.sdk.models.PostLoansRequest;
 import io.finto.fineract.sdk.models.PostLoansResponse;
 import io.finto.integration.fineract.converter.FineractLoanProductMapper;
 import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
+import io.finto.integration.fineract.usecase.impl.loan.SdkCreateLoanUseCase;
+import io.finto.integration.fineract.usecase.impl.loan.product.SdkCreateLoanProductUseCase;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

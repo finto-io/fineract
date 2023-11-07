@@ -1,4 +1,4 @@
-package io.finto.integration.fineract.usecase.impl.loanproduct;
+package io.finto.integration.fineract.usecase.impl.loan.product;
 
 import io.finto.domain.bnpl.schedule.Schedule;
 import io.finto.domain.bnpl.schedule.ScheduleCalculate;
@@ -7,7 +7,7 @@ import io.finto.domain.loanproduct.LoanProduct;
 import io.finto.fineract.sdk.models.PostLoansRequest;
 import io.finto.integration.fineract.converter.FineractLoanProductMapper;
 import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
-import io.finto.usecase.loanproduct.CalculateLoanScheduleUseCase;
+import io.finto.usecase.loan.product.CalculateLoanScheduleUseCase;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NonNull;

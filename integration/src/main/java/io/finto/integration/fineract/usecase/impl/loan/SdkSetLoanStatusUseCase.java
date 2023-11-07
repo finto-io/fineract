@@ -11,7 +11,7 @@ import io.finto.integration.fineract.converter.FineractLoanMapper;
 import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
 import io.finto.integration.fineract.validators.loan.LoanOwnershipValidator;
 import io.finto.integration.fineract.validators.loan.LoanStatusValidator;
-import io.finto.usecase.loanproduct.SetLoanStatusUseCase;
+import io.finto.usecase.loan.SetLoanStatusUseCase;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NonNull;

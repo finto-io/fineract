@@ -46,6 +46,14 @@ public class SdkFineractUseCaseContext {
         return fineract().getLoans();
     }
 
+    public PaymentTypeApi paymentTypeApi() {
+        return fineract().getPaymentTypes();
+    }
+
+    public LoanTransactionsApi loanTransactionApi() {
+        return fineract().getLoanTransactions();
+    }
+
     public SavingsAccountApi savingsAccountApi() {
         return fineract().getSavingsAccounts();
     }

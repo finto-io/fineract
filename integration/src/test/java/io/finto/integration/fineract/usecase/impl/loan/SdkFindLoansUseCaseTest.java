@@ -1,4 +1,4 @@
-package io.finto.integration.fineract.usecase.impl.loanproduct;
+package io.finto.integration.fineract.usecase.impl.loan;
 
 import io.finto.domain.bnpl.enums.AvailableLoanStatus;
 import io.finto.domain.bnpl.loan.Loan;
@@ -10,6 +10,7 @@ import io.finto.fineract.sdk.models.GetClientsLoanAccounts;
 import io.finto.fineract.sdk.models.GetClientsLoanAccountsStatus;
 import io.finto.integration.fineract.converter.FineractLoanProductMapper;
 import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
+import io.finto.integration.fineract.usecase.impl.loan.SdkFindLoansUseCase;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

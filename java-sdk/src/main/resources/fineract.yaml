@@ -34643,8 +34643,6 @@ components:
       properties:
         amount:
           type: number
-          format: double
-          example: 559.88
         currency:
           $ref: '#/components/schemas/GetLoansCurrency'
         date:
@@ -34655,16 +34653,12 @@ components:
           example: '20120514'
         feeChargesPortion:
           type: number
-          format: double
-          example: 23.9
         id:
           type: integer
           format: int64
           example: 3
         interestPortion:
           type: number
-          format: double
-          example: 559.88
         loanChargePaidByList:
           type: array
           items:
@@ -34675,29 +34669,19 @@ components:
           example: false
         netDisbursalAmount:
           type: number
-          format: double
-          example: 1000
         outstandingLoanBalance:
           type: number
-          format: double
-          example: 100
         overpaymentPortion:
           type: number
-          format: double
-          example: 33
         paymentDetailData:
           $ref: '#/components/schemas/PaymentDetailData'
         penaltyChargesPortion:
           type: number
-          format: double
-          example: 12.8
         possibleNextRepaymentDate:
           type: string
           format: date
         principalPortion:
           type: number
-          format: double
-          example: 240
         reversalExternalId:
           type: string
           example: '20120514'
@@ -34716,8 +34700,6 @@ components:
           $ref: '#/components/schemas/GetLoansType'
         unrecognizedIncomePortion:
           type: number
-          format: double
-          example: 55.5
     GetLoansProductsDaysInMonthTemplateType:
       type: object
       properties:
@@ -34882,6 +34864,9 @@ components:
         contra:
           type: boolean
           example: false
+        value:
+          type: string
+          example: top-up
         description:
           type: string
           example: Repayment
@@ -48157,8 +48142,6 @@ components:
           example: rou123
         transactionAmount:
           type: number
-          format: double
-          example: 50000
         transactionDate:
           type: string
           example: 28 June 2022
