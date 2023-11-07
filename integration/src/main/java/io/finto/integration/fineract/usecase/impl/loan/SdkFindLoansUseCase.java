@@ -1,4 +1,4 @@
-package io.finto.integration.fineract.usecase.impl.loanproduct;
+package io.finto.integration.fineract.usecase.impl.loan;
 
 import io.finto.domain.bnpl.enums.AvailableLoanStatus;
 import io.finto.domain.bnpl.loan.Loan;
@@ -6,7 +6,7 @@ import io.finto.domain.id.CustomerInternalId;
 import io.finto.domain.id.fineract.LoanId;
 import io.finto.integration.fineract.converter.FineractLoanProductMapper;
 import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
-import io.finto.usecase.loanproduct.FindLoansUseCase;
+import io.finto.usecase.loan.FindLoansUseCase;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NonNull;

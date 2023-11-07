@@ -1,4 +1,4 @@
-package io.finto.integration.fineract.usecase.impl.loanproduct;
+package io.finto.integration.fineract.usecase.impl.loan.product;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,7 +13,7 @@ import io.finto.exceptions.core.generic.BadRequestException;
 import io.finto.fineract.sdk.models.PostLoanProductsRequest;
 import io.finto.integration.fineract.converter.FineractLoanProductMapper;
 import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
-import io.finto.usecase.loanproduct.CreateLoanProductUseCase;
+import io.finto.usecase.loan.product.CreateLoanProductUseCase;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

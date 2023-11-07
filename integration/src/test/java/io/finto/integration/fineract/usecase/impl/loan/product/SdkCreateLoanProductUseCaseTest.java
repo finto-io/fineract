@@ -1,4 +1,4 @@
-package io.finto.integration.fineract.usecase.impl.loanproduct;
+package io.finto.integration.fineract.usecase.impl.loan.product;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,6 +16,7 @@ import io.finto.fineract.sdk.models.PostLoanProductsResponse;
 import io.finto.integration.fineract.converter.FineractLoanProductMapper;
 import io.finto.integration.fineract.dto.LoanProductDetailsCreateDto;
 import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
+import io.finto.integration.fineract.usecase.impl.loan.product.SdkCreateLoanProductUseCase;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
