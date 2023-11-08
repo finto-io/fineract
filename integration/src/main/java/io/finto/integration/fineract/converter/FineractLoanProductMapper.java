@@ -55,7 +55,15 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static io.finto.fineract.sdk.Constants.*;
+import static io.finto.fineract.sdk.Constants.CHARGE_CALCULATION_TYPE_FIXED_ID;
+import static io.finto.fineract.sdk.Constants.CHARGE_CALCULATION_TYPE_PERCENTAGE_ID;
+import static io.finto.fineract.sdk.Constants.CHARGE_TIME_TYPE_EARLY_SETTLEMENT_ID;
+import static io.finto.fineract.sdk.Constants.CHARGE_TIME_TYPE_FEES_ID;
+import static io.finto.fineract.sdk.Constants.CHARGE_TIME_TYPE_LATE_PAYMENT_ID;
+import static io.finto.fineract.sdk.Constants.INTEREST_TYPE_FIXED_ID;
+import static io.finto.fineract.sdk.Constants.INTEREST_TYPE_REDUCING_ID;
+import static io.finto.fineract.sdk.Constants.LOCALE;
+import static io.finto.fineract.sdk.Constants.SCHEDULE_DATE_FORMATTER;
 import static io.finto.fineract.sdk.CustomDatatableNames.LOAN_FIELDS;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
@@ -646,15 +654,15 @@ public interface FineractLoanProductMapper {
             case 200:
                 return AvailableLoanStatus.APPROVED;
             case 300:
-                return AvailableLoanStatus.REJECTED;
-            case 301:
-                return AvailableLoanStatus.WITHDRAWN;
-            case 302:
                 return AvailableLoanStatus.ACTIVE;
-            case 400:
+            case 301:
                 return AvailableLoanStatus.OVERDUE;
-            case 500:
+            case 302:
                 return AvailableLoanStatus.NPA;
+            case 400:
+                return AvailableLoanStatus.WITHDRAWN;
+            case 500:
+                return AvailableLoanStatus.REJECTED;
             case 600:
                 return AvailableLoanStatus.CLOSED;
             case 601:

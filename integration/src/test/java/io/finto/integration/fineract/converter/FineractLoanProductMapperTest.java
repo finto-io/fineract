@@ -81,7 +81,10 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FineractLoanProductMapperTest {
 
@@ -1667,11 +1670,11 @@ class FineractLoanProductMapperTest {
     void testToAvailableLoanStatus() {
         assertEquals(AvailableLoanStatus.NEW, mapper.toAvailableLoanStatus(100));
         assertEquals(AvailableLoanStatus.APPROVED, mapper.toAvailableLoanStatus(200));
-        assertEquals(AvailableLoanStatus.REJECTED, mapper.toAvailableLoanStatus(300));
-        assertEquals(AvailableLoanStatus.WITHDRAWN, mapper.toAvailableLoanStatus(301));
-        assertEquals(AvailableLoanStatus.ACTIVE, mapper.toAvailableLoanStatus(302));
-        assertEquals(AvailableLoanStatus.OVERDUE, mapper.toAvailableLoanStatus(400));
-        assertEquals(AvailableLoanStatus.NPA, mapper.toAvailableLoanStatus(500));
+        assertEquals(AvailableLoanStatus.REJECTED, mapper.toAvailableLoanStatus(500));
+        assertEquals(AvailableLoanStatus.WITHDRAWN, mapper.toAvailableLoanStatus(400));
+        assertEquals(AvailableLoanStatus.ACTIVE, mapper.toAvailableLoanStatus(300));
+        assertEquals(AvailableLoanStatus.OVERDUE, mapper.toAvailableLoanStatus(301));
+        assertEquals(AvailableLoanStatus.NPA, mapper.toAvailableLoanStatus(302));
         assertEquals(AvailableLoanStatus.CLOSED, mapper.toAvailableLoanStatus(600));
         assertEquals(AvailableLoanStatus.WRITTENOFF, mapper.toAvailableLoanStatus(601));
         assertEquals(AvailableLoanStatus.RESCHEDULED, mapper.toAvailableLoanStatus(602));
