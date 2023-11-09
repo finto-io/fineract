@@ -2,6 +2,7 @@ package io.finto.integration.fineract.converter;
 
 import io.finto.domain.bnpl.transaction.Transaction;
 import io.finto.domain.bnpl.transaction.TransactionSubmit;
+import io.finto.domain.id.fineract.TransactionId;
 import io.finto.fineract.sdk.models.GetLoansLoanIdTransactionsTransactionIdResponse;
 import io.finto.fineract.sdk.models.PostLoansLoanIdTransactionsRequest;
 import org.mapstruct.Mapper;
@@ -45,6 +46,10 @@ public interface FineractLoanTransactionMapper {
     @Mapping(target = "otherIncomePortion", source = "unrecognizedIncomePortion")
     @Mapping(target = "isReversed", source = "manuallyReversed")
     @Mapping(target = "reversalDate", source = "reversedOnDate")
-    Transaction toDomain(GetLoansLoanIdTransactionsTransactionIdResponse loanTransaction);
+    Transaction toDomainBnplTransaction(GetLoansLoanIdTransactionsTransactionIdResponse loanTransaction);
+
+    default TransactionId toTransactionId(Long id) {
+        return TransactionId.of(id);
+    }
 
 }

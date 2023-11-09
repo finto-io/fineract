@@ -8,7 +8,6 @@ import io.finto.domain.id.fineract.LoanId;
 import io.finto.exceptions.core.generic.BadRequestException;
 import io.finto.fineract.sdk.models.GetLoansLoanIdResponse;
 import io.finto.fineract.sdk.models.PostLoansLoanIdTransactionsRequest;
-import io.finto.fineract.sdk.models.PostLoansRequest;
 import io.finto.integration.fineract.converter.FineractLoanTransactionMapper;
 import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
 import io.finto.usecase.loan.transaction.SubmitTransactionUseCase;
@@ -17,7 +16,6 @@ import lombok.Builder;
 import lombok.NonNull;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 import static io.finto.fineract.sdk.Constants.FORECLOSURE;
@@ -67,7 +65,7 @@ public class SdkSubmitTransactionUseCase implements SubmitTransactionUseCase {
         var loanTransaction = context.getResponseBody(
                 loanTransactionApi.retrieveTransaction(id, submittedTransaction.getResourceId(), null)
         );
-        return loanTransactionMapper.toDomain(loanTransaction);
+        return loanTransactionMapper.toDomainBnplTransaction(loanTransaction);
     }
 
     private void validate(CustomerInternalId customerInternalId, TransactionSubmit request, GetLoansLoanIdResponse loan) {

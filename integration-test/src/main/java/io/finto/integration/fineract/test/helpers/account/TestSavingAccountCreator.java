@@ -5,8 +5,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Random;
@@ -69,7 +68,7 @@ public class TestSavingAccountCreator<T extends TestSavingAccountRepository<T>> 
     }
 
     public TestSavingAccountCreator<T> withRandomParams() {
-        var date = ZonedDateTime.now(ZoneOffset.UTC);
+        var date = LocalDateTime.now();
         var dateFormat = availableDateFormat.get(PRNG.nextInt(availableDateFormat.size()));
 
         return withDateFormat(availableDateFormat.get(PRNG.nextInt(availableDateFormat.size())))

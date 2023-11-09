@@ -12,6 +12,7 @@ import io.finto.domain.charge.ChargeCreate;
 import io.finto.domain.id.CustomerInternalId;
 import io.finto.domain.id.fineract.ChargeId;
 import io.finto.domain.id.fineract.LoanProductId;
+import io.finto.domain.id.fineract.TransactionId;
 import io.finto.domain.loanproduct.AccountingMapping;
 import io.finto.domain.loanproduct.AccountingMappings;
 import io.finto.domain.loanproduct.Fee;
@@ -1466,7 +1467,7 @@ class FineractLoanProductMapperTest {
 
     private Transaction generateTransaction(LocalDate localDate) {
         return Transaction.builder()
-                .id(1L)
+                .id(TransactionId.of(1L))
                 .date(localDate)
                 .type("typeValue")
                 .amount(new BigDecimal("2"))

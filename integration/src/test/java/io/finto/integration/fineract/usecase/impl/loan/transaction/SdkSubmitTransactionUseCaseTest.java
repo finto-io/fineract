@@ -1,22 +1,14 @@
 package io.finto.integration.fineract.usecase.impl.loan.transaction;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import io.finto.domain.bnpl.enums.LoanTransactionType;
 import io.finto.domain.bnpl.transaction.Transaction;
 import io.finto.domain.bnpl.transaction.TransactionSubmit;
 import io.finto.domain.id.CustomerInternalId;
 import io.finto.domain.id.fineract.LoanId;
-import io.finto.domain.id.fineract.LoanProductId;
-import io.finto.domain.loanproduct.LoanProduct;
 import io.finto.exceptions.core.generic.BadRequestException;
-import io.finto.fineract.sdk.api.DataTablesApi;
-import io.finto.fineract.sdk.api.LoanProductsApi;
 import io.finto.fineract.sdk.api.LoanTransactionsApi;
 import io.finto.fineract.sdk.api.LoansApi;
 import io.finto.fineract.sdk.api.PaymentTypeApi;
-import io.finto.fineract.sdk.models.GetLoanProductsProductIdResponse;
 import io.finto.fineract.sdk.models.GetLoansLoanIdResponse;
 import io.finto.fineract.sdk.models.GetLoansLoanIdStatus;
 import io.finto.fineract.sdk.models.GetLoansLoanIdTimeline;
@@ -24,12 +16,8 @@ import io.finto.fineract.sdk.models.GetLoansLoanIdTransactionsTransactionIdRespo
 import io.finto.fineract.sdk.models.GetPaymentTypesPaymentTypeIdResponse;
 import io.finto.fineract.sdk.models.PostLoansLoanIdTransactionsRequest;
 import io.finto.fineract.sdk.models.PostLoansLoanIdTransactionsResponse;
-import io.finto.integration.fineract.converter.FineractLoanProductMapper;
 import io.finto.integration.fineract.converter.FineractLoanTransactionMapper;
-import io.finto.integration.fineract.dto.LoanProductDetailsDto;
 import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
-import io.finto.integration.fineract.usecase.impl.loan.product.SdkCreateLoanProductUseCase;
-import io.finto.integration.fineract.usecase.impl.loan.product.SdkFindLoanProductUseCase;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,10 +26,11 @@ import retrofit2.Call;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-import static io.finto.fineract.sdk.CustomDatatableNames.LOAN_PRODUCT_FIELDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.createMockBuilder;
+import static org.easymock.EasyMock.createStrictControl;
+import static org.easymock.EasyMock.expect;
 
 class SdkSubmitTransactionUseCaseTest {
     private IMocksControl control;
@@ -104,7 +93,7 @@ class SdkSubmitTransactionUseCaseTest {
         expect(loanTransactionsApi.retrieveTransaction(1L, 3L, null))
                 .andReturn(responseGetLoanTransaction);
         expect(context.getResponseBody(responseGetLoanTransaction)).andReturn(getTransaction);
-        expect(loanTransactionMapper.toDomain(getTransaction)).andReturn(transaction);
+        expect(loanTransactionMapper.toDomainBnplTransaction(getTransaction)).andReturn(transaction);
         control.replay();
 
         Transaction actual = useCase.submitTransaction(customerInternalId, loanId, request);
@@ -166,7 +155,7 @@ class SdkSubmitTransactionUseCaseTest {
         expect(loanTransactionsApi.retrieveTransaction(1L, 3L, null))
                 .andReturn(responseGetLoanTransaction);
         expect(context.getResponseBody(responseGetLoanTransaction)).andReturn(getTransaction);
-        expect(loanTransactionMapper.toDomain(getTransaction)).andReturn(transaction);
+        expect(loanTransactionMapper.toDomainBnplTransaction(getTransaction)).andReturn(transaction);
         control.replay();
 
         Transaction actual = useCase.submitTransaction(customerInternalId, loanId, request);

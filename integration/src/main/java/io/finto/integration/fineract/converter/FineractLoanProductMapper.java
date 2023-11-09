@@ -12,6 +12,7 @@ import io.finto.domain.charge.ChargeCreate;
 import io.finto.domain.id.CustomerInternalId;
 import io.finto.domain.id.fineract.ChargeId;
 import io.finto.domain.id.fineract.LoanProductId;
+import io.finto.domain.id.fineract.TransactionId;
 import io.finto.domain.loanproduct.Fee;
 import io.finto.domain.loanproduct.FeeCalcType;
 import io.finto.domain.loanproduct.FeeCreate;
@@ -635,6 +636,10 @@ public interface FineractLoanProductMapper {
     @Mapping(target = "isReversed", source = "manuallyReversed")
     @Mapping(target = "reversalDate", source = "reversedOnDate")
     Transaction toTransaction(GetLoansLoanIdTransactions source);
+
+    default TransactionId toTransactionId(Long id) {
+        return TransactionId.of(id);
+    }
 
     default AvailableLoanStatus toAvailableLoanStatus(Integer value) {
         if (value == null) {
