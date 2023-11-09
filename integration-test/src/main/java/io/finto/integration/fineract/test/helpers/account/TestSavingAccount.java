@@ -4,7 +4,12 @@ import io.finto.fineract.sdk.models.PostSavingsAccountsAccountIdRequest;
 import io.finto.fineract.sdk.models.PostSavingsAccountsRequest;
 import io.finto.fineract.sdk.models.PostSavingsAccountsRequestDatatablesInner;
 import io.finto.fineract.sdk.models.PostSavingsAccountsRequestDatatablesInnerData;
-import lombok.*;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -55,9 +60,9 @@ public class TestSavingAccount {
                 .build();
     }
 
-    public PostSavingsAccountsAccountIdRequest toStatusRequest(){
+    public PostSavingsAccountsAccountIdRequest toStatusRequest() {
         var formatter = DateTimeFormatter.ofPattern(dateFormat);
-        switch (status){
+        switch (status) {
             case CLOSED:
                 return PostSavingsAccountsAccountIdRequest.builder()
                         .dateFormat(dateFormat)

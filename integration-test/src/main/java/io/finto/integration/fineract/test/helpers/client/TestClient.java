@@ -12,8 +12,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -88,7 +87,7 @@ public class TestClient {
             case CLOSED:
                 return PostClientsClientIdRequest.builder()
                         .dateFormat(dateFormat)
-                        .closureDate(ZonedDateTime.now(ZoneOffset.UTC).format(formatter))
+                        .closureDate(LocalDateTime.now().format(formatter))
                         .closureReasonId(22)
                         .locale("en")
                         .build();
@@ -96,13 +95,13 @@ public class TestClient {
                 return PostClientsClientIdRequest.builder()
                         .dateFormat(dateFormat)
                         .locale("en")
-                        .activationDate(ZonedDateTime.now(ZoneOffset.UTC).format(formatter))
+                        .activationDate(LocalDateTime.now().format(formatter))
                         .build();
             case REACTIVATED:
                 return PostClientsClientIdRequest.builder()
                         .dateFormat(dateFormat)
                         .locale("en")
-                        .reactivationDate(ZonedDateTime.now(ZoneOffset.UTC).format(formatter))
+                        .reactivationDate(LocalDateTime.now().format(formatter))
                         .build();
         }
         throw new UnsupportedOperationException();

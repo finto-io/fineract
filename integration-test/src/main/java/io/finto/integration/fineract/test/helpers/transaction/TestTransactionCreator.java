@@ -11,8 +11,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Random;
 
-import static org.apache.commons.lang3.RandomStringUtils.random;
-
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor
@@ -23,7 +21,8 @@ public class TestTransactionCreator<T extends TestTransactionRepository<T>> {
     private static final List<String> availableLocale = List.of("en");
 
 
-    @NonNull protected final T repository;
+    @NonNull
+    protected final T repository;
     private String command;
     private String dateFormat;
     private String locale;
@@ -36,22 +35,27 @@ public class TestTransactionCreator<T extends TestTransactionRepository<T>> {
         this.command = command;
         return this;
     }
+
     public TestTransactionCreator<T> withDateFormat(String dateFormat) {
         this.dateFormat = dateFormat;
         return this;
     }
+
     public TestTransactionCreator<T> withLocale(String locale) {
         this.locale = locale;
         return this;
     }
+
     public TestTransactionCreator<T> withPaymentTypeId(Integer paymentTypeId) {
         this.paymentTypeId = paymentTypeId;
         return this;
     }
+
     public TestTransactionCreator<T> withTransactionAmount(BigDecimal transactionAmount) {
         this.transactionAmount = transactionAmount;
         return this;
     }
+
     public TestTransactionCreator<T> withTransactionDate(String transactionDate) {
         this.transactionDate = transactionDate;
         return this;
@@ -68,7 +72,7 @@ public class TestTransactionCreator<T extends TestTransactionRepository<T>> {
                 .withTransactionDate(date.format(DateTimeFormatter.ofPattern(dateFormat)))
                 ;
     }
-    
+
     public T create(Long savingAccountId) {
         return repository.submitTransaction(TestTransaction.builder()
                 .repository(repository)
@@ -81,7 +85,7 @@ public class TestTransactionCreator<T extends TestTransactionRepository<T>> {
                 .transactionDate(transactionDate)
                 .build());
     }
-    
+
     @SuppressWarnings("unchecked")
     public <R extends TestTransactionCreator<T>> R castTo(Class<R> to) {
         return (R) this;
