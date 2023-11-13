@@ -49,4 +49,5 @@ public class Constants {
     public static final String INDIVIDUAL = "individual";
     public static final String REPAYMENT = "repayment";
     public static final String FORECLOSURE = "foreclosure";
+    public static final String PREPAY_LOAN = "prepayLoan";
 }

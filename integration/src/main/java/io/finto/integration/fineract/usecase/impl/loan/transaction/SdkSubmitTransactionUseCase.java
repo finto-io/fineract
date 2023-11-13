@@ -5,17 +5,20 @@ import io.finto.domain.bnpl.transaction.Transaction;
 import io.finto.domain.bnpl.transaction.TransactionSubmit;
 import io.finto.domain.id.CustomerInternalId;
 import io.finto.domain.id.fineract.LoanId;
-import io.finto.exceptions.core.generic.BadRequestException;
-import io.finto.fineract.sdk.models.GetLoansLoanIdResponse;
 import io.finto.fineract.sdk.models.PostLoansLoanIdTransactionsRequest;
 import io.finto.integration.fineract.converter.FineractLoanTransactionMapper;
 import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
+import io.finto.integration.fineract.validators.loan.template.TemplateClientValidator;
+import io.finto.integration.fineract.validators.loan.template.TemplateDateValidator;
+import io.finto.integration.fineract.validators.loan.template.TemplateStatusValidator;
+import io.finto.integration.fineract.validators.loan.template.impl.TemplateClientValidatorImpl;
+import io.finto.integration.fineract.validators.loan.template.impl.TemplateDateValidatorImpl;
+import io.finto.integration.fineract.validators.loan.template.impl.TemplateStatusValidatorImpl;
 import io.finto.usecase.loan.transaction.SubmitTransactionUseCase;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NonNull;
 
-import java.time.LocalDate;
 import java.util.Objects;
 
 import static io.finto.fineract.sdk.Constants.FORECLOSURE;
@@ -29,11 +32,20 @@ public class SdkSubmitTransactionUseCase implements SubmitTransactionUseCase {
     private final SdkFineractUseCaseContext context;
     @NonNull
     private final FineractLoanTransactionMapper loanTransactionMapper;
+    @NonNull
+    private final TemplateClientValidator templateClientValidator;
+    @NonNull
+    private final TemplateStatusValidator templateStatusValidator;
+    @NonNull
+    private final TemplateDateValidator templateDateValidator;
 
     private final static String BAD_REQUEST_MESSAGE = "Invalid loan transaction request (%s)";
 
     public static class SdkSubmitTransactionUseCaseBuilder {
         private FineractLoanTransactionMapper loanTransactionMapper = FineractLoanTransactionMapper.INSTANCE;
+        private TemplateClientValidator templateClientValidator = new TemplateClientValidatorImpl();
+        private TemplateStatusValidator templateStatusValidator = new TemplateStatusValidatorImpl();
+        private TemplateDateValidator templateDateValidator = new TemplateDateValidatorImpl();
     }
 
     @Override
@@ -46,49 +58,30 @@ public class SdkSubmitTransactionUseCase implements SubmitTransactionUseCase {
                         null,
                         "clientId,status,timeline"));
 
-        validate(customerInternalId, request, loan);
+        templateClientValidator.validate(customerInternalId, loan);
+        templateStatusValidator.validate(loan);
+        templateDateValidator.validate(request, loan);
 
         PostLoansLoanIdTransactionsRequest fineractRequest;
-        String command;
-        if (Objects.requireNonNull(request.getType()) == LoanTransactionType.FORECLOSURE) {
+        var type = Objects.requireNonNull(request.getType());
+        if (type == LoanTransactionType.FORECLOSURE) {
             fineractRequest = loanTransactionMapper.loanTransactionSubmissionForeclosure(request);
-            command = FORECLOSURE;
         } else {
             context.getResponseBody(context.paymentTypeApi().retrieveOnePaymentType(request.getPaymentTypeId()));
             fineractRequest = loanTransactionMapper.loanTransactionSubmissionOther(request);
-            command = REPAYMENT;
         }
         var loanTransactionApi = context.loanTransactionApi();
         var submittedTransaction = context.getResponseBody(
-                loanTransactionApi.executeLoanTransaction(id, fineractRequest, command)
+                loanTransactionApi.executeLoanTransaction(
+                        id,
+                        fineractRequest,
+                        loanTransactionMapper.toCommand(type)
+                )
         );
         var loanTransaction = context.getResponseBody(
                 loanTransactionApi.retrieveTransaction(id, submittedTransaction.getResourceId(), null)
         );
         return loanTransactionMapper.toDomainBnplTransaction(loanTransaction);
-    }
-
-    private void validate(CustomerInternalId customerInternalId, TransactionSubmit request, GetLoansLoanIdResponse loan) {
-        if (!customerInternalId.getAsLong().equals(loan.getClientId())) {
-            throw new BadRequestException(BadRequestException.DEFAULT_ERROR_CODE, "Incorrect customer");
-        }
-        var status = loan.getStatus();
-        if (status != null && Boolean.FALSE.equals(status.getActive())) {
-            throw new BadRequestException(BadRequestException.DEFAULT_ERROR_CODE,
-                    String.format(BAD_REQUEST_MESSAGE, "loan is inactive"));
-        }
-        var actualDisbursementDate = Objects.requireNonNull(
-                Objects.requireNonNull(loan.getTimeline()).getActualDisbursementDate()
-        );
-        var date = request.getDate();
-        if (date.isBefore(actualDisbursementDate) || date.isAfter(getCurrentDate())) {
-            throw new BadRequestException(BadRequestException.DEFAULT_ERROR_CODE,
-                    String.format(BAD_REQUEST_MESSAGE, "date is invalid"));
-        }
-    }
-
-    protected LocalDate getCurrentDate() {
-        return LocalDate.now();
     }
 
 }
