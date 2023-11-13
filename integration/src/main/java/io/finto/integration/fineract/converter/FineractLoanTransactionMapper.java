@@ -1,9 +1,14 @@
 package io.finto.integration.fineract.converter;
 
+import io.finto.domain.bnpl.enums.LoanTransactionType;
+import io.finto.domain.bnpl.transaction.PaymentTypeOption;
 import io.finto.domain.bnpl.transaction.Transaction;
 import io.finto.domain.bnpl.transaction.TransactionSubmit;
+import io.finto.domain.bnpl.transaction.TransactionTemplate;
 import io.finto.domain.id.fineract.TransactionId;
+import io.finto.fineract.sdk.models.GetLoansLoanIdTransactionsTemplateResponse;
 import io.finto.fineract.sdk.models.GetLoansLoanIdTransactionsTransactionIdResponse;
+import io.finto.fineract.sdk.models.GetPaymentTypesPaymentTypeIdResponse;
 import io.finto.fineract.sdk.models.PostLoansLoanIdTransactionsRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -13,7 +18,7 @@ import org.mapstruct.factory.Mappers;
 
 import java.time.LocalDate;
 
-import static io.finto.fineract.sdk.Constants.DATE_FORMATTER;
+import static io.finto.fineract.sdk.Constants.*;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface FineractLoanTransactionMapper {
@@ -52,4 +57,25 @@ public interface FineractLoanTransactionMapper {
         return TransactionId.of(id);
     }
 
+
+    default String toCommand(LoanTransactionType type) {
+        if (type == null) {
+            return null;
+        }
+        if (type == LoanTransactionType.FORECLOSURE) {
+            return FORECLOSURE;
+        } else if (type == LoanTransactionType.PREPAY_LOAN) {
+            return PREPAY_LOAN;
+        } else {
+            return REPAYMENT;
+        }
+    }
+
+    @Mapping(target = "paymentTypeId", source = "id")
+    @Mapping(target = "paymentTypeName", source = "name")
+    @Mapping(target = "paymentTypeDescription", source = "description")
+    PaymentTypeOption toDomainBnplPaymentTypeOption(GetPaymentTypesPaymentTypeIdResponse source);
+
+    @Mapping(target = "currency", source = "currency.code")
+    TransactionTemplate toDomainBnplTransactionTemplate(GetLoansLoanIdTransactionsTemplateResponse source);
 }

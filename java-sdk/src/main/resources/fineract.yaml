@@ -34633,6 +34633,22 @@ components:
         date:
           type: string
           format: date
+        currency:
+          $ref: '#/components/schemas/GetLoansCurrency'
+        amount:
+          type: number
+        principalPortion:
+          type: number
+        interestPortion:
+          type: number
+        feeChargesPortion:
+          type: number
+        penaltyChargesPortion:
+          type: number
+        paymentTypeOptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/GetPaymentTypesPaymentTypeIdResponse'
         total:
           $ref: '#/components/schemas/GetLoansTotal'
         transactionType:
@@ -35222,7 +35238,7 @@ components:
           example: cash Payment
         id:
           type: integer
-          format: int32
+          format: int64
           example: 13
         isCashPayment:
           type: boolean

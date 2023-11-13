@@ -1,13 +1,17 @@
 package io.finto.integration.fineract.converter;
 
 import io.finto.domain.bnpl.enums.LoanTransactionType;
+import io.finto.domain.bnpl.transaction.PaymentTypeOption;
 import io.finto.domain.bnpl.transaction.Transaction;
 import io.finto.domain.bnpl.transaction.TransactionSubmit;
+import io.finto.domain.bnpl.transaction.TransactionTemplate;
 import io.finto.domain.id.fineract.TransactionId;
 import io.finto.fineract.sdk.models.GetLoanTransactionRelation;
 import io.finto.fineract.sdk.models.GetLoansCurrency;
+import io.finto.fineract.sdk.models.GetLoansLoanIdTransactionsTemplateResponse;
 import io.finto.fineract.sdk.models.GetLoansLoanIdTransactionsTransactionIdResponse;
 import io.finto.fineract.sdk.models.GetLoansType;
+import io.finto.fineract.sdk.models.GetPaymentTypesPaymentTypeIdResponse;
 import io.finto.fineract.sdk.models.PaymentDetailData;
 import io.finto.fineract.sdk.models.PaymentType;
 import io.finto.fineract.sdk.models.PostLoansLoanIdTransactionsRequest;
@@ -17,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -176,7 +181,62 @@ class FineractLoanTransactionMapperTest {
 
         assertEquals(expected, actual);
         assertEquals("8c6e690092305fc9a98bc693fc99c932", DigestUtils.md5Hex(actual.toString()), "Model change detected");
+    }
 
+    @Test
+    void testToCommand() {
+        assertEquals("prepayLoan", mapper.toCommand(LoanTransactionType.PREPAY_LOAN));
+        assertEquals("repayment", mapper.toCommand(LoanTransactionType.REPAYMENT));
+        assertEquals("foreclosure", mapper.toCommand(LoanTransactionType.FORECLOSURE));
+        assertNull(mapper.toCommand(null));
+    }
+
+    @Test
+    void testToDomainBnplTransactionTemplate() {
+        var localDate = LocalDate.now();
+        assertEquals(generateTransactionTemplate(localDate),
+                mapper.toDomainBnplTransactionTemplate(generateGetLoansLoanIdTransactionsTemplateResponse(localDate)));
+    }
+
+    private TransactionTemplate generateTransactionTemplate(LocalDate localDate) {
+        return TransactionTemplate.builder()
+                .date(localDate)
+                .amount(new BigDecimal("1"))
+                .currency("code")
+                .principalPortion(new BigDecimal("2"))
+                .interestPortion(new BigDecimal("3"))
+                .feeChargesPortion(new BigDecimal("4"))
+                .penaltyChargesPortion(new BigDecimal("5"))
+                .paymentTypeOptions(List.of(PaymentTypeOption.builder()
+                        .paymentTypeId(7L)
+                        .paymentTypeName("name")
+                        .paymentTypeDescription("description")
+                        .isCashPayment(true)
+                        .build()))
+                .build();
+    }
+
+    private GetLoansLoanIdTransactionsTemplateResponse generateGetLoansLoanIdTransactionsTemplateResponse(LocalDate localDate) {
+        return GetLoansLoanIdTransactionsTemplateResponse.builder()
+                .date(localDate)
+                .currency(GetLoansCurrency.builder()
+                        .code("code")
+                        .build())
+                .amount(new BigDecimal("1"))
+                .principalPortion(new BigDecimal("2"))
+                .interestPortion(new BigDecimal("3"))
+                .feeChargesPortion(new BigDecimal("4"))
+                .penaltyChargesPortion(new BigDecimal("5"))
+                .paymentTypeOptions(List.of(GetPaymentTypesPaymentTypeIdResponse.builder()
+                                .codeName("codeName")
+                                .name("name")
+                                .description("description")
+                                .position(6)
+                                .id(7L)
+                                .isSystemDefined(true)
+                                .isCashPayment(true)
+                        .build()))
+                .build();
     }
 
 }
