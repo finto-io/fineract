@@ -22,6 +22,7 @@ import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
 import io.finto.integration.fineract.validators.loan.template.TemplateClientValidator;
 import io.finto.integration.fineract.validators.loan.template.TemplateDateValidator;
 import io.finto.integration.fineract.validators.loan.template.TemplateStatusValidator;
+import io.finto.integration.fineract.validators.loan.template.TemplateSubmitRequestValidator;
 import io.finto.usecase.loan.FindLoanUseCase;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,6 +43,7 @@ class SdkSubmitTransactionUseCaseTest {
     private TemplateClientValidator templateClientValidator;
     private TemplateStatusValidator templateStatusValidator;
     private TemplateDateValidator templateDateValidator;
+    private TemplateSubmitRequestValidator templateSubmitRequestValidator;
     private SdkSubmitTransactionUseCase useCase;
     private FindLoanUseCase findLoanUseCase;
 
@@ -53,6 +55,7 @@ class SdkSubmitTransactionUseCaseTest {
         templateClientValidator = control.createMock(TemplateClientValidator.class);
         templateStatusValidator = control.createMock(TemplateStatusValidator.class);
         templateDateValidator = control.createMock(TemplateDateValidator.class);
+        templateSubmitRequestValidator = control.createMock(TemplateSubmitRequestValidator.class);
         findLoanUseCase = control.createMock(FindLoanUseCase.class);
         useCase = new SdkSubmitTransactionUseCase(
                 context,
@@ -60,6 +63,7 @@ class SdkSubmitTransactionUseCaseTest {
                 templateClientValidator,
                 templateStatusValidator,
                 templateDateValidator,
+                templateSubmitRequestValidator,
                 findLoanUseCase
         );
     }
@@ -81,8 +85,8 @@ class SdkSubmitTransactionUseCaseTest {
         GetLoansLoanIdTransactionsTransactionIdResponse getTransaction = control.createMock(GetLoansLoanIdTransactionsTransactionIdResponse.class);
         Transaction transaction = control.createMock(Transaction.class);
 
+        templateSubmitRequestValidator.validate(request);
         expect(loanId.getValue()).andReturn(1L);
-
         expect(findLoanUseCase.getLoanShortInfo(loanId, "clientId", "status" , "timeline")).andReturn(loanShortInfo);
         templateClientValidator.validate(customerInternalId, loanShortInfo);
         templateStatusValidator.validate(loanShortInfo);
@@ -128,8 +132,8 @@ class SdkSubmitTransactionUseCaseTest {
         Call<GetPaymentTypesPaymentTypeIdResponse> responsePaymentType = control.createMock(Call.class);
         GetPaymentTypesPaymentTypeIdResponse paymentType = control.createMock(GetPaymentTypesPaymentTypeIdResponse.class);
 
+        templateSubmitRequestValidator.validate(request);
         expect(loanId.getValue()).andReturn(1L);
-
         expect(findLoanUseCase.getLoanShortInfo(loanId, "clientId", "status" , "timeline")).andReturn(loanShortInfo);
         templateClientValidator.validate(customerInternalId, loanShortInfo);
         templateStatusValidator.validate(loanShortInfo);
@@ -170,8 +174,8 @@ class SdkSubmitTransactionUseCaseTest {
         TransactionSubmit request = control.createMock(TransactionSubmit.class);
         LoanShortInfo loanShortInfo = control.createMock(LoanShortInfo.class);
 
+        templateSubmitRequestValidator.validate(request);
         expect(loanId.getValue()).andReturn(1L);
-
         expect(findLoanUseCase.getLoanShortInfo(loanId, "clientId", "status" , "timeline")).andReturn(loanShortInfo);
         templateClientValidator.validate(customerInternalId, loanShortInfo);
         templateStatusValidator.validate(loanShortInfo);
@@ -195,6 +199,7 @@ class SdkSubmitTransactionUseCaseTest {
         TransactionSubmit request = control.createMock(TransactionSubmit.class);
         LoanShortInfo loanShortInfo = control.createMock(LoanShortInfo.class);
 
+        templateSubmitRequestValidator.validate(request);
         expect(loanId.getValue()).andReturn(1L);
         expect(findLoanUseCase.getLoanShortInfo(loanId, "clientId", "status" , "timeline")).andReturn(loanShortInfo);
         templateClientValidator.validate(customerInternalId, loanShortInfo);
@@ -218,8 +223,8 @@ class SdkSubmitTransactionUseCaseTest {
         TransactionSubmit request = control.createMock(TransactionSubmit.class);
         LoanShortInfo loanShortInfo = control.createMock(LoanShortInfo.class);
 
+        templateSubmitRequestValidator.validate(request);
         expect(loanId.getValue()).andReturn(1L);
-
         expect(findLoanUseCase.getLoanShortInfo(loanId, "clientId", "status" , "timeline")).andReturn(loanShortInfo);
         templateClientValidator.validate(customerInternalId, loanShortInfo);
         expectLastCall().andThrow(new BadRequestException());
