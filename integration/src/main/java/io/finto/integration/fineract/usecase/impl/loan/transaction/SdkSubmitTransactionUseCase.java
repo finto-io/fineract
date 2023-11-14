@@ -12,9 +12,11 @@ import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
 import io.finto.integration.fineract.validators.loan.template.TemplateClientValidator;
 import io.finto.integration.fineract.validators.loan.template.TemplateDateValidator;
 import io.finto.integration.fineract.validators.loan.template.TemplateStatusValidator;
+import io.finto.integration.fineract.validators.loan.template.TemplateSubmitRequestValidator;
 import io.finto.integration.fineract.validators.loan.template.impl.TemplateClientValidatorImpl;
 import io.finto.integration.fineract.validators.loan.template.impl.TemplateDateValidatorImpl;
 import io.finto.integration.fineract.validators.loan.template.impl.TemplateStatusValidatorImpl;
+import io.finto.integration.fineract.validators.loan.template.impl.TemplateSubmitRequestValidatorImpl;
 import io.finto.usecase.loan.FindLoanUseCase;
 import io.finto.usecase.loan.transaction.SubmitTransactionUseCase;
 import lombok.AllArgsConstructor;
@@ -42,6 +44,8 @@ public class SdkSubmitTransactionUseCase implements SubmitTransactionUseCase {
     private final TemplateStatusValidator templateStatusValidator;
     @NonNull
     private final TemplateDateValidator templateDateValidator;
+    @NonNull
+    private final TemplateSubmitRequestValidator templateSubmitRequestValidator;
     @NotNull
     private final FindLoanUseCase findLoanUseCase;
 
@@ -52,12 +56,14 @@ public class SdkSubmitTransactionUseCase implements SubmitTransactionUseCase {
         private TemplateClientValidator templateClientValidator = new TemplateClientValidatorImpl();
         private TemplateStatusValidator templateStatusValidator = new TemplateStatusValidatorImpl();
         private TemplateDateValidator templateDateValidator = new TemplateDateValidatorImpl();
+        private TemplateSubmitRequestValidator templateSubmitRequestValidator = new TemplateSubmitRequestValidatorImpl();
     }
 
     @Override
     public Transaction submitTransaction(CustomerInternalId customerInternalId, LoanId loanId, TransactionSubmit request) {
-        var id = loanId.getValue();
+        templateSubmitRequestValidator.validate(request);
 
+        var id = loanId.getValue();
         LoanShortInfo loanShortInfo = findLoanUseCase.getLoanShortInfo(loanId, FIELD_CLIENT_ID, FIELD_STATUS, FIELD_TIMELINE);
         templateClientValidator.validate(customerInternalId, loanShortInfo);
         templateStatusValidator.validate(loanShortInfo);
