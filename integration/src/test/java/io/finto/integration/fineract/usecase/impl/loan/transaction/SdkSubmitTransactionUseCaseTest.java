@@ -1,6 +1,7 @@
 package io.finto.integration.fineract.usecase.impl.loan.transaction;
 
 import io.finto.domain.bnpl.enums.LoanTransactionType;
+import io.finto.domain.bnpl.loan.LoanShortInfo;
 import io.finto.domain.bnpl.transaction.Transaction;
 import io.finto.domain.bnpl.transaction.TransactionSubmit;
 import io.finto.domain.id.CustomerInternalId;
@@ -21,6 +22,7 @@ import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
 import io.finto.integration.fineract.validators.loan.template.TemplateClientValidator;
 import io.finto.integration.fineract.validators.loan.template.TemplateDateValidator;
 import io.finto.integration.fineract.validators.loan.template.TemplateStatusValidator;
+import io.finto.usecase.loan.FindLoanUseCase;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,6 +43,7 @@ class SdkSubmitTransactionUseCaseTest {
     private TemplateStatusValidator templateStatusValidator;
     private TemplateDateValidator templateDateValidator;
     private SdkSubmitTransactionUseCase useCase;
+    private FindLoanUseCase findLoanUseCase;
 
     @BeforeEach
     void setUp() {
@@ -50,12 +53,14 @@ class SdkSubmitTransactionUseCaseTest {
         templateClientValidator = control.createMock(TemplateClientValidator.class);
         templateStatusValidator = control.createMock(TemplateStatusValidator.class);
         templateDateValidator = control.createMock(TemplateDateValidator.class);
+        findLoanUseCase = control.createMock(FindLoanUseCase.class);
         useCase = new SdkSubmitTransactionUseCase(
                 context,
                 loanTransactionMapper,
                 templateClientValidator,
                 templateStatusValidator,
-                templateDateValidator
+                templateDateValidator,
+                findLoanUseCase
         );
     }
 
@@ -67,9 +72,7 @@ class SdkSubmitTransactionUseCaseTest {
         CustomerInternalId customerInternalId = control.createMock(CustomerInternalId.class);
         LoanId loanId = control.createMock(LoanId.class);
         TransactionSubmit request = control.createMock(TransactionSubmit.class);
-        LoansApi loansApi = control.createMock(LoansApi.class);
-        Call<GetLoansLoanIdResponse> responseLoan = control.createMock(Call.class);
-        GetLoansLoanIdResponse loan = control.createMock(GetLoansLoanIdResponse.class);
+        LoanShortInfo loanShortInfo = control.createMock(LoanShortInfo.class);
         PostLoansLoanIdTransactionsRequest fineractRequest = control.createMock(PostLoansLoanIdTransactionsRequest.class);
         LoanTransactionsApi loanTransactionsApi = control.createMock(LoanTransactionsApi.class);
         Call<PostLoansLoanIdTransactionsResponse> responsePostLoanTransaction = control.createMock(Call.class);
@@ -79,13 +82,11 @@ class SdkSubmitTransactionUseCaseTest {
         Transaction transaction = control.createMock(Transaction.class);
 
         expect(loanId.getValue()).andReturn(1L);
-        expect(context.loanApi()).andReturn(loansApi);
-        expect(loansApi.retrieveLoan(1L, null, null, null, "clientId,status,timeline"))
-                .andReturn(responseLoan);
-        expect(context.getResponseBody(responseLoan)).andReturn(loan);
-        templateClientValidator.validate(customerInternalId, loan);
-        templateStatusValidator.validate(loan);
-        templateDateValidator.validate(request, loan);
+
+        expect(findLoanUseCase.getLoanShortInfo(loanId, "clientId", "status" , "timeline")).andReturn(loanShortInfo);
+        templateClientValidator.validate(customerInternalId, loanShortInfo);
+        templateStatusValidator.validate(loanShortInfo);
+        templateDateValidator.validate(request, loanShortInfo);
         expect(request.getType()).andReturn(LoanTransactionType.FORECLOSURE);
         expect(loanTransactionMapper.loanTransactionSubmissionForeclosure(request)).andReturn(fineractRequest);
         expect(context.loanTransactionApi()).andReturn(loanTransactionsApi);
@@ -115,9 +116,7 @@ class SdkSubmitTransactionUseCaseTest {
         CustomerInternalId customerInternalId = control.createMock(CustomerInternalId.class);
         LoanId loanId = control.createMock(LoanId.class);
         TransactionSubmit request = control.createMock(TransactionSubmit.class);
-        LoansApi loansApi = control.createMock(LoansApi.class);
-        Call<GetLoansLoanIdResponse> responseLoan = control.createMock(Call.class);
-        GetLoansLoanIdResponse loan = control.createMock(GetLoansLoanIdResponse.class);
+        LoanShortInfo loanShortInfo = control.createMock(LoanShortInfo.class);
         PostLoansLoanIdTransactionsRequest fineractRequest = control.createMock(PostLoansLoanIdTransactionsRequest.class);
         LoanTransactionsApi loanTransactionsApi = control.createMock(LoanTransactionsApi.class);
         Call<PostLoansLoanIdTransactionsResponse> responsePostLoanTransaction = control.createMock(Call.class);
@@ -130,13 +129,11 @@ class SdkSubmitTransactionUseCaseTest {
         GetPaymentTypesPaymentTypeIdResponse paymentType = control.createMock(GetPaymentTypesPaymentTypeIdResponse.class);
 
         expect(loanId.getValue()).andReturn(1L);
-        expect(context.loanApi()).andReturn(loansApi);
-        expect(loansApi.retrieveLoan(1L, null, null, null, "clientId,status,timeline"))
-                .andReturn(responseLoan);
-        expect(context.getResponseBody(responseLoan)).andReturn(loan);
-        templateClientValidator.validate(customerInternalId, loan);
-        templateStatusValidator.validate(loan);
-        templateDateValidator.validate(request, loan);
+
+        expect(findLoanUseCase.getLoanShortInfo(loanId, "clientId", "status" , "timeline")).andReturn(loanShortInfo);
+        templateClientValidator.validate(customerInternalId, loanShortInfo);
+        templateStatusValidator.validate(loanShortInfo);
+        templateDateValidator.validate(request, loanShortInfo);
         expect(request.getType()).andReturn(LoanTransactionType.REPAYMENT);
         expect(context.paymentTypeApi()).andReturn(paymentTypeApi);
         expect(request.getPaymentTypeId()).andReturn(4L);
@@ -171,18 +168,14 @@ class SdkSubmitTransactionUseCaseTest {
         CustomerInternalId customerInternalId = control.createMock(CustomerInternalId.class);
         LoanId loanId = control.createMock(LoanId.class);
         TransactionSubmit request = control.createMock(TransactionSubmit.class);
-        LoansApi loansApi = control.createMock(LoansApi.class);
-        Call<GetLoansLoanIdResponse> responseLoan = control.createMock(Call.class);
-        GetLoansLoanIdResponse loan = control.createMock(GetLoansLoanIdResponse.class);
+        LoanShortInfo loanShortInfo = control.createMock(LoanShortInfo.class);
 
         expect(loanId.getValue()).andReturn(1L);
-        expect(context.loanApi()).andReturn(loansApi);
-        expect(loansApi.retrieveLoan(1L, null, null, null, "clientId,status,timeline"))
-                .andReturn(responseLoan);
-        expect(context.getResponseBody(responseLoan)).andReturn(loan);
-        templateClientValidator.validate(customerInternalId, loan);
-        templateStatusValidator.validate(loan);
-        templateDateValidator.validate(request, loan);
+
+        expect(findLoanUseCase.getLoanShortInfo(loanId, "clientId", "status" , "timeline")).andReturn(loanShortInfo);
+        templateClientValidator.validate(customerInternalId, loanShortInfo);
+        templateStatusValidator.validate(loanShortInfo);
+        templateDateValidator.validate(request, loanShortInfo);
         expectLastCall().andThrow(new BadRequestException());
         control.replay();
 
@@ -200,17 +193,12 @@ class SdkSubmitTransactionUseCaseTest {
         CustomerInternalId customerInternalId = control.createMock(CustomerInternalId.class);
         LoanId loanId = control.createMock(LoanId.class);
         TransactionSubmit request = control.createMock(TransactionSubmit.class);
-        LoansApi loansApi = control.createMock(LoansApi.class);
-        Call<GetLoansLoanIdResponse> responseLoan = control.createMock(Call.class);
-        GetLoansLoanIdResponse loan = control.createMock(GetLoansLoanIdResponse.class);
+        LoanShortInfo loanShortInfo = control.createMock(LoanShortInfo.class);
 
         expect(loanId.getValue()).andReturn(1L);
-        expect(context.loanApi()).andReturn(loansApi);
-        expect(loansApi.retrieveLoan(1L, null, null, null, "clientId,status,timeline"))
-                .andReturn(responseLoan);
-        expect(context.getResponseBody(responseLoan)).andReturn(loan);
-        templateClientValidator.validate(customerInternalId, loan);
-        templateStatusValidator.validate(loan);
+        expect(findLoanUseCase.getLoanShortInfo(loanId, "clientId", "status" , "timeline")).andReturn(loanShortInfo);
+        templateClientValidator.validate(customerInternalId, loanShortInfo);
+        templateStatusValidator.validate(loanShortInfo);
         expectLastCall().andThrow(new BadRequestException());
         control.replay();
 
@@ -228,16 +216,12 @@ class SdkSubmitTransactionUseCaseTest {
         CustomerInternalId customerInternalId = control.createMock(CustomerInternalId.class);
         LoanId loanId = control.createMock(LoanId.class);
         TransactionSubmit request = control.createMock(TransactionSubmit.class);
-        LoansApi loansApi = control.createMock(LoansApi.class);
-        Call<GetLoansLoanIdResponse> responseLoan = control.createMock(Call.class);
-        GetLoansLoanIdResponse loan = control.createMock(GetLoansLoanIdResponse.class);
+        LoanShortInfo loanShortInfo = control.createMock(LoanShortInfo.class);
 
         expect(loanId.getValue()).andReturn(1L);
-        expect(context.loanApi()).andReturn(loansApi);
-        expect(loansApi.retrieveLoan(1L, null, null, null, "clientId,status,timeline"))
-                .andReturn(responseLoan);
-        expect(context.getResponseBody(responseLoan)).andReturn(loan);
-        templateClientValidator.validate(customerInternalId, loan);
+
+        expect(findLoanUseCase.getLoanShortInfo(loanId, "clientId", "status" , "timeline")).andReturn(loanShortInfo);
+        templateClientValidator.validate(customerInternalId, loanShortInfo);
         expectLastCall().andThrow(new BadRequestException());
         control.replay();
 

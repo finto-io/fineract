@@ -50,4 +50,8 @@ public class Constants {
     public static final String REPAYMENT = "repayment";
     public static final String FORECLOSURE = "foreclosure";
     public static final String PREPAY_LOAN = "prepayLoan";
+
+    public static final String FIELD_CLIENT_ID = "clientId";
+    public static final String FIELD_STATUS = "status";
+    public static final String FIELD_TIMELINE = "timeline";
 }

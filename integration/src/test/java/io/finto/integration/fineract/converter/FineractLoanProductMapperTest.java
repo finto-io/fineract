@@ -4,6 +4,7 @@ import io.finto.domain.bnpl.enums.AvailableLoanStatus;
 import io.finto.domain.bnpl.enums.InstallmentFrequency;
 import io.finto.domain.bnpl.loan.Loan;
 import io.finto.domain.bnpl.loan.LoanCreate;
+import io.finto.domain.bnpl.loan.LoanShortInfo;
 import io.finto.domain.bnpl.schedule.Period;
 import io.finto.domain.bnpl.schedule.Schedule;
 import io.finto.domain.bnpl.schedule.ScheduleCalculate;
@@ -65,6 +66,7 @@ import io.finto.fineract.sdk.models.ResultsetRowData;
 import io.finto.fineract.sdk.models.RunReportsResponse;
 import io.finto.integration.fineract.dto.LoanProductDetailsCreateDto;
 import io.finto.integration.fineract.dto.LoanProductDetailsDto;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -1517,6 +1519,30 @@ class FineractLoanProductMapperTest {
                 mapper.toDomain(generateGetLoansLoanIdResponse(localDate), generateDataTables(localDate), 3));
     }
 
+    @Test
+    void test_toLoanShortInfo() {
+        LocalDate localDate = LocalDate.of(2023, 11, 13);
+        GetLoansLoanIdResponse loanResponse = generateGetLoansLoanIdResponse(localDate);
+
+        LoanShortInfo expected = LoanShortInfo.builder()
+                .customerInternalId(CustomerInternalId.of(loanResponse.getClientId()))
+                .pending(loanResponse.getStatus().getPendingApproval())
+                .active(loanResponse.getStatus().getActive())
+                .actualDisbursementDate(loanResponse.getTimeline().getActualDisbursementDate())
+                .build();
+        LoanShortInfo actual = mapper.toLoanShortInfo(loanResponse);
+        assertEquals(expected, actual);
+        assertEquals("51dbec2c04f86b478c2be623980d6d19", DigestUtils.md5Hex(actual.toString()), "Model change detected");
+    }
+
+    @Test
+    void test_toLoanShortInfo_emptyNestedObjects() {
+        LoanShortInfo expected = LoanShortInfo.builder().build();
+        LoanShortInfo actual = mapper.toLoanShortInfo(GetLoansLoanIdResponse.builder().build());
+        assertEquals(expected, actual);
+        assertEquals("bfe8cf174076a657763835fa38b4c053", DigestUtils.md5Hex(actual.toString()), "Model change detected");
+    }
+
     private Loan generateLoan(LocalDate localDate) {
         return Loan.builder()
                 .id(1L)
@@ -1574,6 +1600,8 @@ class FineractLoanProductMapperTest {
         return GetLoansLoanIdResponse.builder()
                 .id(1L)
                 .status(GetLoansLoanIdStatus.builder()
+                        .active(true)
+                        .pendingApproval(false)
                         .value("statusValue")
                         .build())
                 .clientId(2L)

@@ -1,6 +1,7 @@
 package io.finto.integration.fineract.usecase.impl.loan.transaction;
 
 import io.finto.domain.bnpl.enums.LoanTransactionType;
+import io.finto.domain.bnpl.loan.LoanShortInfo;
 import io.finto.domain.bnpl.transaction.TransactionTemplate;
 import io.finto.domain.id.CustomerInternalId;
 import io.finto.domain.id.fineract.LoanId;
@@ -12,6 +13,7 @@ import io.finto.integration.fineract.converter.FineractLoanTransactionMapper;
 import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
 import io.finto.integration.fineract.validators.loan.template.TemplateClientValidator;
 import io.finto.integration.fineract.validators.loan.template.TemplateStatusValidator;
+import io.finto.usecase.loan.FindLoanUseCase;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +30,7 @@ class SdkFindLoanTransactionTemplateUseCaseTest {
     private TemplateClientValidator templateClientValidator;
     private TemplateStatusValidator templateStatusValidator;
     private SdkFindLoanTransactionTemplateUseCase useCase;
+    private FindLoanUseCase findLoanUseCase;
 
     @BeforeEach
     void setUp() {
@@ -36,16 +39,18 @@ class SdkFindLoanTransactionTemplateUseCaseTest {
         loanTransactionMapper = control.createMock(FineractLoanTransactionMapper.class);
         templateClientValidator = control.createMock(TemplateClientValidator.class);
         templateStatusValidator = control.createMock(TemplateStatusValidator.class);
+        findLoanUseCase = control.createMock(FindLoanUseCase.class);
         useCase = new SdkFindLoanTransactionTemplateUseCase(
                 context,
                 loanTransactionMapper,
                 templateClientValidator,
-                templateStatusValidator
+                templateStatusValidator,
+                findLoanUseCase
         );
     }
 
     /**
-     * Method under test: {@link SdkFindLoanTransactionTemplateUseCase#findLoanTransaction(CustomerInternalId, LoanId, LoanTransactionType)}
+     * Method under test: {@link SdkFindLoanTransactionTemplateUseCase#findLoanTransactionTemplate(CustomerInternalId, LoanId, LoanTransactionType)}
      */
     @Test
     void test_findLoanTransaction_success() {
@@ -53,19 +58,21 @@ class SdkFindLoanTransactionTemplateUseCaseTest {
         LoanId loanId = control.createMock(LoanId.class);
         LoansApi loansApi = control.createMock(LoansApi.class);
         Call<GetLoansLoanIdResponse> responseLoan = control.createMock(Call.class);
-        GetLoansLoanIdResponse loan = control.createMock(GetLoansLoanIdResponse.class);
+
+
+        LoanShortInfo loanShortInfo = control.createMock(LoanShortInfo.class);
         LoanTransactionsApi loanTransactionsApi = control.createMock(LoanTransactionsApi.class);
         Call<GetLoansLoanIdTransactionsTemplateResponse> responseGetLoanTransactionTemplate = control.createMock(Call.class);
         GetLoansLoanIdTransactionsTemplateResponse getTransactionTemplate = control.createMock(GetLoansLoanIdTransactionsTemplateResponse.class);
         TransactionTemplate transactionTemplate = control.createMock(TransactionTemplate.class);
 
         expect(loanId.getValue()).andReturn(1L);
-        expect(context.loanApi()).andReturn(loansApi);
-        expect(loansApi.retrieveLoan(1L, null, null, null, "clientId,status"))
-                .andReturn(responseLoan);
-        expect(context.getResponseBody(responseLoan)).andReturn(loan);
-        templateClientValidator.validate(customerInternalId, loan);
-        templateStatusValidator.validate(loan);
+
+        expect(findLoanUseCase.getLoanShortInfo(loanId, "clientId", "status")).andReturn(loanShortInfo);
+
+        templateClientValidator.validate(customerInternalId, loanShortInfo);
+        templateStatusValidator.validate(loanShortInfo);
+
         expect(context.loanTransactionApi()).andReturn(loanTransactionsApi);
         expect(loanTransactionMapper.toCommand(LoanTransactionType.PREPAY_LOAN)).andReturn("test");
         expect(loanTransactionsApi.retrieveTransactionTemplate(1L, "test", null, null, null))
@@ -74,7 +81,7 @@ class SdkFindLoanTransactionTemplateUseCaseTest {
         expect(loanTransactionMapper.toDomainBnplTransactionTemplate(getTransactionTemplate)).andReturn(transactionTemplate);
         control.replay();
 
-        var actual = useCase.findLoanTransaction(customerInternalId, loanId, LoanTransactionType.PREPAY_LOAN);
+        var actual = useCase.findLoanTransactionTemplate(customerInternalId, loanId, LoanTransactionType.PREPAY_LOAN);
 
         control.verify();
 

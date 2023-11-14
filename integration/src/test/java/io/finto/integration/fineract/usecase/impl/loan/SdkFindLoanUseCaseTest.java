@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import io.finto.domain.bnpl.loan.Loan;
+import io.finto.domain.bnpl.loan.LoanShortInfo;
 import io.finto.domain.id.fineract.LoanId;
 import io.finto.fineract.sdk.api.DataTablesApi;
 import io.finto.fineract.sdk.api.LoansApi;
@@ -11,7 +12,6 @@ import io.finto.fineract.sdk.models.GetLoansLoanIdResponse;
 import io.finto.fineract.sdk.models.RunReportsResponse;
 import io.finto.integration.fineract.converter.FineractLoanProductMapper;
 import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
-import io.finto.integration.fineract.usecase.impl.loan.SdkFindLoanUseCase;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,6 +20,7 @@ import retrofit2.Call;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.easymock.EasyMock.createStrictControl;
 import static org.easymock.EasyMock.expect;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SdkFindLoanUseCaseTest {
     private IMocksControl control;
@@ -75,6 +76,82 @@ class SdkFindLoanUseCaseTest {
         control.verify();
 
         assertThat(actual).isSameAs(loan);
+    }
+
+    @Test
+    void test_findLoanShortInfo_success_3args() {
+        LoanId loanId = LoanId.of(13L);
+        String arg1 = "arg1";
+        String arg2 = "arg2";
+        String arg3 = "arg3";
+
+        LoansApi loansApiMock = control.createMock(LoansApi.class);
+        Call<GetLoansLoanIdResponse> apiCallMock = control.createMock(Call.class);
+        GetLoansLoanIdResponse loanResponseMock = control.createMock(GetLoansLoanIdResponse.class);
+        LoanShortInfo expected = control.createMock(LoanShortInfo.class);
+
+        expect(context.loanApi())
+                .andReturn(loansApiMock);
+        expect(loansApiMock.retrieveLoan(loanId.getValue(), false, null, null, "arg1,arg2,arg3"))
+                .andReturn(apiCallMock);
+        expect(context.getResponseBody(apiCallMock)).andReturn(loanResponseMock);
+        expect(loanProductMapper.toLoanShortInfo(loanResponseMock))
+                .andReturn(expected);
+        control.replay();
+
+        LoanShortInfo actual = useCase.getLoanShortInfo(loanId, arg1, arg2, arg3);
+        control.verify();
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void test_findLoanShortInfo_success_1arg() {
+        LoanId loanId = LoanId.of(13L);
+        String arg1 = "arg1";
+
+        LoansApi loansApiMock = control.createMock(LoansApi.class);
+        Call<GetLoansLoanIdResponse> apiCallMock = control.createMock(Call.class);
+        GetLoansLoanIdResponse loanResponseMock = control.createMock(GetLoansLoanIdResponse.class);
+        LoanShortInfo expected = control.createMock(LoanShortInfo.class);
+
+        expect(context.loanApi())
+                .andReturn(loansApiMock);
+        expect(loansApiMock.retrieveLoan(loanId.getValue(), false, null, null, "arg1"))
+                .andReturn(apiCallMock);
+        expect(context.getResponseBody(apiCallMock)).andReturn(loanResponseMock);
+        expect(loanProductMapper.toLoanShortInfo(loanResponseMock))
+                .andReturn(expected);
+        control.replay();
+
+        LoanShortInfo actual = useCase.getLoanShortInfo(loanId, arg1);
+        control.verify();
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void test_findLoanShortInfo_success_noArgs() {
+        LoanId loanId = LoanId.of(13L);
+
+        LoansApi loansApiMock = control.createMock(LoansApi.class);
+        Call<GetLoansLoanIdResponse> apiCallMock = control.createMock(Call.class);
+        GetLoansLoanIdResponse loanResponseMock = control.createMock(GetLoansLoanIdResponse.class);
+        LoanShortInfo expected = control.createMock(LoanShortInfo.class);
+
+        expect(context.loanApi())
+                .andReturn(loansApiMock);
+        expect(loansApiMock.retrieveLoan(loanId.getValue(), false, null, null, ""))
+                .andReturn(apiCallMock);
+        expect(context.getResponseBody(apiCallMock)).andReturn(loanResponseMock);
+        expect(loanProductMapper.toLoanShortInfo(loanResponseMock))
+                .andReturn(expected);
+        control.replay();
+
+        LoanShortInfo actual = useCase.getLoanShortInfo(loanId);
+        control.verify();
+
+        assertEquals(expected, actual);
     }
 
 }

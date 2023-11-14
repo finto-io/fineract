@@ -19,7 +19,7 @@ public class SdkFindLoanTransactionUseCase implements FindLoanTransactionUseCase
     @NonNull
     private final FineractLoanTransactionMapper loanTransactionMapper;
 
-    public static class SdkFindTransactionUseCaseBuilder {
+    public static class SdkFindLoanTransactionUseCaseBuilder {
         private FineractLoanTransactionMapper loanTransactionMapper = FineractLoanTransactionMapper.INSTANCE;
     }
 

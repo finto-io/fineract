@@ -1,6 +1,7 @@
 package io.finto.integration.fineract.usecase.impl.loan.transaction;
 
 import io.finto.domain.bnpl.enums.LoanTransactionType;
+import io.finto.domain.bnpl.loan.LoanShortInfo;
 import io.finto.domain.bnpl.transaction.Transaction;
 import io.finto.domain.bnpl.transaction.TransactionSubmit;
 import io.finto.domain.id.CustomerInternalId;
@@ -14,15 +15,18 @@ import io.finto.integration.fineract.validators.loan.template.TemplateStatusVali
 import io.finto.integration.fineract.validators.loan.template.impl.TemplateClientValidatorImpl;
 import io.finto.integration.fineract.validators.loan.template.impl.TemplateDateValidatorImpl;
 import io.finto.integration.fineract.validators.loan.template.impl.TemplateStatusValidatorImpl;
+import io.finto.usecase.loan.FindLoanUseCase;
 import io.finto.usecase.loan.transaction.SubmitTransactionUseCase;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NonNull;
 
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
-import static io.finto.fineract.sdk.Constants.FORECLOSURE;
-import static io.finto.fineract.sdk.Constants.REPAYMENT;
+import static io.finto.fineract.sdk.Constants.FIELD_CLIENT_ID;
+import static io.finto.fineract.sdk.Constants.FIELD_STATUS;
+import static io.finto.fineract.sdk.Constants.FIELD_TIMELINE;
 
 @AllArgsConstructor
 @Builder
@@ -38,6 +42,8 @@ public class SdkSubmitTransactionUseCase implements SubmitTransactionUseCase {
     private final TemplateStatusValidator templateStatusValidator;
     @NonNull
     private final TemplateDateValidator templateDateValidator;
+    @NotNull
+    private final FindLoanUseCase findLoanUseCase;
 
     private final static String BAD_REQUEST_MESSAGE = "Invalid loan transaction request (%s)";
 
@@ -51,16 +57,11 @@ public class SdkSubmitTransactionUseCase implements SubmitTransactionUseCase {
     @Override
     public Transaction submitTransaction(CustomerInternalId customerInternalId, LoanId loanId, TransactionSubmit request) {
         var id = loanId.getValue();
-        var loan = context.getResponseBody(context.loanApi()
-                .retrieveLoan(id,
-                        null,
-                        null,
-                        null,
-                        "clientId,status,timeline"));
 
-        templateClientValidator.validate(customerInternalId, loan);
-        templateStatusValidator.validate(loan);
-        templateDateValidator.validate(request, loan);
+        LoanShortInfo loanShortInfo = findLoanUseCase.getLoanShortInfo(loanId, FIELD_CLIENT_ID, FIELD_STATUS, FIELD_TIMELINE);
+        templateClientValidator.validate(customerInternalId, loanShortInfo);
+        templateStatusValidator.validate(loanShortInfo);
+        templateDateValidator.validate(request, loanShortInfo);
 
         PostLoansLoanIdTransactionsRequest fineractRequest;
         var type = Objects.requireNonNull(request.getType());

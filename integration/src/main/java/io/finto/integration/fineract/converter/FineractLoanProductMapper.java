@@ -4,11 +4,13 @@ import io.finto.domain.bnpl.enums.AvailableLoanStatus;
 import io.finto.domain.bnpl.enums.InstallmentFrequency;
 import io.finto.domain.bnpl.loan.Loan;
 import io.finto.domain.bnpl.loan.LoanCreate;
+import io.finto.domain.bnpl.loan.LoanShortInfo;
 import io.finto.domain.bnpl.schedule.Period;
 import io.finto.domain.bnpl.schedule.Schedule;
 import io.finto.domain.bnpl.schedule.ScheduleCalculate;
 import io.finto.domain.bnpl.transaction.Transaction;
 import io.finto.domain.charge.ChargeCreate;
+import io.finto.domain.customer.Customer;
 import io.finto.domain.id.CustomerInternalId;
 import io.finto.domain.id.fineract.ChargeId;
 import io.finto.domain.id.fineract.LoanProductId;
@@ -634,6 +636,17 @@ public interface FineractLoanProductMapper {
     @Mapping(target = "periods", source = "loan.repaymentSchedule.periods")
     @Mapping(target = "transactions", source = "loan.transactions")
     Loan toDomain(GetLoansLoanIdResponse loan, RunReportsResponse additionalDetails, Integer digitsAfterDecimal);
+
+    @Mapping(target = "customerInternalId", source = "clientId")
+    @Mapping(target = "active", source = "status.active")
+    @Mapping(target = "pending", source = "status.pendingApproval")
+    @Mapping(target = "actualDisbursementDate", source = "timeline.actualDisbursementDate")
+    LoanShortInfo toLoanShortInfo(GetLoansLoanIdResponse loanResponse);
+
+    default CustomerInternalId toCustomerInternalId(Long id) {
+        return id == null ? null :
+                CustomerInternalId.of(id);
+    }
 
     @Mapping(target = "isComplete", source = "complete")
     Period toPeriod(GetLoansLoanIdRepaymentPeriod source);
