@@ -7,10 +7,13 @@ import io.finto.exceptions.core.FintoApiException;
 import io.finto.exceptions.core.generic.BadRequestException;
 import io.finto.fineract.sdk.models.GetLoansLoanIdResponse;
 import io.finto.fineract.sdk.models.PostLoansLoanIdRequest;
+import io.finto.fineract.sdk.models.PostLoansLoanIdTransactionsRequest;
 import io.finto.integration.fineract.converter.FineractLoanMapper;
 import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
+import io.finto.integration.fineract.validators.loan.CheckBalanceForCloseLoanValidator;
 import io.finto.integration.fineract.validators.loan.LoanOwnershipValidator;
 import io.finto.integration.fineract.validators.loan.LoanStatusValidator;
+import io.finto.integration.fineract.validators.loan.impl.CheckBalanceForCloseLoanValidatorImpl;
 import io.finto.usecase.loan.SetLoanStatusUseCase;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,9 +31,13 @@ public class SdkSetLoanStatusUseCase implements SetLoanStatusUseCase {
     private final LoanStatusValidator loanStatusValidator;
     @NonNull
     private final LoanOwnershipValidator loanOwnershipValidator;
+    @NonNull
+    private final CheckBalanceForCloseLoanValidator checkBalanceForCloseLoanValidator;
 
     public static class SdkSetLoanStatusUseCaseBuilder {
         private FineractLoanMapper loanMapper = FineractLoanMapper.INSTANCE;
+        private CheckBalanceForCloseLoanValidator checkBalanceForCloseLoanValidator = new CheckBalanceForCloseLoanValidatorImpl() {
+        };
     }
 
     @Override
@@ -47,10 +54,17 @@ public class SdkSetLoanStatusUseCase implements SetLoanStatusUseCase {
         if (!loanStatusValidator.validateStatusChange(loan.getStatus().getValue(), loanStatus)) {
             throw new BadRequestException("400055", "Invalid loan status change request");
         }
-        // Create request depending on status
-        PostLoansLoanIdRequest request = loanMapper.toRequestWithDate(loanStatus);
-        // Change Status
-        context.getResponseBody(context.loanApi().stateTransitions(loanId.getValue(), request, loanMapper.toCommandDto(loanStatus).getCommand()));
+
+        if (loanStatus.equals(LoanStatus.CLOSED)) {
+            checkBalanceForCloseLoanValidator.validate(loan);
+            PostLoansLoanIdTransactionsRequest request = loanMapper.toRequestWithDateForClose(loanStatus);
+            context.getResponseBody(context.loanTransactionApi().executeLoanTransaction(loanId.getValue(), request, loanMapper.toCommandDto(loanStatus).getCommand()));
+        } else {
+            // Create request depending on status
+            PostLoansLoanIdRequest request = loanMapper.toRequestWithDate(loanStatus);
+            // Change Status
+            context.getResponseBody(context.loanApi().stateTransitions(loanId.getValue(), request, loanMapper.toCommandDto(loanStatus).getCommand()));
+        }
 
     }
 

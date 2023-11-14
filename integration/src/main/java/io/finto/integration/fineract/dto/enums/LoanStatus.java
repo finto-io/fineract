@@ -1,7 +1,7 @@
 package io.finto.integration.fineract.dto.enums;
 
 public enum LoanStatus {
-    APPROVED, REJECTED, WITHDRAWN, ACTIVATED;
+    APPROVED, REJECTED, WITHDRAWN, ACTIVATED, CLOSED;
 
     public String getCommand() {
         switch (this){
@@ -13,6 +13,8 @@ public enum LoanStatus {
                 return "withdrawnByApplicant";
             case ACTIVATED:
                 return "disburse";
+            case CLOSED:
+                return "close";
             default:
                 throw new UnsupportedOperationException();
         }

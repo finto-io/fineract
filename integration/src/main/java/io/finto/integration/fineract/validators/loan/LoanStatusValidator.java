@@ -15,6 +15,8 @@ public class LoanStatusValidator {
                 return currentStatus.equals("Submitted and pending approval");
             case ACTIVATED:
                 return currentStatus.equals("Approved");
+            case CLOSED:
+                return currentStatus.equals("Active");
             default:
                 return false;
         }

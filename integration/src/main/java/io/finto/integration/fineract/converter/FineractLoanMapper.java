@@ -1,6 +1,7 @@
 package io.finto.integration.fineract.converter;
 
 import io.finto.fineract.sdk.models.PostLoansLoanIdRequest;
+import io.finto.fineract.sdk.models.PostLoansLoanIdTransactionsRequest;
 import io.finto.integration.fineract.dto.enums.LoanStatus;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -44,5 +45,16 @@ public interface FineractLoanMapper {
                 throw new IllegalArgumentException("Invalid loan status");
         }
         return request;
+    }
+
+    @Mapping(target = "dateFormat", constant = DATE_FORMAT_PATTERN)
+    @Mapping(target = "locale", constant = LOCALE)
+    PostLoansLoanIdTransactionsRequest toCloseRequest(io.finto.domain.id.fineract.LoanStatus loanStatus);
+
+    default PostLoansLoanIdTransactionsRequest toRequestWithDateForClose(io.finto.domain.id.fineract.LoanStatus loanStatus) {
+        PostLoansLoanIdTransactionsRequest requestForClose = toCloseRequest(loanStatus);
+        String currentDate = LocalDateTime.now().format(DEFAULT_DATE_FORMATTER);
+        requestForClose.setTransactionDate(currentDate);
+        return requestForClose;
     }
 }
