@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class TemplateClientValidatorImpl implements TemplateClientValidator {
     @Override
     public void validate(CustomerInternalId customerInternalId, LoanShortInfo loan) {
-        if (customerInternalId != loan.getCustomerInternalId()) {
+        if (!customerInternalId.equals(loan.getCustomerInternalId())) {
             throw new BadRequestException(BadRequestException.DEFAULT_ERROR_CODE, "Incorrect customer");
         }
     }
