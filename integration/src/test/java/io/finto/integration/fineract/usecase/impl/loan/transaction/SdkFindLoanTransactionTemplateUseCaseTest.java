@@ -53,12 +53,9 @@ class SdkFindLoanTransactionTemplateUseCaseTest {
      * Method under test: {@link SdkFindLoanTransactionTemplateUseCase#findLoanTransactionTemplate(CustomerInternalId, LoanId, LoanTransactionType)}
      */
     @Test
-    void test_findLoanTransaction_success() {
+    void test_findLoanTransactionTemplate_success() {
         CustomerInternalId customerInternalId = control.createMock(CustomerInternalId.class);
         LoanId loanId = control.createMock(LoanId.class);
-        LoansApi loansApi = control.createMock(LoansApi.class);
-        Call<GetLoansLoanIdResponse> responseLoan = control.createMock(Call.class);
-
 
         LoanShortInfo loanShortInfo = control.createMock(LoanShortInfo.class);
         LoanTransactionsApi loanTransactionsApi = control.createMock(LoanTransactionsApi.class);

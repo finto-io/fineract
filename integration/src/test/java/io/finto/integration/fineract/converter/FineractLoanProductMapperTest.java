@@ -1713,4 +1713,15 @@ class FineractLoanProductMapperTest {
         assertNull(mapper.toAvailableLoanStatus(null));
         assertNull(mapper.toAvailableLoanStatus(800));
     }
+
+    @Test
+    void test_toTransactions() {
+        LocalDate date = LocalDate.of(2023, 01, 01);
+        GetLoansLoanIdResponse loanResponse = generateGetLoansLoanIdResponse(date);
+        List<Transaction> expected = generateLoan(date).getTransactions();
+        List<Transaction> actual = mapper.toTransactions(loanResponse.getTransactions());
+
+        assertEquals(expected, actual);
+
+    }
 }
