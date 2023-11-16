@@ -1,10 +1,14 @@
 package io.finto.integration.fineract.usecase.impl.loan.transaction;
 
+import io.finto.domain.bnpl.loan.Loan;
 import io.finto.domain.bnpl.transaction.Transaction;
 import io.finto.domain.id.fineract.LoanId;
 import io.finto.domain.id.fineract.TransactionId;
 import io.finto.fineract.sdk.api.LoanTransactionsApi;
+import io.finto.fineract.sdk.api.LoansApi;
+import io.finto.fineract.sdk.models.GetLoansLoanIdResponse;
 import io.finto.fineract.sdk.models.GetLoansLoanIdTransactionsTransactionIdResponse;
+import io.finto.integration.fineract.converter.FineractLoanProductMapper;
 import io.finto.integration.fineract.converter.FineractLoanTransactionMapper;
 import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
 import org.easymock.IMocksControl;
@@ -12,27 +16,28 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import retrofit2.Call;
 
+import java.util.List;
+
 import static org.easymock.EasyMock.createMockBuilder;
 import static org.easymock.EasyMock.createStrictControl;
 import static org.easymock.EasyMock.expect;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class SdkFindLoanTransactionUseCaseTest {
+class SdkFindLoanTransactionsUseCaseTest {
     private IMocksControl control;
     private SdkFineractUseCaseContext context;
-    private FineractLoanTransactionMapper loanTransactionMapper;
-    private SdkFindLoanTransactionUseCase useCase;
+    private FineractLoanProductMapper loanProductMapper;
+    private SdkFindLoanTransactionsUseCase useCase;
 
     @BeforeEach
     void setUp() {
         control = createStrictControl();
         context = control.createMock(SdkFineractUseCaseContext.class);
-        loanTransactionMapper = control.createMock(FineractLoanTransactionMapper.class);
-        useCase = SdkFindLoanTransactionUseCase.builder()
+        loanProductMapper = control.createMock(FineractLoanProductMapper.class);
+        useCase = SdkFindLoanTransactionsUseCase.builder()
                 .context(context)
-                .loanTransactionMapper(loanTransactionMapper)
+                .loanProductMapper(loanProductMapper)
                 .build();
-
     }
 
     /**
@@ -41,27 +46,27 @@ class SdkFindLoanTransactionUseCaseTest {
     @Test
     void test_findLoanTransaction_success() {
         LoanId loanId = LoanId.of(13L);
-        TransactionId transactionId = TransactionId.of(17L);
 
-        LoanTransactionsApi fineractApiMock = control.createMock(LoanTransactionsApi.class);
-        expect(context.loanTransactionApi())
-                .andReturn(fineractApiMock);
-
-        Call<GetLoansLoanIdTransactionsTransactionIdResponse> fineractApiCallMock = control.createMock(Call.class);
-        expect(fineractApiMock.retrieveTransaction(loanId.getValue(), transactionId.getValue(), null))
+        LoansApi loansApiMock = control.createMock(LoansApi.class);
+        expect(context.loanApi())
+                .andReturn(loansApiMock);
+        Call<GetLoansLoanIdResponse> fineractApiCallMock = control.createMock(Call.class);
+        expect(loansApiMock.retrieveLoan(loanId.getValue(), false, "transactions", null, null))
                 .andReturn(fineractApiCallMock);
-
-        GetLoansLoanIdTransactionsTransactionIdResponse fineractApiCallResponseMock = control.createMock(GetLoansLoanIdTransactionsTransactionIdResponse.class);
+        GetLoansLoanIdResponse getLoansResponseMock = control.createMock(GetLoansLoanIdResponse.class);
         expect(context.getResponseBody(fineractApiCallMock))
-                .andReturn(fineractApiCallResponseMock);
+                .andReturn(getLoansResponseMock);
 
-        var expected = Transaction.builder()
+        Transaction transaction1 = Transaction.builder().build();
+        List<Transaction> expected = List.of(transaction1);
+        var loan = Loan.builder()
+                .transactions(expected)
                 .build();
-        expect(loanTransactionMapper.toDomainBnplTransaction(fineractApiCallResponseMock))
-                .andReturn(expected);
+        expect(loanProductMapper.toDomain(getLoansResponseMock, null, 0))
+                .andReturn(loan);
 
         control.replay();
-        var actual = useCase.findLoanTransaction(loanId, transactionId);
+        var actual = useCase.findLoanTransactions(loanId);
         control.verify();
 
         assertEquals(expected, actual);

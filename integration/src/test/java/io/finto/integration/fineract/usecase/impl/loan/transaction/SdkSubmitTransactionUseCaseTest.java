@@ -8,11 +8,7 @@ import io.finto.domain.id.CustomerInternalId;
 import io.finto.domain.id.fineract.LoanId;
 import io.finto.exceptions.core.generic.BadRequestException;
 import io.finto.fineract.sdk.api.LoanTransactionsApi;
-import io.finto.fineract.sdk.api.LoansApi;
 import io.finto.fineract.sdk.api.PaymentTypeApi;
-import io.finto.fineract.sdk.models.GetLoansLoanIdResponse;
-import io.finto.fineract.sdk.models.GetLoansLoanIdStatus;
-import io.finto.fineract.sdk.models.GetLoansLoanIdTimeline;
 import io.finto.fineract.sdk.models.GetLoansLoanIdTransactionsTransactionIdResponse;
 import io.finto.fineract.sdk.models.GetPaymentTypesPaymentTypeIdResponse;
 import io.finto.fineract.sdk.models.PostLoansLoanIdTransactionsRequest;
@@ -29,12 +25,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import retrofit2.Call;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.createStrictControl;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
 
 class SdkSubmitTransactionUseCaseTest {
     private IMocksControl control;
@@ -57,15 +52,16 @@ class SdkSubmitTransactionUseCaseTest {
         templateDateValidator = control.createMock(TemplateDateValidator.class);
         templateSubmitRequestValidator = control.createMock(TemplateSubmitRequestValidator.class);
         findLoanUseCase = control.createMock(FindLoanUseCase.class);
-        useCase = new SdkSubmitTransactionUseCase(
-                context,
-                loanTransactionMapper,
-                templateClientValidator,
-                templateStatusValidator,
-                templateDateValidator,
-                templateSubmitRequestValidator,
-                findLoanUseCase
-        );
+
+        useCase = SdkSubmitTransactionUseCase.builder()
+                .context(context)
+                .loanTransactionMapper(loanTransactionMapper)
+                .templateClientValidator(templateClientValidator)
+                .templateStatusValidator(templateStatusValidator)
+                .templateDateValidator(templateDateValidator)
+                .templateSubmitRequestValidator(templateSubmitRequestValidator)
+                .findLoanUseCase(findLoanUseCase)
+                .build();
     }
 
     /**
@@ -87,7 +83,7 @@ class SdkSubmitTransactionUseCaseTest {
 
         templateSubmitRequestValidator.validate(request);
         expect(loanId.getValue()).andReturn(1L);
-        expect(findLoanUseCase.getLoanShortInfo(loanId, "clientId", "status" , "timeline")).andReturn(loanShortInfo);
+        expect(findLoanUseCase.getLoanShortInfo(loanId, "clientId", "status", "timeline")).andReturn(loanShortInfo);
         templateClientValidator.validate(customerInternalId, loanShortInfo);
         templateStatusValidator.validate(loanShortInfo);
         templateDateValidator.validate(request, loanShortInfo);
@@ -134,7 +130,7 @@ class SdkSubmitTransactionUseCaseTest {
 
         templateSubmitRequestValidator.validate(request);
         expect(loanId.getValue()).andReturn(1L);
-        expect(findLoanUseCase.getLoanShortInfo(loanId, "clientId", "status" , "timeline")).andReturn(loanShortInfo);
+        expect(findLoanUseCase.getLoanShortInfo(loanId, "clientId", "status", "timeline")).andReturn(loanShortInfo);
         templateClientValidator.validate(customerInternalId, loanShortInfo);
         templateStatusValidator.validate(loanShortInfo);
         templateDateValidator.validate(request, loanShortInfo);
@@ -176,7 +172,7 @@ class SdkSubmitTransactionUseCaseTest {
 
         templateSubmitRequestValidator.validate(request);
         expect(loanId.getValue()).andReturn(1L);
-        expect(findLoanUseCase.getLoanShortInfo(loanId, "clientId", "status" , "timeline")).andReturn(loanShortInfo);
+        expect(findLoanUseCase.getLoanShortInfo(loanId, "clientId", "status", "timeline")).andReturn(loanShortInfo);
         templateClientValidator.validate(customerInternalId, loanShortInfo);
         templateStatusValidator.validate(loanShortInfo);
         templateDateValidator.validate(request, loanShortInfo);
@@ -201,7 +197,7 @@ class SdkSubmitTransactionUseCaseTest {
 
         templateSubmitRequestValidator.validate(request);
         expect(loanId.getValue()).andReturn(1L);
-        expect(findLoanUseCase.getLoanShortInfo(loanId, "clientId", "status" , "timeline")).andReturn(loanShortInfo);
+        expect(findLoanUseCase.getLoanShortInfo(loanId, "clientId", "status", "timeline")).andReturn(loanShortInfo);
         templateClientValidator.validate(customerInternalId, loanShortInfo);
         templateStatusValidator.validate(loanShortInfo);
         expectLastCall().andThrow(new BadRequestException());
@@ -225,7 +221,7 @@ class SdkSubmitTransactionUseCaseTest {
 
         templateSubmitRequestValidator.validate(request);
         expect(loanId.getValue()).andReturn(1L);
-        expect(findLoanUseCase.getLoanShortInfo(loanId, "clientId", "status" , "timeline")).andReturn(loanShortInfo);
+        expect(findLoanUseCase.getLoanShortInfo(loanId, "clientId", "status", "timeline")).andReturn(loanShortInfo);
         templateClientValidator.validate(customerInternalId, loanShortInfo);
         expectLastCall().andThrow(new BadRequestException());
         control.replay();

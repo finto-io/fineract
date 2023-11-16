@@ -133,7 +133,7 @@ class FineractLoanTransactionMapperTest {
                 .repaymentAtDisbursement(false) 
                 .waiveCharges(true) 
                 .waiveInterest(false) 
-                .writeOff(true) 
+                .writeOff(true)
                 .build();
         GetLoansLoanIdTransactionsTransactionIdResponse getLoansLoanIdTransactionsTransactionIdResponse = GetLoansLoanIdTransactionsTransactionIdResponse.builder()
                 .amount(new BigDecimal("123.000")) 
@@ -180,7 +180,7 @@ class FineractLoanTransactionMapperTest {
         Transaction actual = mapper.toDomainBnplTransaction(getLoansLoanIdTransactionsTransactionIdResponse);
 
         assertEquals(expected, actual);
-        assertEquals("8c6e690092305fc9a98bc693fc99c932", DigestUtils.md5Hex(actual.toString()), "Model change detected");
+        assertEquals("ac767cbad41840893a61feac69f89ec9", DigestUtils.md5Hex(actual.toString()), "Model change detected");
     }
 
     @Test

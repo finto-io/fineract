@@ -1486,6 +1486,7 @@ class FineractLoanProductMapperTest {
                 .outstandingLoanBalance(new BigDecimal("9"))
                 .isReversed(true)
                 .reversalDate(localDate)
+                .isAccrual(false)
                 .build();
     }
 
@@ -1495,6 +1496,7 @@ class FineractLoanProductMapperTest {
                 .date(localDate)
                 .type(GetLoansLoanIdLoanTransactionEnumData.builder()
                         .value("typeValue")
+                        .accrual(false)
                         .build())
                 .amount(new BigDecimal("2"))
                 .currency(GetLoansLoanIdCurrency.builder()

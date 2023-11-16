@@ -40,13 +40,13 @@ class SdkFindLoanTransactionTemplateUseCaseTest {
         templateClientValidator = control.createMock(TemplateClientValidator.class);
         templateStatusValidator = control.createMock(TemplateStatusValidator.class);
         findLoanUseCase = control.createMock(FindLoanUseCase.class);
-        useCase = new SdkFindLoanTransactionTemplateUseCase(
-                context,
-                loanTransactionMapper,
-                templateClientValidator,
-                templateStatusValidator,
-                findLoanUseCase
-        );
+        useCase = SdkFindLoanTransactionTemplateUseCase.builder()
+                .context(context)
+                .loanTransactionMapper(loanTransactionMapper)
+                .templateClientValidator(templateClientValidator)
+                .templateStatusValidator(templateStatusValidator)
+                .findLoanUseCase(findLoanUseCase)
+                .build();
     }
 
     /**
