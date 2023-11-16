@@ -1,6 +1,5 @@
 package io.finto.integration.fineract.usecase.impl.loan.transaction;
 
-import io.finto.domain.bnpl.loan.Loan;
 import io.finto.domain.bnpl.transaction.Transaction;
 import io.finto.domain.id.fineract.LoanId;
 import io.finto.integration.fineract.converter.FineractLoanProductMapper;
@@ -29,7 +28,6 @@ public class SdkFindLoanTransactionsUseCase implements FindLoanTransactionsUseCa
     public List<Transaction> findLoanTransactions(LoanId loanId) {
         var loanResponse = context.getResponseBody(context.loanApi()
                 .retrieveLoan(loanId.getValue(), false, "transactions", null, null));
-        Loan loan = loanProductMapper.toDomain(loanResponse, null, 0);
-        return loan.getTransactions();
+        return loanProductMapper.toTransactions(loanResponse.getTransactions());
     }
 }

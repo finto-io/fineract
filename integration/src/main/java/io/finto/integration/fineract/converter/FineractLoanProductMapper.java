@@ -659,6 +659,8 @@ public interface FineractLoanProductMapper {
     @Mapping(target  = "isAccrual", source = "type.accrual")
     Transaction toTransaction(GetLoansLoanIdTransactions source);
 
+    List<Transaction> toTransactions(List<GetLoansLoanIdTransactions> source);
+
     default TransactionId toTransactionId(Long id) {
         return TransactionId.of(id);
     }
