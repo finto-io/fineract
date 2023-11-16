@@ -33,7 +33,10 @@ class SdkCreateLoanUseCaseTest {
         control = createStrictControl();
         context = control.createMock(SdkFineractUseCaseContext.class);
         loanProductMapper = control.createMock(FineractLoanProductMapper.class);
-        useCase = new SdkCreateLoanUseCase(context, loanProductMapper);
+        useCase = SdkCreateLoanUseCase.builder()
+                .context(context)
+                .loanProductMapper(loanProductMapper)
+                .build();
     }
 
     /**

@@ -656,6 +656,7 @@ public interface FineractLoanProductMapper {
     @Mapping(target = "otherIncomePortion", source = "unrecognizedIncomePortion")
     @Mapping(target = "isReversed", source = "manuallyReversed")
     @Mapping(target = "reversalDate", source = "reversedOnDate")
+    @Mapping(target  = "isAccrual", source = "type.accrual")
     Transaction toTransaction(GetLoansLoanIdTransactions source);
 
     default TransactionId toTransactionId(Long id) {

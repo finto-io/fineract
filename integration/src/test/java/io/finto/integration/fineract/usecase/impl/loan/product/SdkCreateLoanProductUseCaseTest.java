@@ -30,6 +30,7 @@ import static io.finto.fineract.sdk.CustomDatatableNames.LOAN_PRODUCT_FIELDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.easymock.EasyMock.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class SdkCreateLoanProductUseCaseTest {
     private IMocksControl control;
@@ -139,6 +140,20 @@ class SdkCreateLoanProductUseCaseTest {
         assertThatThrownBy(() -> useCase.createLoanProduct(request)).isInstanceOf(BadRequestException.class);
 
         control.verify();
+    }
+
+
+    /**
+     * Method under test: {@link SdkCreateLoanProductUseCase#getCurrentDateTime()}
+     */
+    @Test
+    void test_getCurrentDateTime() {
+        SdkCreateLoanProductUseCase sdkCreateLoanProductUseCase = SdkCreateLoanProductUseCase.builder()
+                .context(context)
+                .createCharge(chargeCreateResolver)
+                .build();
+        var actual = sdkCreateLoanProductUseCase.getCurrentDateTime();
+        assertNotNull(actual);
     }
 
 }

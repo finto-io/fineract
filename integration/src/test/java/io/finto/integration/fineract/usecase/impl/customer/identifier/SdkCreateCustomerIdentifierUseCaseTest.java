@@ -42,7 +42,11 @@ class SdkCreateCustomerIdentifierUseCaseTest {
         clientIdentifierApi = control.createMock(ClientIdentifierApi.class);
         dictionaryUseCase = control.createMock(FindKeyValueDictionaryUseCase.class);
         customerMapper = control.createMock(FineractCustomerMapper.class);
-        useCase = new SdkCreateCustomerIdentifierUseCase(context, customerMapper, dictionaryUseCase);
+        useCase = SdkCreateCustomerIdentifierUseCase.builder()
+                .context(context)
+                .customerMapper(customerMapper)
+                .dictionaryUseCase(dictionaryUseCase)
+                .build();
 
         call = control.createMock(Call.class);
         identifierId = control.createMock(IdentifierId.class);

@@ -21,7 +21,7 @@
         <spring-boot-dependencies.version>2.7.6</spring-boot-dependencies.version>
 
         <!-- finto dependencies -->
-        <custom.libs.dependencies.version>2.113.0</custom.libs.dependencies.version>
+        <custom.libs.dependencies.version>2.115.0</custom.libs.dependencies.version>
 
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <testcontainers.version>1.18.0</testcontainers.version>

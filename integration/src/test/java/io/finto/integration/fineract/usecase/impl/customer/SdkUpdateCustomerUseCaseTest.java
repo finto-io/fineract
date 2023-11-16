@@ -25,7 +25,9 @@ import java.util.Comparator;
 import java.util.Optional;
 
 import static io.finto.fineract.sdk.Constants.GENDER_DICTIONARY_ID;
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.createStrictControl;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class SdkUpdateCustomerUseCaseTest {
@@ -50,6 +52,7 @@ class SdkUpdateCustomerUseCaseTest {
     private Comparator comparator;
     private PutClientsClientIdRequest requestDto;
     private CustomerDetailsUpdate customerDetailsUpdate;
+
     @BeforeEach
     void setUp() {
         control = createStrictControl();
@@ -61,8 +64,16 @@ class SdkUpdateCustomerUseCaseTest {
         enrichCustomerInfoUseCase = control.createMock(EnrichCustomerInfoUseCase.class);
         dictionaryUseCase = control.createMock(FindKeyValueDictionaryUseCase.class);
         findCustomerUseCase = control.createMock(FindCustomerUseCase.class);
-        useCase = new SdkUpdateCustomerUseCase(context, customerMapper, customerUtils, findCustomerUseCase, updateCustomerAddressUseCase,
-                updateCustomerIdentifiersUseCase, enrichCustomerInfoUseCase, dictionaryUseCase);
+        useCase = SdkUpdateCustomerUseCase.builder()
+                .context(context)
+                .customerMapper(customerMapper)
+                .customerUtils(customerUtils)
+                .findCustomerUseCase(findCustomerUseCase)
+                .updateCustomerAddressUseCase(updateCustomerAddressUseCase)
+                .updateCustomerIdentifiersUseCase(updateCustomerIdentifiersUseCase)
+                .enrichCustomerInfoUseCase(enrichCustomerInfoUseCase)
+                .dictionaryUseCase(dictionaryUseCase)
+                .build();
 
         clientApi = control.createMock(ClientApi.class);
         call = control.createMock(Call.class);
