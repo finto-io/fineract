@@ -58,6 +58,17 @@ public interface FineractLoanTransactionMapper {
     }
 
 
+    default String toCommandForSubmit(LoanTransactionType type) {
+        if (type == null) {
+            return null;
+        }
+        if (type == LoanTransactionType.FORECLOSURE) {
+            return FORECLOSURE;
+        } else {
+            return REPAYMENT;
+        }
+    }
+
     default String toCommand(LoanTransactionType type) {
         if (type == null) {
             return null;
