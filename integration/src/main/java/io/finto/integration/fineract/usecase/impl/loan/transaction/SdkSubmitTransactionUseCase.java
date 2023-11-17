@@ -82,7 +82,7 @@ public class SdkSubmitTransactionUseCase implements SubmitTransactionUseCase {
                 loanTransactionApi.executeLoanTransaction(
                         id,
                         fineractRequest,
-                        loanTransactionMapper.toCommand(type)
+                        loanTransactionMapper.toCommandForSubmit(type)
                 )
         );
         var loanTransaction = context.getResponseBody(

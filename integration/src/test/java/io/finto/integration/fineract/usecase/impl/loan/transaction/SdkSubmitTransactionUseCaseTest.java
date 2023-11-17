@@ -90,7 +90,7 @@ class SdkSubmitTransactionUseCaseTest {
         expect(request.getType()).andReturn(LoanTransactionType.FORECLOSURE);
         expect(loanTransactionMapper.loanTransactionSubmissionForeclosure(request)).andReturn(fineractRequest);
         expect(context.loanTransactionApi()).andReturn(loanTransactionsApi);
-        expect(loanTransactionMapper.toCommand(LoanTransactionType.FORECLOSURE)).andReturn("foreclosure");
+        expect(loanTransactionMapper.toCommandForSubmit(LoanTransactionType.FORECLOSURE)).andReturn("foreclosure");
         expect(loanTransactionsApi.executeLoanTransaction(1L, fineractRequest, "foreclosure"))
                 .andReturn(responsePostLoanTransaction);
         expect(context.getResponseBody(responsePostLoanTransaction)).andReturn(submittedTransaction);
@@ -142,7 +142,7 @@ class SdkSubmitTransactionUseCaseTest {
         expect(context.getResponseBody(responsePaymentType)).andReturn(paymentType);
         expect(loanTransactionMapper.loanTransactionSubmissionOther(request)).andReturn(fineractRequest);
         expect(context.loanTransactionApi()).andReturn(loanTransactionsApi);
-        expect(loanTransactionMapper.toCommand(LoanTransactionType.REPAYMENT)).andReturn("repayment");
+        expect(loanTransactionMapper.toCommandForSubmit(LoanTransactionType.REPAYMENT)).andReturn("repayment");
         expect(loanTransactionsApi.executeLoanTransaction(1L, fineractRequest, "repayment"))
                 .andReturn(responsePostLoanTransaction);
         expect(context.getResponseBody(responsePostLoanTransaction)).andReturn(submittedTransaction);

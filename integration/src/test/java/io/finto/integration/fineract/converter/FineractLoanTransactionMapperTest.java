@@ -184,6 +184,14 @@ class FineractLoanTransactionMapperTest {
     }
 
     @Test
+    void testToCommandForSubmit() {
+        assertEquals("repayment", mapper.toCommandForSubmit(LoanTransactionType.PREPAY_LOAN));
+        assertEquals("repayment", mapper.toCommandForSubmit(LoanTransactionType.REPAYMENT));
+        assertEquals("foreclosure", mapper.toCommandForSubmit(LoanTransactionType.FORECLOSURE));
+        assertNull(mapper.toCommandForSubmit(null));
+    }
+
+    @Test
     void testToCommand() {
         assertEquals("prepayLoan", mapper.toCommand(LoanTransactionType.PREPAY_LOAN));
         assertEquals("repayment", mapper.toCommand(LoanTransactionType.REPAYMENT));
