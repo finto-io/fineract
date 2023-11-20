@@ -1724,4 +1724,11 @@ class FineractLoanProductMapperTest {
         assertEquals(expected, actual);
 
     }
+
+    @Test
+    void test_toTransactions_nullValueShouldReturnEmptyList() {
+        List<Transaction> expected = List.of();
+        List<Transaction> actual = mapper.toTransactions(null);
+        assertEquals(expected, actual);
+    }
 }

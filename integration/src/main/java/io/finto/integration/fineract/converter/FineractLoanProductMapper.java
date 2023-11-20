@@ -10,7 +10,6 @@ import io.finto.domain.bnpl.schedule.Schedule;
 import io.finto.domain.bnpl.schedule.ScheduleCalculate;
 import io.finto.domain.bnpl.transaction.Transaction;
 import io.finto.domain.charge.ChargeCreate;
-import io.finto.domain.customer.Customer;
 import io.finto.domain.id.CustomerInternalId;
 import io.finto.domain.id.fineract.ChargeId;
 import io.finto.domain.id.fineract.LoanProductId;
@@ -40,10 +39,12 @@ import io.finto.fineract.sdk.models.RunReportsResponse;
 import io.finto.integration.fineract.dto.LoanProductDetailsCreateDto;
 import io.finto.integration.fineract.dto.LoanProductDetailsDto;
 import org.jetbrains.annotations.Nullable;
+import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.Named;
+import org.mapstruct.NullValueMappingStrategy;
 import org.mapstruct.factory.Mappers;
 
 import java.math.BigDecimal;
@@ -656,9 +657,10 @@ public interface FineractLoanProductMapper {
     @Mapping(target = "otherIncomePortion", source = "unrecognizedIncomePortion")
     @Mapping(target = "isReversed", source = "manuallyReversed")
     @Mapping(target = "reversalDate", source = "reversedOnDate")
-    @Mapping(target  = "isAccrual", source = "type.accrual")
+    @Mapping(target = "isAccrual", source = "type.accrual")
     Transaction toTransaction(GetLoansLoanIdTransactions source);
 
+    @IterableMapping(nullValueMappingStrategy = NullValueMappingStrategy.RETURN_DEFAULT)
     List<Transaction> toTransactions(List<GetLoansLoanIdTransactions> source);
 
     default TransactionId toTransactionId(Long id) {
