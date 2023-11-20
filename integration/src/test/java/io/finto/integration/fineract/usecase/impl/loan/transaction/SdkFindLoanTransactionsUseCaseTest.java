@@ -1,16 +1,12 @@
 package io.finto.integration.fineract.usecase.impl.loan.transaction;
 
-import io.finto.domain.bnpl.loan.Loan;
 import io.finto.domain.bnpl.transaction.Transaction;
 import io.finto.domain.id.fineract.LoanId;
 import io.finto.domain.id.fineract.TransactionId;
-import io.finto.fineract.sdk.api.LoanTransactionsApi;
 import io.finto.fineract.sdk.api.LoansApi;
 import io.finto.fineract.sdk.models.GetLoansLoanIdResponse;
 import io.finto.fineract.sdk.models.GetLoansLoanIdTransactions;
-import io.finto.fineract.sdk.models.GetLoansLoanIdTransactionsTransactionIdResponse;
 import io.finto.integration.fineract.converter.FineractLoanProductMapper;
-import io.finto.integration.fineract.converter.FineractLoanTransactionMapper;
 import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +15,6 @@ import retrofit2.Call;
 
 import java.util.List;
 
-import static org.easymock.EasyMock.createMockBuilder;
 import static org.easymock.EasyMock.createStrictControl;
 import static org.easymock.EasyMock.expect;
 import static org.junit.jupiter.api.Assertions.assertEquals;
