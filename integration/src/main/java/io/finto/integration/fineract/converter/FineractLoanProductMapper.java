@@ -350,6 +350,12 @@ public interface FineractLoanProductMapper {
                                     BigDecimal totalPrincipalDisbursed,
                                     Integer loanTermInDays,
                                     Integer digitsAfterDecimal) {
+        if (loanTermInDays == null || loanTermInDays == 0) {
+            return totalFeeChargesCharged.add(totalPenaltyChargesCharged)
+                    .multiply(BigDecimal.valueOf(100))
+                    .divide(totalPrincipalDisbursed, digitsAfterDecimal, RoundingMode.HALF_UP)
+                    .setScale(digitsAfterDecimal, RoundingMode.HALF_UP);
+        }
         return totalFeeChargesCharged.add(totalPenaltyChargesCharged).add(totalInterestCharged)
                 .multiply(BigDecimal.valueOf(365))
                 .multiply(BigDecimal.valueOf(100))
