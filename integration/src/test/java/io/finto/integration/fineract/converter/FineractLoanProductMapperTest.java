@@ -751,6 +751,12 @@ class FineractLoanProductMapperTest {
                         new BigDecimal("0.921"),
                         new BigDecimal("100.0"),
                         336, 3));
+        assertEquals(new BigDecimal("16.667"),
+                mapper.calculateApr(new BigDecimal("10.0"),
+                        new BigDecimal("0.0"),
+                        new BigDecimal("0.921"),
+                        new BigDecimal("60.0"),
+                        0, 3));
     }
 
     @Test
