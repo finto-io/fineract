@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 @Data
@@ -37,15 +38,15 @@ public class LoanProductDetailsDto {
     @JsonProperty("early_settlement_allowed")
     private Boolean earlySettlementAllowed;
     @JsonProperty("loaded_at")
-    private ZonedDateTime loadedAt;
+    private LocalDateTime loadedAt;
     @JsonProperty("loaded_by")
     private String loadedBy;
     @JsonProperty("closed_at")
-    private ZonedDateTime closedAt;
+    private LocalDateTime closedAt;
     @JsonProperty("closed_by")
     private String closedBy;
     @JsonProperty("modified_at")
-    private ZonedDateTime modifiedAt;
+    private LocalDateTime modifiedAt;
     @JsonProperty("modified_by")
     private String modifiedBy;
 }

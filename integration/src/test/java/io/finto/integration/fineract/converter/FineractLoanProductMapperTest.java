@@ -351,20 +351,20 @@ class FineractLoanProductMapperTest {
     }
 
     @Test
-    void testFromZonedDateTime() {
-        var dt = ZonedDateTime.now();
-        assertEquals(dt.format(io.finto.fineract.sdk.Constants.LOAN_PRODUCT_DATE_TIME_FORMATTER), mapper.fromZonedDateTime(dt));
-        assertNull(mapper.fromZonedDateTime(null));
+    void testFromLocalDateTime() {
+        var dt = LocalDateTime.now();
+        assertEquals(dt.format(io.finto.fineract.sdk.Constants.DEFAULT_DATE_TIME_FORMATTER), mapper.fromLocalDateTime(dt));
+        assertNull(mapper.fromLocalDateTime(null));
     }
 
     @Test
     void testToDomain_LoanProduct() {
-        var dt = ZonedDateTime.now();
+        var dt = LocalDateTime.now();
         assertEquals(generateLoanProduct(dt),
                 mapper.toDomain(generateGetLoanProductsProductIdResponse(), generateLoanProductDetailsDto(dt)));
     }
 
-    private LoanProduct generateLoanProduct(ZonedDateTime dt) {
+    private LoanProduct generateLoanProduct(LocalDateTime dt) {
         return LoanProduct.builder()
                 .internalId(1L)
                 .name("name")
@@ -492,11 +492,11 @@ class FineractLoanProductMapperTest {
                         .graceOnArrearsAgeing(true)
                         .build())
                 .fees(List.of(generateFee(5L), generateFee(1L)))
-                .createdAt(dt.format(io.finto.fineract.sdk.Constants.LOAN_PRODUCT_DATE_TIME_FORMATTER))
+                .createdAt(dt.format(io.finto.fineract.sdk.Constants.DEFAULT_DATE_TIME_FORMATTER))
                 .createdBy("loadedBy")
-                .closedAt(dt.format(io.finto.fineract.sdk.Constants.LOAN_PRODUCT_DATE_TIME_FORMATTER))
+                .closedAt(dt.format(io.finto.fineract.sdk.Constants.DEFAULT_DATE_TIME_FORMATTER))
                 .closedBy("closedBy")
-                .updatedAt(dt.format(io.finto.fineract.sdk.Constants.LOAN_PRODUCT_DATE_TIME_FORMATTER))
+                .updatedAt(dt.format(io.finto.fineract.sdk.Constants.DEFAULT_DATE_TIME_FORMATTER))
                 .updatedBy("modifiedBy")
                 .partnerId("partnerId")
                 .partnerName("partnerName")
@@ -506,7 +506,7 @@ class FineractLoanProductMapperTest {
                 .build();
     }
 
-    private LoanProductDetailsDto generateLoanProductDetailsDto(ZonedDateTime dateTime) {
+    private LoanProductDetailsDto generateLoanProductDetailsDto(LocalDateTime dateTime) {
         return LoanProductDetailsDto.builder()
                 .productLoanId(1L)
                 .dateFormat("dateFormat")
