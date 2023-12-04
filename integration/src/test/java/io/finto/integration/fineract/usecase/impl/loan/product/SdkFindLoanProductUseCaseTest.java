@@ -98,7 +98,15 @@ class SdkFindLoanProductUseCaseTest {
                 "\t\t\"external_id\": \"9c568f99-1117-4bd9-9c8f-7d1eda3cf72c\",\n" +
                 "\t\t\"late_payment_block_user\": \"true\",\n" +
                 "\t\t\"early_settlement_allowed\": \"true\",\n" +
-                "\t\t\"loaded_at\": \"2023-12-04 05:07:00.0\",\n" +
+                "\t\t\"loaded_at\":  [\n" +
+                "            2023,\n" +
+                "            12,\n" +
+                "            4,\n" +
+                "            5,\n" +
+                "            7,\n" +
+                "            0,\n" +
+                "            0\n" +
+                "        ],\n" +
                 "\t\t\"loaded_by\": \"mifos\",\n" +
                 "\t\t\"closed_at\": null,\n" +
                 "\t\t\"closed_by\": null,\n" +
