@@ -67,6 +67,7 @@ import io.finto.fineract.sdk.models.RunReportsResponse;
 import io.finto.integration.fineract.dto.LoanProductDetailsCreateDto;
 import io.finto.integration.fineract.dto.LoanProductDetailsDto;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -84,6 +85,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import static org.apache.commons.lang3.RandomStringUtils.random;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -180,6 +182,7 @@ class FineractLoanProductMapperTest {
 
     private PostLoanProductsRequest generatePostLoanProductsRequest() {
         var result = new PostLoanProductsRequest();
+        var shortName = "shortName";
 
         result.setAccountingRule(5);
         result.setCharges(List.of(ChargeData.builder().id(20L).build()));
@@ -203,7 +206,7 @@ class FineractLoanProductMapperTest {
         result.setLocale("en");
         result.setMaxNumberOfRepayments(11);
         result.setMinNumberOfRepayments(10);
-        result.setName("name");
+        result.setName("name" + shortName);
         result.setNumberOfRepayments(10);
         result.setOverpaymentLiabilityAccountId(12L);
         result.setReceivableFeeAccountId(7L);
@@ -211,7 +214,7 @@ class FineractLoanProductMapperTest {
         result.setReceivablePenaltyAccountId(4L);
         result.setRepaymentEvery(1);
         result.setRepaymentFrequencyType(2);
-        result.setShortName("shortName");
+        result.setShortName(shortName);
         result.setTransactionProcessingStrategyCode("transactionProcessingStrategyCode");
         result.setTransfersInSuspenseAccountId(5L);
         result.setWriteOffAccountId(11L);
@@ -526,10 +529,11 @@ class FineractLoanProductMapperTest {
     }
 
     private GetLoanProductsProductIdResponse generateGetLoanProductsProductIdResponse() {
+        var shortName = random(4, true, true);
         var result = new GetLoanProductsProductIdResponse();
         result.setCharges(List.of(generateGetProductsCharges(5), generateGetProductsCharges(1)));
         result.setId(1L);
-        result.setName("name");
+        result.setName("name" + shortName);
         result.setShortName("shortName");
         result.setStatus("status");
         result.setCurrency(GetLoanProductsCurrency.builder()

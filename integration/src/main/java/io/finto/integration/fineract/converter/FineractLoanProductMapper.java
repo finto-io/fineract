@@ -161,6 +161,7 @@ public interface FineractLoanProductMapper {
     @Mapping(target = "overpaymentLiabilityAccountId", expression = "java(request.getAccountingRule().orElse(0) == 1 ? null : io.finto.fineract.sdk.Constants.OVER_PAYMENT_LIABILITY_ID)")
     @Mapping(target = "charges", source = "charges", qualifiedByName = "toCharges")
     @Mapping(target = "locale", constant = "en")
+    @Mapping(target = "name", expression = "java(request.getName() + request.getShortName())")
     PostLoanProductsRequest loanProductCreationFineractRequest(LoanProductCreate request, List<ChargeId> charges);
 
     @Mapping(target = "name", expression = "java(feeCreate.getFeeName() + shortName)")
@@ -233,9 +234,14 @@ public interface FineractLoanProductMapper {
         return value.format(io.finto.fineract.sdk.Constants.DEFAULT_DATE_TIME_FORMATTER);
     }
 
+    @Named("toName")
+    default String toName(String value) {
+        return value.substring(0, value.length() - 4);
+    }
+
     @Mapping(target = "fees", source = "loanProduct.charges")
     @Mapping(target = "internalId", source = "loanProduct.id")
-    @Mapping(target = "name", source = "loanProduct.name")
+    @Mapping(target = "name", source = "loanProduct.name", qualifiedByName = "toName")
     @Mapping(target = "shortName", source = "loanProduct.shortName")
     @Mapping(target = "active", source = "loanProduct.status", qualifiedByName = "toActive")
     @Mapping(target = "currencyCode", source = "loanProduct.currency.code")
