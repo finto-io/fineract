@@ -225,12 +225,12 @@ public interface FineractLoanProductMapper {
     @Mapping(target = "feeName", source = "name", qualifiedByName = "toFeeName")
     Fee toDomain(GetProductsCharges source);
 
-    @Named("fromZonedDateTime")
-    default String fromZonedDateTime(ZonedDateTime value) {
+    @Named("fromLocalDateTime")
+    default String fromLocalDateTime(LocalDateTime value) {
         if (value == null) {
             return null;
         }
-        return value.format(io.finto.fineract.sdk.Constants.LOAN_PRODUCT_DATE_TIME_FORMATTER);
+        return value.format(io.finto.fineract.sdk.Constants.DEFAULT_DATE_TIME_FORMATTER);
     }
 
     @Mapping(target = "fees", source = "loanProduct.charges")
@@ -264,11 +264,11 @@ public interface FineractLoanProductMapper {
     @Mapping(target = "accountingRule", source = "loanProduct.accountingRule")
     @Mapping(target = "accountingMappings", source = "loanProduct.accountingMappings")
     @Mapping(target = "allowAttributeOverrides", source = "loanProduct.allowAttributeOverrides")
-    @Mapping(target = "createdAt", source = "additionalDetails.loadedAt", qualifiedByName = "fromZonedDateTime")
+    @Mapping(target = "createdAt", source = "additionalDetails.loadedAt", qualifiedByName = "fromLocalDateTime")
     @Mapping(target = "createdBy", source = "additionalDetails.loadedBy")
-    @Mapping(target = "updatedAt", source = "additionalDetails.modifiedAt", qualifiedByName = "fromZonedDateTime")
+    @Mapping(target = "updatedAt", source = "additionalDetails.modifiedAt", qualifiedByName = "fromLocalDateTime")
     @Mapping(target = "updatedBy", source = "additionalDetails.modifiedBy")
-    @Mapping(target = "closedAt", source = "additionalDetails.closedAt", qualifiedByName = "fromZonedDateTime")
+    @Mapping(target = "closedAt", source = "additionalDetails.closedAt", qualifiedByName = "fromLocalDateTime")
     @Mapping(target = "closedBy", source = "additionalDetails.closedBy")
     @Mapping(target = "partnerId", source = "additionalDetails.partnerId")
     @Mapping(target = "partnerName", source = "additionalDetails.partnerName")

@@ -8,8 +8,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.finto.exceptions.core.FintoApiException;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ConverterUtils {
     public static <T> T parseAdditionalFields(ObjectMapper objectMapper, String content, Class<T[]> valueType) {
@@ -37,6 +39,13 @@ public class ConverterUtils {
             ZonedDateTime zonedDateTime = ZonedDateTime.of(year, month, day, hour, minute, second, nanosecond, ZoneId.systemDefault());
 
             return zonedDateTime.withZoneSameInstant(ZoneId.systemDefault());
+        }
+    }
+
+    public static class LocalDateTimeDeserializer extends JsonDeserializer<LocalDateTime> {
+        @Override
+        public LocalDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+            return LocalDateTime.parse(jsonParser.readValueAs(String.class), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
         }
     }
 }

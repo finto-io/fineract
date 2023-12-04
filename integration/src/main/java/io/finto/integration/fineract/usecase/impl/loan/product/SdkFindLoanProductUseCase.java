@@ -18,6 +18,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 import static io.finto.fineract.sdk.CustomDatatableNames.LOAN_PRODUCT_FIELDS;
@@ -38,8 +39,8 @@ public class SdkFindLoanProductUseCase implements FindLoanProductUseCase {
     public static class SdkFindLoanProductUseCaseBuilder {
         private FineractLoanProductMapper loanProductMapper = FineractLoanProductMapper.INSTANCE;
         private ObjectMapper objectMapper = JsonMapper.builder().findAndAddModules()
-                .addModule(new SimpleModule().addDeserializer(ZonedDateTime.class,
-                        new ConverterUtils.ZonedDateTimeDeserializer()))
+                .addModule(new SimpleModule().addDeserializer(LocalDateTime.class,
+                        new ConverterUtils.LocalDateTimeDeserializer()))
                 .build();
     }
 
@@ -47,12 +48,12 @@ public class SdkFindLoanProductUseCase implements FindLoanProductUseCase {
     public LoanProduct findLoanProduct(LoanProductId id) {
         var loanProduct = context.getResponseBody(context.loanProductApi()
                 .retrieveLoanProductDetails(id.getValue()));
-        var additionalDetails = parseLoanProductAdditionalFields(objectMapper, context.getResponseBody(context.dataTablesApi()
+        var additionalDetails = parseLoanProductAdditionalFields(context.getResponseBody(context.dataTablesApi()
                 .getDatatableByAppTableId(LOAN_PRODUCT_FIELDS, id.getValue(), null, null)));
         return loanProductMapper.toDomain(loanProduct, additionalDetails);
     }
 
-    public LoanProductDetailsDto parseLoanProductAdditionalFields(ObjectMapper objectMapper, String content) {
+    public LoanProductDetailsDto parseLoanProductAdditionalFields(String content) {
         try {
             LoanProductDetailsDto[] additionalFieldsDtos = objectMapper.readValue(content, LoanProductDetailsDto[].class);
             return additionalFieldsDtos.length > 0 ? additionalFieldsDtos[0] : null;
