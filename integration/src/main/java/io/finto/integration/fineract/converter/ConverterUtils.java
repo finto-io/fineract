@@ -45,7 +45,17 @@ public class ConverterUtils {
     public static class LocalDateTimeDeserializer extends JsonDeserializer<LocalDateTime> {
         @Override
         public LocalDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-            return LocalDateTime.parse(jsonParser.readValueAs(String.class), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+            int[] dateTimeValues = jsonParser.readValueAs(int[].class);
+
+            int year = dateTimeValues[0];
+            int month = dateTimeValues[1];
+            int day = dateTimeValues[2];
+            int hour = dateTimeValues[3];
+            int minute = dateTimeValues[4];
+            int second = dateTimeValues[5];
+            int nanosecond = dateTimeValues[6];
+
+            return LocalDateTime.of(year, month, day, hour, minute, second, nanosecond);
         }
     }
 }
