@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="finto" id="14">
+        <addColumn tableName="loan_product_fields">
+            <column defaultValueComputed="NULL" name="first_payment_day" type="INTEGER" />
+        </addColumn>
+
+        <addColumn tableName="loan_fields">
+            <column defaultValueComputed="NULL" name="external_settlement_account" type="VARCHAR(64)" />
+            <column defaultValueComputed="NULL" name="external_bnpl_account" type="VARCHAR(64)" />
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>
