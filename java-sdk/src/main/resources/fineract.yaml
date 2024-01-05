@@ -32465,6 +32465,10 @@ components:
           type: integer
           format: int32
           example: 3
+        minimumDaysBetweenDisbursalAndFirstRepayment:
+          type: integer
+          format: int32
+          example: 3
         minPrincipal:
           type: number
           format: double

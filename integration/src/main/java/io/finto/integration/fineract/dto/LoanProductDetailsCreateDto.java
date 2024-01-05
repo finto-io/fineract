@@ -32,6 +32,8 @@ public class LoanProductDetailsCreateDto {
     private Boolean latePaymentBlockUser;
     @JsonProperty("early_settlement_allowed")
     private Boolean earlySettlementAllowed;
+    @JsonProperty("first_payment_day")
+    private Integer firstPaymentDay;
     @JsonProperty("loaded_at")
     private String loadedAt;
     @JsonProperty("loaded_by")

@@ -49,4 +49,6 @@ public class LoanProductDetailsDto {
     private LocalDateTime modifiedAt;
     @JsonProperty("modified_by")
     private String modifiedBy;
+    @JsonProperty("first_payment_day")
+    private Integer firstPaymentDay;
 }
