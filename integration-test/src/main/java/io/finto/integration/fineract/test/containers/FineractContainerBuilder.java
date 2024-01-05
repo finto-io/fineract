@@ -35,8 +35,8 @@ public class FineractContainerBuilder {
         }
 
         var container = new DockerComposeContainer<>(new File(composePath))
-                .withExposedService(FINERACTPOSTGRESQL_DEFAULT_SERVICE_NAME, 5432, Wait.forHealthcheck().withStartupTimeout(Duration.ofSeconds(600L)))
-                .withExposedService(FINERACT_DEFAULT_SERVICE_NAME, 8443, Wait.forHealthcheck().withStartupTimeout(Duration.ofSeconds(600L)));
+                .withExposedService(FINERACTPOSTGRESQL_DEFAULT_SERVICE_NAME, 5432, Wait.forHealthcheck().withStartupTimeout(Duration.ofSeconds(60000L)))
+                .withExposedService(FINERACT_DEFAULT_SERVICE_NAME, 8443, Wait.forHealthcheck().withStartupTimeout(Duration.ofSeconds(60000L)));
         container.start();
 
         var server = container.getContainerByServiceName(FINERACT_DEFAULT_SERVICE_NAME);

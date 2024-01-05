@@ -188,7 +188,16 @@ class FineractLoanProductMapperTest {
         result.setCharges(List.of(ChargeData.builder().id(20L).build()));
         result.setCurrencyCode("currencyCode");
         result.setDaysInMonthType(7);
-        result.setDaysInYearType(6);
+        result.setDaysInYearType(360);
+        result.setMinimumDaysBetweenDisbursalAndFirstRepayment(13);
+        result.setOverdueDaysForNPA(90);
+        result.setIsInterestRecalculationEnabled(Boolean.TRUE);
+        result.setPreClosureInterestCalculationStrategy(1);
+        result.setRescheduleStrategyMethod(3);
+        result.setInterestRecalculationCompoundingMethod(0);
+        result.setRecalculationRestFrequencyType(2);
+        result.setRecalculationRestFrequencyInterval(1);
+        result.setPrincipalThresholdForLastInstallment(0);
         result.setDigitsAfterDecimal(1);
         result.setFundSourceAccountId(2L);
         result.setGraceOnInterestPayment(9);
@@ -201,7 +210,6 @@ class FineractLoanProductMapperTest {
         result.setInterestRateFrequencyType(3);
         result.setInterestRatePerPeriod(new BigDecimal("8"));
         result.setInterestType(1);
-        result.setIsInterestRecalculationEnabled(false);
         result.setLoanPortfolioAccountId(6L);
         result.setLocale("en");
         result.setMaxNumberOfRepayments(11);
@@ -232,8 +240,18 @@ class FineractLoanProductMapperTest {
                 .interestCalculationPeriodType(4)
                 .transactionProcessingStrategyCode("transactionProcessingStrategyCode")
                 .accountingRule(5)
-                .daysInYearType(6)
+                .daysInYearType(360)
                 .daysInMonthType(7)
+                .firstPaymentDay(7)
+                .minimumFirstPaymentInterval(13)
+                .overdueDaysForNPA(90)
+                .isInterestRecalculationEnabled(Boolean.TRUE)
+                .preClosureInterestCalculationStrategy(1)
+                .rescheduleStrategyMethod(3)
+                .interestRecalculationCompoundingMethod(0)
+                .recalculationRestFrequencyType(2)
+                .recalculationRestFrequencyInterval(1)
+                .principalThresholdForLastInstallment(0)
                 .shortName("shortName")
                 .externalId("externalId")
                 .name("name")
@@ -259,6 +277,7 @@ class FineractLoanProductMapperTest {
                 .partnerId("partnerId")
                 .partnerName("partnerName")
                 .externalId("externalId")
+                .firstPaymentDay(7)
                 .latePaymentBlockUser(true)
                 .earlySettlementAllowed(true)
                 .loadedAt(DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm", new Locale("en")).format(dt))
@@ -377,6 +396,9 @@ class FineractLoanProductMapperTest {
                 .principal(BigDecimal.valueOf(4.0))
                 .minPrincipal(BigDecimal.valueOf(2.0))
                 .maxPrincipal(BigDecimal.valueOf(3.0))
+                .numberOfRepayments(5)
+                .firstPaymentDay(28)
+                .minimumFirstPaymentInterval(13)
                 .numberOfRepayments(5)
                 .minNumberOfRepayments(6)
                 .maxNumberOfRepayments(7)
@@ -525,6 +547,7 @@ class FineractLoanProductMapperTest {
                 .closedBy("closedBy")
                 .modifiedAt(dateTime)
                 .modifiedBy("modifiedBy")
+                .firstPaymentDay(28)
                 .build();
     }
 
@@ -550,6 +573,7 @@ class FineractLoanProductMapperTest {
         result.setNumberOfRepayments(5);
         result.setMinNumberOfRepayments(6);
         result.setMaxNumberOfRepayments(7);
+        result.setMinimumDaysBetweenDisbursalAndFirstRepayment(13);
         result.setRepaymentEvery(8);
         result.setRepaymentFrequencyType(GetLoanProductsRepaymentFrequencyType.builder()
                 .id(9L)
