@@ -18,20 +18,7 @@ public class FineractIntegrationAutoConfiguration {
     @Bean
     @FintoFinerectClientQualifier
     @ConditionalOnMissingBean({FineractClient.class})
-    public FineractClient fineractClient(FineractClientConfiguration clientConfiguration) {
-        return FineractClient.builder()
-                .insecure(clientConfiguration.getIsSecure())
-                .baseURL(clientConfiguration.getBaseUrl())
-                .tenant(clientConfiguration.getTenant())
-                .basicAuth(clientConfiguration.getUsername(), clientConfiguration.getPassword())
-                .build();
-    }
-
-    @Lazy
-    @Bean
-    @FintoFinerectClientQualifier
-    @ConditionalOnMissingBean({FineractClient.class})
-    public FineractClient fineractClient(FineractClientConfiguration clientConfiguration, Logbook logbook) {
+        public FineractClient fineractClient(FineractClientConfiguration clientConfiguration, Logbook logbook) {
         return FineractClient.builder()
                 .insecure(clientConfiguration.getIsSecure())
                 .baseURL(clientConfiguration.getBaseUrl())

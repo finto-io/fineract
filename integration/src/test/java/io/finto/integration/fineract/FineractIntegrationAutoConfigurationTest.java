@@ -3,28 +3,42 @@ package io.finto.integration.fineract;
 import io.finto.fineract.sdk.auth.ApiKeyAuth;
 import io.finto.fineract.sdk.auth.HttpBasicAuth;
 import io.finto.fineract.sdk.util.FineractClient;
-import io.finto.integration.fineract.test.Application;
+import io.finto.integration.fineract.config.FineractClientConfiguration;
+import org.easymock.IMocksControl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
+import org.zalando.logbook.Logbook;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.easymock.EasyMock.createStrictControl;
+import static org.easymock.EasyMock.expect;
 
-@SpringBootTest(classes = Application.class, properties = {
-        "io.finto.fineract.client.base-url=https://test.fineract.finto.io/fineract-provider/api/v1/",
-        "io.finto.fineract.client.tenant=testTenant",
-        "io.finto.fineract.client.username=testUsername",
-        "io.finto.fineract.client.password=testPassword"
-})
 public class FineractIntegrationAutoConfigurationTest {
 
-    @Autowired
-    private ApplicationContext applicationContext;
+    private IMocksControl control;
+    private FineractClientConfiguration clientConfiguration;
+    private Logbook logbook;
+    @BeforeEach
+    void setUp() {
+        control = createStrictControl();
+        clientConfiguration = control.createMock(FineractClientConfiguration.class);
+        logbook = control.createMock(Logbook.class);
+    }
+
 
     @Test
     void testFineractClientCreation() {
-        FineractClient actual = applicationContext.getBean(FineractClient.class);
+
+        expect(clientConfiguration.getIsSecure()).andStubReturn(true);
+        expect(clientConfiguration.getBaseUrl()).andStubReturn("https://test.fineract.finto.io/fineract-provider/api/v1/");
+        expect(clientConfiguration.getTenant()).andStubReturn("testTenant");
+        expect(clientConfiguration.getUsername()).andStubReturn("testUsername");
+        expect(clientConfiguration.getPassword()).andStubReturn("testPassword");
+        control.replay();
+
+        var autoConfig = new FineractIntegrationAutoConfiguration();
+        var actual = autoConfig.fineractClient(clientConfiguration, logbook);
+        control.verify();
 
         FineractClient expected = FineractClient.builder()
                 .insecure(true)
