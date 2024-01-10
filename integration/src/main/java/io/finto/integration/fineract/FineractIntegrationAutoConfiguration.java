@@ -8,6 +8,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.zalando.logbook.Logbook;
 
 @Configuration
 @EnableConfigurationProperties({FineractClientConfiguration.class})
@@ -23,6 +24,20 @@ public class FineractIntegrationAutoConfiguration {
                 .baseURL(clientConfiguration.getBaseUrl())
                 .tenant(clientConfiguration.getTenant())
                 .basicAuth(clientConfiguration.getUsername(), clientConfiguration.getPassword())
+                .build();
+    }
+
+    @Lazy
+    @Bean
+    @FintoFinerectClientQualifier
+    @ConditionalOnMissingBean({FineractClient.class})
+    public FineractClient fineractClient(FineractClientConfiguration clientConfiguration, Logbook logbook) {
+        return FineractClient.builder()
+                .insecure(clientConfiguration.getIsSecure())
+                .baseURL(clientConfiguration.getBaseUrl())
+                .tenant(clientConfiguration.getTenant())
+                .basicAuth(clientConfiguration.getUsername(), clientConfiguration.getPassword())
+                .logging(logbook)
                 .build();
     }
 
