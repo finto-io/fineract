@@ -51,7 +51,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -330,6 +329,8 @@ public interface FineractLoanProductMapper {
     @Mapping(target = "productId", source = "loanProductId.value")
     @Mapping(target = "submittedOnDate", source = "request.requestDate", qualifiedByName = "fromLocalDate")
     @Mapping(target = "expectedDisbursementDate", source = "request.expectedDisbursementDate", qualifiedByName = "fromLocalDate")
+    @Mapping(target = "interestChargedFromDate", source = "request.interestChargeStartDate", qualifiedByName = "fromLocalDate")
+    @Mapping(target = "repaymentsStartingFromDate", source = "request.repaymentStartDate", qualifiedByName = "fromLocalDate")
     @Mapping(target = "principal", source = "request.amount")
     @Mapping(target = "loanType", constant = "individual")
     @Mapping(target = "loanTermFrequency", source = "request.numberOfInstallments")
