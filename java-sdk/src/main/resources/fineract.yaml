@@ -48413,6 +48413,10 @@ components:
                     type: string
                   customer_id:
                     type: string
+                  external_settlement_account:
+                    type: string
+                  external_bnpl_account:
+                    type: string
                   partner_id:
                     type: string
                   partner_name:
