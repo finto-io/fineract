@@ -1,0 +1,658 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+    <changeSet author="finto" id="15">
+        <insert tableName="x_registered_table">
+            <column name="registered_table_name" value="card_fields"/>
+            <column name="application_table_name" value="m_savings_account"/>
+            <column name="entity_subtype" value="card_fields"/>
+            <column name="category" valueNumeric="200"/>
+        </insert>
+
+        <!-- Add card_fields table -->
+        <createTable tableName="card_fields">
+            <column name="savings_account_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column defaultValueComputed="NULL" name="card_id" type="VARCHAR(256)"/>
+            <column defaultValueComputed="NULL" name="card_bin" type="VARCHAR(6)"/>
+            <column defaultValueComputed="NULL" name="card_pan" type="VARCHAR(4)"/>
+            <column defaultValueComputed="NULL" name="card_holder_name" type="VARCHAR(256)"/>
+            <column defaultValueComputed="NULL" name="external_source" type="BOOLEAN"/>
+        </createTable>
+
+        <!-- Add currencies in config -->
+        <!-- Currency EUR -->
+        <insert tableName="m_organisation_currency">
+            <column name="code" value="EUR"/>
+            <column name="decimal_places" valueNumeric="2"/>
+            <column name="name" value="Euro"/>
+            <column name="display_symbol" value="€"/>
+            <column name="internationalized_name_code" value="currency.EUR"/>
+        </insert>
+
+        <!-- Currency GBP -->
+        <insert tableName="m_organisation_currency">
+            <column name="code" value="GBP"/>
+            <column name="decimal_places" valueNumeric="2"/>
+            <column name="name" value="Pound Sterling"/>
+            <column name="display_symbol" value="£"/>
+            <column name="internationalized_name_code" value="currency.GBP"/>
+        </insert>
+
+        <!-- Currency CAD -->
+        <insert tableName="m_organisation_currency">
+            <column name="code" value="CAD"/>
+            <column name="decimal_places" valueNumeric="2"/>
+            <column name="name" value="Canadian Dollar"/>
+            <column name="internationalized_name_code" value="currency.CAD"/>
+        </insert>
+
+        <!-- Currency SAR -->
+        <insert tableName="m_organisation_currency">
+            <column name="code" value="SAR"/>
+            <column name="decimal_places" valueNumeric="2"/>
+            <column name="name" value="Saudi Riyal"/>
+            <column name="internationalized_name_code" value="currency.SAR"/>
+        </insert>
+
+        <!-- Currency AED -->
+        <insert tableName="m_organisation_currency">
+            <column name="code" value="AED"/>
+            <column name="decimal_places" valueNumeric="2"/>
+            <column name="name" value="UAE Dirham"/>
+            <column name="internationalized_name_code" value="currency.AED"/>
+        </insert>
+        
+        <!-- Currency OMR -->
+        <insert tableName="m_organisation_currency">
+            <column name="code" value="OMR"/>
+            <column name="decimal_places" valueNumeric="3"/>
+            <column name="name" value="Rial Omani"/>
+            <column name="internationalized_name_code" value="currency.OMR"/>
+        </insert>
+
+        <!-- Currency BHD -->
+        <insert tableName="m_organisation_currency">
+            <column name="code" value="BHD"/>
+            <column name="decimal_places" valueNumeric="3"/>
+            <column name="name" value="Bahraini Dinar"/>
+            <column name="internationalized_name_code" value="currency.BHD"/>
+        </insert>
+
+        <!-- Currency KWD -->
+        <insert tableName="m_organisation_currency">
+            <column name="code" value="KWD"/>
+            <column name="decimal_places" valueNumeric="3"/>
+            <column name="name" value="Kuwaiti Dinar"/>
+            <column name="internationalized_name_code" value="currency.KWD"/>
+        </insert>
+
+        <!-- Currency QAR -->
+        <insert tableName="m_organisation_currency">
+            <column name="code" value="QAR"/>
+            <column name="decimal_places" valueNumeric="2"/>
+            <column name="name" value="Qatari Rial"/>
+            <column name="internationalized_name_code" value="currency.QAR"/>
+        </insert>
+        
+        <!-- Currency SEK -->
+        <insert tableName="m_organisation_currency">
+            <column name="code" value="SEK"/>
+            <column name="decimal_places" valueNumeric="2"/>
+            <column name="name" value="Swedish Krona"/>
+            <column name="internationalized_name_code" value="currency.SEK"/>
+        </insert>
+
+        <!-- Currency CHF -->
+        <insert tableName="m_organisation_currency">
+            <column name="code" value="CHF"/>
+            <column name="decimal_places" valueNumeric="2"/>
+            <column name="name" value="Swiss Franc"/>
+            <column name="internationalized_name_code" value="currency.CHF"/>
+        </insert>
+
+        <!-- Currency JPY -->
+        <insert tableName="m_organisation_currency">
+            <column name="code" value="JPY"/>
+            <column name="decimal_places" valueNumeric="0"/>
+            <column name="name" value="Japanese Yen"/>
+            <column name="internationalized_name_code" value="currency.JPY"/>
+        </insert>
+
+        <!-- Add Saving Products -->
+        <!-- Card Pocket Account (JOD) -->
+        <insert tableName="m_savings_product">
+            <column name="name" value="Card Pocket Account (JOD)"/>
+            <column name="short_name" value="JOD1"/>
+            <column name="description" value="Card Pocket Account (JOD)"/>
+            <column name="deposit_type_enum" valueNumeric="100"/>
+            <column name="currency_code" value="JOD"/>
+            <column name="currency_digits" valueNumeric="3"/>
+            <column name="currency_multiplesof" valueNumeric="0"/>
+            <column name="nominal_annual_interest_rate" valueNumeric="0.000000"/>
+            <column name="interest_compounding_period_enum" valueNumeric="1"/>
+            <column name="interest_posting_period_enum" valueNumeric="4"/>
+            <column name="interest_calculation_type_enum" valueNumeric="1"/>
+            <column name="interest_calculation_days_in_year_type_enum" valueNumeric="365"/>
+            <column name="min_required_opening_balance"/>
+            <column name="lockin_period_frequency"/>
+            <column name="lockin_period_frequency_enum"/>
+            <column name="accounting_type" valueNumeric="1"/>
+            <column name="withdrawal_fee_amount"/>
+            <column name="withdrawal_fee_type_enum"/>
+            <column name="withdrawal_fee_for_transfer" valueBoolean="true"/>
+            <column name="allow_overdraft" valueBoolean="false"/>
+            <column name="overdraft_limit" valueNumeric="0.000000"/>
+            <column name="nominal_annual_interest_rate_overdraft" valueNumeric="0.000000"/>
+            <column name="min_overdraft_for_interest_calculation" valueNumeric="0.000000"/>
+            <column name="min_required_balance" valueNumeric="0.000000"/>
+            <column name="enforce_min_required_balance" valueBoolean="false"/>
+            <column name="min_balance_for_interest_calculation"/>
+            <column name="withhold_tax" valueBoolean="false"/>
+            <column name="tax_group_id"/>
+            <column name="is_dormancy_tracking_active"/>
+            <column name="days_to_inactive"/>
+            <column name="days_to_dormancy"/>
+            <column name="days_to_escheat"/>
+            <column name="max_allowed_lien_limit"/>
+            <column name="is_lien_allowed" valueBoolean="false"/>
+        </insert>
+
+        <!-- Card Pocket Account (USD) -->
+        <insert tableName="m_savings_product">
+            <column name="name" value="Card Pocket Account (USD)"/>
+            <column name="short_name" value="USD1"/>
+            <column name="description" value="Card Pocket Account (USD)"/>
+            <column name="deposit_type_enum" valueNumeric="100"/>
+            <column name="currency_code" value="USD"/>
+            <column name="currency_digits" valueNumeric="2"/>
+            <column name="currency_multiplesof" valueNumeric="0"/>
+            <column name="nominal_annual_interest_rate" valueNumeric="0.000000"/>
+            <column name="interest_compounding_period_enum" valueNumeric="1"/>
+            <column name="interest_posting_period_enum" valueNumeric="4"/>
+            <column name="interest_calculation_type_enum" valueNumeric="1"/>
+            <column name="interest_calculation_days_in_year_type_enum" valueNumeric="365"/>
+            <column name="min_required_opening_balance"/>
+            <column name="lockin_period_frequency"/>
+            <column name="lockin_period_frequency_enum"/>
+            <column name="accounting_type" valueNumeric="1"/>
+            <column name="withdrawal_fee_amount"/>
+            <column name="withdrawal_fee_type_enum"/>
+            <column name="withdrawal_fee_for_transfer" valueBoolean="true"/>
+            <column name="allow_overdraft" valueBoolean="false"/>
+            <column name="overdraft_limit" valueNumeric="0.000000"/>
+            <column name="nominal_annual_interest_rate_overdraft" valueNumeric="0.000000"/>
+            <column name="min_overdraft_for_interest_calculation" valueNumeric="0.000000"/>
+            <column name="min_required_balance" valueNumeric="0.000000"/>
+            <column name="enforce_min_required_balance" valueBoolean="false"/>
+            <column name="min_balance_for_interest_calculation"/>
+            <column name="withhold_tax" valueBoolean="false"/>
+            <column name="tax_group_id"/>
+            <column name="is_dormancy_tracking_active"/>
+            <column name="days_to_inactive"/>
+            <column name="days_to_dormancy"/>
+            <column name="days_to_escheat"/>
+            <column name="max_allowed_lien_limit"/>
+            <column name="is_lien_allowed" valueBoolean="false"/>
+        </insert>
+
+        <!-- Card Pocket Account (EUR) -->
+        <insert tableName="m_savings_product">
+            <column name="name" value="Card Pocket Account (EUR)"/>
+            <column name="short_name" value="EUR1"/>
+            <column name="description" value="Card Pocket Account (EUR)"/>
+            <column name="deposit_type_enum" valueNumeric="100"/>
+            <column name="currency_code" value="EUR"/>
+            <column name="currency_digits" valueNumeric="2"/>
+            <column name="currency_multiplesof" valueNumeric="0"/>
+            <column name="nominal_annual_interest_rate" valueNumeric="0.000000"/>
+            <column name="interest_compounding_period_enum" valueNumeric="1"/>
+            <column name="interest_posting_period_enum" valueNumeric="4"/>
+            <column name="interest_calculation_type_enum" valueNumeric="1"/>
+            <column name="interest_calculation_days_in_year_type_enum" valueNumeric="365"/>
+            <column name="min_required_opening_balance"/>
+            <column name="lockin_period_frequency"/>
+            <column name="lockin_period_frequency_enum"/>
+            <column name="accounting_type" valueNumeric="1"/>
+            <column name="withdrawal_fee_amount"/>
+            <column name="withdrawal_fee_type_enum"/>
+            <column name="withdrawal_fee_for_transfer" valueBoolean="true"/>
+            <column name="allow_overdraft" valueBoolean="false"/>
+            <column name="overdraft_limit" valueNumeric="0.000000"/>
+            <column name="nominal_annual_interest_rate_overdraft" valueNumeric="0.000000"/>
+            <column name="min_overdraft_for_interest_calculation" valueNumeric="0.000000"/>
+            <column name="min_required_balance" valueNumeric="0.000000"/>
+            <column name="enforce_min_required_balance" valueBoolean="false"/>
+            <column name="min_balance_for_interest_calculation"/>
+            <column name="withhold_tax" valueBoolean="false"/>
+            <column name="tax_group_id"/>
+            <column name="is_dormancy_tracking_active"/>
+            <column name="days_to_inactive"/>
+            <column name="days_to_dormancy"/>
+            <column name="days_to_escheat"/>
+            <column name="max_allowed_lien_limit"/>
+            <column name="is_lien_allowed" valueBoolean="false"/>
+        </insert>
+
+        <!-- Card Pocket Account (GBP) -->
+        <insert tableName="m_savings_product">
+            <column name="name" value="Card Pocket Account (GBP)"/>
+            <column name="short_name" value="GBP1"/>
+            <column name="description" value="Card Pocket Account (GBP)"/>
+            <column name="deposit_type_enum" valueNumeric="100"/>
+            <column name="currency_code" value="GBP"/>
+            <column name="currency_digits" valueNumeric="2"/>
+            <column name="currency_multiplesof" valueNumeric="0"/>
+            <column name="nominal_annual_interest_rate" valueNumeric="0.000000"/>
+            <column name="interest_compounding_period_enum" valueNumeric="1"/>
+            <column name="interest_posting_period_enum" valueNumeric="4"/>
+            <column name="interest_calculation_type_enum" valueNumeric="1"/>
+            <column name="interest_calculation_days_in_year_type_enum" valueNumeric="365"/>
+            <column name="min_required_opening_balance"/>
+            <column name="lockin_period_frequency"/>
+            <column name="lockin_period_frequency_enum"/>
+            <column name="accounting_type" valueNumeric="1"/>
+            <column name="withdrawal_fee_amount"/>
+            <column name="withdrawal_fee_type_enum"/>
+            <column name="withdrawal_fee_for_transfer" valueBoolean="true"/>
+            <column name="allow_overdraft" valueBoolean="false"/>
+            <column name="overdraft_limit" valueNumeric="0.000000"/>
+            <column name="nominal_annual_interest_rate_overdraft" valueNumeric="0.000000"/>
+            <column name="min_overdraft_for_interest_calculation" valueNumeric="0.000000"/>
+            <column name="min_required_balance" valueNumeric="0.000000"/>
+            <column name="enforce_min_required_balance" valueBoolean="false"/>
+            <column name="min_balance_for_interest_calculation"/>
+            <column name="withhold_tax" valueBoolean="false"/>
+            <column name="tax_group_id"/>
+            <column name="is_dormancy_tracking_active"/>
+            <column name="days_to_inactive"/>
+            <column name="days_to_dormancy"/>
+            <column name="days_to_escheat"/>
+            <column name="max_allowed_lien_limit"/>
+            <column name="is_lien_allowed" valueBoolean="false"/>
+        </insert>
+
+        <!-- Card Pocket Account (CAD) -->
+        <insert tableName="m_savings_product">
+            <column name="name" value="Card Pocket Account (CAD)"/>
+            <column name="short_name" value="CAD1"/>
+            <column name="description" value="Card Pocket Account (CAD)"/>
+            <column name="deposit_type_enum" valueNumeric="100"/>
+            <column name="currency_code" value="CAD"/>
+            <column name="currency_digits" valueNumeric="2"/>
+            <column name="currency_multiplesof" valueNumeric="0"/>
+            <column name="nominal_annual_interest_rate" valueNumeric="0.000000"/>
+            <column name="interest_compounding_period_enum" valueNumeric="1"/>
+            <column name="interest_posting_period_enum" valueNumeric="4"/>
+            <column name="interest_calculation_type_enum" valueNumeric="1"/>
+            <column name="interest_calculation_days_in_year_type_enum" valueNumeric="365"/>
+            <column name="min_required_opening_balance"/>
+            <column name="lockin_period_frequency"/>
+            <column name="lockin_period_frequency_enum"/>
+            <column name="accounting_type" valueNumeric="1"/>
+            <column name="withdrawal_fee_amount"/>
+            <column name="withdrawal_fee_type_enum"/>
+            <column name="withdrawal_fee_for_transfer" valueBoolean="true"/>
+            <column name="allow_overdraft" valueBoolean="false"/>
+            <column name="overdraft_limit" valueNumeric="0.000000"/>
+            <column name="nominal_annual_interest_rate_overdraft" valueNumeric="0.000000"/>
+            <column name="min_overdraft_for_interest_calculation" valueNumeric="0.000000"/>
+            <column name="min_required_balance" valueNumeric="0.000000"/>
+            <column name="enforce_min_required_balance" valueBoolean="false"/>
+            <column name="min_balance_for_interest_calculation"/>
+            <column name="withhold_tax" valueBoolean="false"/>
+            <column name="tax_group_id"/>
+            <column name="is_dormancy_tracking_active"/>
+            <column name="days_to_inactive"/>
+            <column name="days_to_dormancy"/>
+            <column name="days_to_escheat"/>
+            <column name="max_allowed_lien_limit"/>
+            <column name="is_lien_allowed" valueBoolean="false"/>
+        </insert>
+
+        <!-- Card Pocket Account (SAR) -->
+        <insert tableName="m_savings_product">
+            <column name="name" value="Card Pocket Account (SAR)"/>
+            <column name="short_name" value="SAR1"/>
+            <column name="description" value="Card Pocket Account (SAR)"/>
+            <column name="deposit_type_enum" valueNumeric="100"/>
+            <column name="currency_code" value="SAR"/>
+            <column name="currency_digits" valueNumeric="2"/>
+            <column name="currency_multiplesof" valueNumeric="0"/>
+            <column name="nominal_annual_interest_rate" valueNumeric="0.000000"/>
+            <column name="interest_compounding_period_enum" valueNumeric="1"/>
+            <column name="interest_posting_period_enum" valueNumeric="4"/>
+            <column name="interest_calculation_type_enum" valueNumeric="1"/>
+            <column name="interest_calculation_days_in_year_type_enum" valueNumeric="365"/>
+            <column name="min_required_opening_balance"/>
+            <column name="lockin_period_frequency"/>
+            <column name="lockin_period_frequency_enum"/>
+            <column name="accounting_type" valueNumeric="1"/>
+            <column name="withdrawal_fee_amount"/>
+            <column name="withdrawal_fee_type_enum"/>
+            <column name="withdrawal_fee_for_transfer" valueBoolean="true"/>
+            <column name="allow_overdraft" valueBoolean="false"/>
+            <column name="overdraft_limit" valueNumeric="0.000000"/>
+            <column name="nominal_annual_interest_rate_overdraft" valueNumeric="0.000000"/>
+            <column name="min_overdraft_for_interest_calculation" valueNumeric="0.000000"/>
+            <column name="min_required_balance" valueNumeric="0.000000"/>
+            <column name="enforce_min_required_balance" valueBoolean="false"/>
+            <column name="min_balance_for_interest_calculation"/>
+            <column name="withhold_tax" valueBoolean="false"/>
+            <column name="tax_group_id"/>
+            <column name="is_dormancy_tracking_active"/>
+            <column name="days_to_inactive"/>
+            <column name="days_to_dormancy"/>
+            <column name="days_to_escheat"/>
+            <column name="max_allowed_lien_limit"/>
+            <column name="is_lien_allowed" valueBoolean="false"/>
+        </insert>
+
+        <!-- Card Pocket Account (AED) -->
+        <insert tableName="m_savings_product">
+            <column name="name" value="Card Pocket Account (AED)"/>
+            <column name="short_name" value="AED1"/>
+            <column name="description" value="Card Pocket Account (AED)"/>
+            <column name="deposit_type_enum" valueNumeric="100"/>
+            <column name="currency_code" value="AED"/>
+            <column name="currency_digits" valueNumeric="2"/>
+            <column name="currency_multiplesof" valueNumeric="0"/>
+            <column name="nominal_annual_interest_rate" valueNumeric="0.000000"/>
+            <column name="interest_compounding_period_enum" valueNumeric="1"/>
+            <column name="interest_posting_period_enum" valueNumeric="4"/>
+            <column name="interest_calculation_type_enum" valueNumeric="1"/>
+            <column name="interest_calculation_days_in_year_type_enum" valueNumeric="365"/>
+            <column name="min_required_opening_balance"/>
+            <column name="lockin_period_frequency"/>
+            <column name="lockin_period_frequency_enum"/>
+            <column name="accounting_type" valueNumeric="1"/>
+            <column name="withdrawal_fee_amount"/>
+            <column name="withdrawal_fee_type_enum"/>
+            <column name="withdrawal_fee_for_transfer" valueBoolean="true"/>
+            <column name="allow_overdraft" valueBoolean="false"/>
+            <column name="overdraft_limit" valueNumeric="0.000000"/>
+            <column name="nominal_annual_interest_rate_overdraft" valueNumeric="0.000000"/>
+            <column name="min_overdraft_for_interest_calculation" valueNumeric="0.000000"/>
+            <column name="min_required_balance" valueNumeric="0.000000"/>
+            <column name="enforce_min_required_balance" valueBoolean="false"/>
+            <column name="min_balance_for_interest_calculation"/>
+            <column name="withhold_tax" valueBoolean="false"/>
+            <column name="tax_group_id"/>
+            <column name="is_dormancy_tracking_active"/>
+            <column name="days_to_inactive"/>
+            <column name="days_to_dormancy"/>
+            <column name="days_to_escheat"/>
+            <column name="max_allowed_lien_limit"/>
+            <column name="is_lien_allowed" valueBoolean="false"/>
+        </insert>
+
+        <!-- Card Pocket Account (OMR) -->
+        <insert tableName="m_savings_product">
+            <column name="name" value="Card Pocket Account (OMR)"/>
+            <column name="short_name" value="OMR1"/>
+            <column name="description" value="Card Pocket Account (OMR)"/>
+            <column name="deposit_type_enum" valueNumeric="100"/>
+            <column name="currency_code" value="OMR"/>
+            <column name="currency_digits" valueNumeric="3"/>
+            <column name="currency_multiplesof" valueNumeric="0"/>
+            <column name="nominal_annual_interest_rate" valueNumeric="0.000000"/>
+            <column name="interest_compounding_period_enum" valueNumeric="1"/>
+            <column name="interest_posting_period_enum" valueNumeric="4"/>
+            <column name="interest_calculation_type_enum" valueNumeric="1"/>
+            <column name="interest_calculation_days_in_year_type_enum" valueNumeric="365"/>
+            <column name="min_required_opening_balance"/>
+            <column name="lockin_period_frequency"/>
+            <column name="lockin_period_frequency_enum"/>
+            <column name="accounting_type" valueNumeric="1"/>
+            <column name="withdrawal_fee_amount"/>
+            <column name="withdrawal_fee_type_enum"/>
+            <column name="withdrawal_fee_for_transfer" valueBoolean="true"/>
+            <column name="allow_overdraft" valueBoolean="false"/>
+            <column name="overdraft_limit" valueNumeric="0.000000"/>
+            <column name="nominal_annual_interest_rate_overdraft" valueNumeric="0.000000"/>
+            <column name="min_overdraft_for_interest_calculation" valueNumeric="0.000000"/>
+            <column name="min_required_balance" valueNumeric="0.000000"/>
+            <column name="enforce_min_required_balance" valueBoolean="false"/>
+            <column name="min_balance_for_interest_calculation"/>
+            <column name="withhold_tax" valueBoolean="false"/>
+            <column name="tax_group_id"/>
+            <column name="is_dormancy_tracking_active"/>
+            <column name="days_to_inactive"/>
+            <column name="days_to_dormancy"/>
+            <column name="days_to_escheat"/>
+            <column name="max_allowed_lien_limit"/>
+            <column name="is_lien_allowed" valueBoolean="false"/>
+        </insert>
+
+        <!-- Card Pocket Account (BHD) -->
+        <insert tableName="m_savings_product">
+            <column name="name" value="Card Pocket Account (BHD)"/>
+            <column name="short_name" value="BHD1"/>
+            <column name="description" value="Card Pocket Account (BHD)"/>
+            <column name="deposit_type_enum" valueNumeric="100"/>
+            <column name="currency_code" value="BHD"/>
+            <column name="currency_digits" valueNumeric="3"/>
+            <column name="currency_multiplesof" valueNumeric="0"/>
+            <column name="nominal_annual_interest_rate" valueNumeric="0.000000"/>
+            <column name="interest_compounding_period_enum" valueNumeric="1"/>
+            <column name="interest_posting_period_enum" valueNumeric="4"/>
+            <column name="interest_calculation_type_enum" valueNumeric="1"/>
+            <column name="interest_calculation_days_in_year_type_enum" valueNumeric="365"/>
+            <column name="min_required_opening_balance"/>
+            <column name="lockin_period_frequency"/>
+            <column name="lockin_period_frequency_enum"/>
+            <column name="accounting_type" valueNumeric="1"/>
+            <column name="withdrawal_fee_amount"/>
+            <column name="withdrawal_fee_type_enum"/>
+            <column name="withdrawal_fee_for_transfer" valueBoolean="true"/>
+            <column name="allow_overdraft" valueBoolean="false"/>
+            <column name="overdraft_limit" valueNumeric="0.000000"/>
+            <column name="nominal_annual_interest_rate_overdraft" valueNumeric="0.000000"/>
+            <column name="min_overdraft_for_interest_calculation" valueNumeric="0.000000"/>
+            <column name="min_required_balance" valueNumeric="0.000000"/>
+            <column name="enforce_min_required_balance" valueBoolean="false"/>
+            <column name="min_balance_for_interest_calculation"/>
+            <column name="withhold_tax" valueBoolean="false"/>
+            <column name="tax_group_id"/>
+            <column name="is_dormancy_tracking_active"/>
+            <column name="days_to_inactive"/>
+            <column name="days_to_dormancy"/>
+            <column name="days_to_escheat"/>
+            <column name="max_allowed_lien_limit"/>
+            <column name="is_lien_allowed" valueBoolean="false"/>
+        </insert>
+
+        <!-- Card Pocket Account (KWD) -->
+        <insert tableName="m_savings_product">
+            <column name="name" value="Card Pocket Account (KWD)"/>
+            <column name="short_name" value="KWD1"/>
+            <column name="description" value="Card Pocket Account (KWD)"/>
+            <column name="deposit_type_enum" valueNumeric="100"/>
+            <column name="currency_code" value="KWD"/>
+            <column name="currency_digits" valueNumeric="3"/>
+            <column name="currency_multiplesof" valueNumeric="0"/>
+            <column name="nominal_annual_interest_rate" valueNumeric="0.000000"/>
+            <column name="interest_compounding_period_enum" valueNumeric="1"/>
+            <column name="interest_posting_period_enum" valueNumeric="4"/>
+            <column name="interest_calculation_type_enum" valueNumeric="1"/>
+            <column name="interest_calculation_days_in_year_type_enum" valueNumeric="365"/>
+            <column name="min_required_opening_balance"/>
+            <column name="lockin_period_frequency"/>
+            <column name="lockin_period_frequency_enum"/>
+            <column name="accounting_type" valueNumeric="1"/>
+            <column name="withdrawal_fee_amount"/>
+            <column name="withdrawal_fee_type_enum"/>
+            <column name="withdrawal_fee_for_transfer" valueBoolean="true"/>
+            <column name="allow_overdraft" valueBoolean="false"/>
+            <column name="overdraft_limit" valueNumeric="0.000000"/>
+            <column name="nominal_annual_interest_rate_overdraft" valueNumeric="0.000000"/>
+            <column name="min_overdraft_for_interest_calculation" valueNumeric="0.000000"/>
+            <column name="min_required_balance" valueNumeric="0.000000"/>
+            <column name="enforce_min_required_balance" valueBoolean="false"/>
+            <column name="min_balance_for_interest_calculation"/>
+            <column name="withhold_tax" valueBoolean="false"/>
+            <column name="tax_group_id"/>
+            <column name="is_dormancy_tracking_active"/>
+            <column name="days_to_inactive"/>
+            <column name="days_to_dormancy"/>
+            <column name="days_to_escheat"/>
+            <column name="max_allowed_lien_limit"/>
+            <column name="is_lien_allowed" valueBoolean="false"/>
+        </insert>
+
+        <!-- Card Pocket Account (QAR) -->
+        <insert tableName="m_savings_product">
+            <column name="name" value="Card Pocket Account (QAR)"/>
+            <column name="short_name" value="QAR1"/>
+            <column name="description" value="Card Pocket Account (QAR)"/>
+            <column name="deposit_type_enum" valueNumeric="100"/>
+            <column name="currency_code" value="QAR"/>
+            <column name="currency_digits" valueNumeric="3"/>
+            <column name="currency_multiplesof" valueNumeric="0"/>
+            <column name="nominal_annual_interest_rate" valueNumeric="0.000000"/>
+            <column name="interest_compounding_period_enum" valueNumeric="1"/>
+            <column name="interest_posting_period_enum" valueNumeric="4"/>
+            <column name="interest_calculation_type_enum" valueNumeric="1"/>
+            <column name="interest_calculation_days_in_year_type_enum" valueNumeric="365"/>
+            <column name="min_required_opening_balance"/>
+            <column name="lockin_period_frequency"/>
+            <column name="lockin_period_frequency_enum"/>
+            <column name="accounting_type" valueNumeric="1"/>
+            <column name="withdrawal_fee_amount"/>
+            <column name="withdrawal_fee_type_enum"/>
+            <column name="withdrawal_fee_for_transfer" valueBoolean="true"/>
+            <column name="allow_overdraft" valueBoolean="false"/>
+            <column name="overdraft_limit" valueNumeric="0.000000"/>
+            <column name="nominal_annual_interest_rate_overdraft" valueNumeric="0.000000"/>
+            <column name="min_overdraft_for_interest_calculation" valueNumeric="0.000000"/>
+            <column name="min_required_balance" valueNumeric="0.000000"/>
+            <column name="enforce_min_required_balance" valueBoolean="false"/>
+            <column name="min_balance_for_interest_calculation"/>
+            <column name="withhold_tax" valueBoolean="false"/>
+            <column name="tax_group_id"/>
+            <column name="is_dormancy_tracking_active"/>
+            <column name="days_to_inactive"/>
+            <column name="days_to_dormancy"/>
+            <column name="days_to_escheat"/>
+            <column name="max_allowed_lien_limit"/>
+            <column name="is_lien_allowed" valueBoolean="false"/>
+        </insert>
+
+        <!-- Card Pocket Account (SEK) -->
+        <insert tableName="m_savings_product">
+            <column name="name" value="Card Pocket Account (SEK)"/>
+            <column name="short_name" value="SEK1"/>
+            <column name="description" value="Card Pocket Account (SEK)"/>
+            <column name="deposit_type_enum" valueNumeric="100"/>
+            <column name="currency_code" value="SEK"/>
+            <column name="currency_digits" valueNumeric="2"/>
+            <column name="currency_multiplesof" valueNumeric="0"/>
+            <column name="nominal_annual_interest_rate" valueNumeric="0.000000"/>
+            <column name="interest_compounding_period_enum" valueNumeric="1"/>
+            <column name="interest_posting_period_enum" valueNumeric="4"/>
+            <column name="interest_calculation_type_enum" valueNumeric="1"/>
+            <column name="interest_calculation_days_in_year_type_enum" valueNumeric="365"/>
+            <column name="min_required_opening_balance"/>
+            <column name="lockin_period_frequency"/>
+            <column name="lockin_period_frequency_enum"/>
+            <column name="accounting_type" valueNumeric="1"/>
+            <column name="withdrawal_fee_amount"/>
+            <column name="withdrawal_fee_type_enum"/>
+            <column name="withdrawal_fee_for_transfer" valueBoolean="true"/>
+            <column name="allow_overdraft" valueBoolean="false"/>
+            <column name="overdraft_limit" valueNumeric="0.000000"/>
+            <column name="nominal_annual_interest_rate_overdraft" valueNumeric="0.000000"/>
+            <column name="min_overdraft_for_interest_calculation" valueNumeric="0.000000"/>
+            <column name="min_required_balance" valueNumeric="0.000000"/>
+            <column name="enforce_min_required_balance" valueBoolean="false"/>
+            <column name="min_balance_for_interest_calculation"/>
+            <column name="withhold_tax" valueBoolean="false"/>
+            <column name="tax_group_id"/>
+            <column name="is_dormancy_tracking_active"/>
+            <column name="days_to_inactive"/>
+            <column name="days_to_dormancy"/>
+            <column name="days_to_escheat"/>
+            <column name="max_allowed_lien_limit"/>
+            <column name="is_lien_allowed" valueBoolean="false"/>
+        </insert>
+
+        <!-- Card Pocket Account (CHF) -->
+        <insert tableName="m_savings_product">
+            <column name="name" value="Card Pocket Account (CHF)"/>
+            <column name="short_name" value="CHF1"/>
+            <column name="description" value="Card Pocket Account (CHF)"/>
+            <column name="deposit_type_enum" valueNumeric="100"/>
+            <column name="currency_code" value="CHF"/>
+            <column name="currency_digits" valueNumeric="2"/>
+            <column name="currency_multiplesof" valueNumeric="0"/>
+            <column name="nominal_annual_interest_rate" valueNumeric="0.000000"/>
+            <column name="interest_compounding_period_enum" valueNumeric="1"/>
+            <column name="interest_posting_period_enum" valueNumeric="4"/>
+            <column name="interest_calculation_type_enum" valueNumeric="1"/>
+            <column name="interest_calculation_days_in_year_type_enum" valueNumeric="365"/>
+            <column name="min_required_opening_balance"/>
+            <column name="lockin_period_frequency"/>
+            <column name="lockin_period_frequency_enum"/>
+            <column name="accounting_type" valueNumeric="1"/>
+            <column name="withdrawal_fee_amount"/>
+            <column name="withdrawal_fee_type_enum"/>
+            <column name="withdrawal_fee_for_transfer" valueBoolean="true"/>
+            <column name="allow_overdraft" valueBoolean="false"/>
+            <column name="overdraft_limit" valueNumeric="0.000000"/>
+            <column name="nominal_annual_interest_rate_overdraft" valueNumeric="0.000000"/>
+            <column name="min_overdraft_for_interest_calculation" valueNumeric="0.000000"/>
+            <column name="min_required_balance" valueNumeric="0.000000"/>
+            <column name="enforce_min_required_balance" valueBoolean="false"/>
+            <column name="min_balance_for_interest_calculation"/>
+            <column name="withhold_tax" valueBoolean="false"/>
+            <column name="tax_group_id"/>
+            <column name="is_dormancy_tracking_active"/>
+            <column name="days_to_inactive"/>
+            <column name="days_to_dormancy"/>
+            <column name="days_to_escheat"/>
+            <column name="max_allowed_lien_limit"/>
+            <column name="is_lien_allowed" valueBoolean="false"/>
+        </insert>
+
+        <!-- Card Pocket Account (JPY) -->
+        <insert tableName="m_savings_product">
+            <column name="name" value="Card Pocket Account (JPY)"/>
+            <column name="short_name" value="JPY1"/>
+            <column name="description" value="Card Pocket Account (JPY)"/>
+            <column name="deposit_type_enum" valueNumeric="100"/>
+            <column name="currency_code" value="JPY"/>
+            <column name="currency_digits" valueNumeric="0"/>
+            <column name="currency_multiplesof" valueNumeric="0"/>
+            <column name="nominal_annual_interest_rate" valueNumeric="0.000000"/>
+            <column name="interest_compounding_period_enum" valueNumeric="1"/>
+            <column name="interest_posting_period_enum" valueNumeric="4"/>
+            <column name="interest_calculation_type_enum" valueNumeric="1"/>
+            <column name="interest_calculation_days_in_year_type_enum" valueNumeric="365"/>
+            <column name="min_required_opening_balance"/>
+            <column name="lockin_period_frequency"/>
+            <column name="lockin_period_frequency_enum"/>
+            <column name="accounting_type" valueNumeric="1"/>
+            <column name="withdrawal_fee_amount"/>
+            <column name="withdrawal_fee_type_enum"/>
+            <column name="withdrawal_fee_for_transfer" valueBoolean="true"/>
+            <column name="allow_overdraft" valueBoolean="false"/>
+            <column name="overdraft_limit" valueNumeric="0.000000"/>
+            <column name="nominal_annual_interest_rate_overdraft" valueNumeric="0.000000"/>
+            <column name="min_overdraft_for_interest_calculation" valueNumeric="0.000000"/>
+            <column name="min_required_balance" valueNumeric="0.000000"/>
+            <column name="enforce_min_required_balance" valueBoolean="false"/>
+            <column name="min_balance_for_interest_calculation"/>
+            <column name="withhold_tax" valueBoolean="false"/>
+            <column name="tax_group_id"/>
+            <column name="is_dormancy_tracking_active"/>
+            <column name="days_to_inactive"/>
+            <column name="days_to_dormancy"/>
+            <column name="days_to_escheat"/>
+            <column name="max_allowed_lien_limit"/>
+            <column name="is_lien_allowed" valueBoolean="false"/>
+        </insert>
+
+    </changeSet>
+</databaseChangeLog>
