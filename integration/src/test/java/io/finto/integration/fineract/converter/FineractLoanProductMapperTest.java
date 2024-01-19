@@ -67,7 +67,6 @@ import io.finto.fineract.sdk.models.RunReportsResponse;
 import io.finto.integration.fineract.dto.LoanProductDetailsCreateDto;
 import io.finto.integration.fineract.dto.LoanProductDetailsDto;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -76,7 +75,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -1089,7 +1087,7 @@ class FineractLoanProductMapperTest {
                 .interestRate(BigDecimal.valueOf(10))
                 .apr(new BigDecimal("29012.821"))
                 .installmentFrequency(InstallmentFrequency.UNKNOWN)
-                .installmentStartDate(localDate)
+                .installmentStartDate(null)
                 .installmentEndDate(localDate)
                 .firstInstallmentAmount(BigDecimal.valueOf(302))
                 .subSeqInstallmentAmount(null)
@@ -1340,7 +1338,7 @@ class FineractLoanProductMapperTest {
     @Test
     void testToInstallmentStartDateForLoan() {
         var localDate = LocalDate.now();
-        assertEquals(localDate.minus(1, ChronoUnit.DAYS),
+        assertEquals(localDate,
                 mapper.toInstallmentStartDateForLoan(generateGetLoansLoanIdRepaymentPeriodList(localDate)));
         assertNull(mapper.toInstallmentStartDateForLoan(null));
     }
@@ -1615,7 +1613,7 @@ class FineractLoanProductMapperTest {
                 .interestRate(new BigDecimal("6"))
                 .apr(new BigDecimal("14600.000"))
                 .installmentFrequency(InstallmentFrequency.WEEKLY)
-                .installmentStartDate(localDate)
+                .installmentStartDate(null)
                 .installmentEndDate(localDate)
                 .firstInstallmentAmount(BigDecimal.valueOf(302))
                 .subSeqInstallmentAmount(null)
