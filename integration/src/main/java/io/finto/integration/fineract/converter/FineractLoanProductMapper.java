@@ -403,6 +403,8 @@ public interface FineractLoanProductMapper {
         }
         return value.stream().map(PostLoansRepaymentSchedulePeriods::getDueDate)
                 .filter(Objects::nonNull)
+                .distinct()
+                .skip(1)
                 .min(LocalDate::compareTo).orElse(null);
     }
 
@@ -560,6 +562,8 @@ public interface FineractLoanProductMapper {
         }
         return value.stream().map(GetLoansLoanIdRepaymentPeriod::getDueDate)
                 .filter(Objects::nonNull)
+                .distinct()
+                .skip(1)
                 .min(LocalDate::compareTo).orElse(null);
     }
 
