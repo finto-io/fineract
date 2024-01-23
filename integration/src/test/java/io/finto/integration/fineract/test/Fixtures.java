@@ -3,6 +3,7 @@ package io.finto.integration.fineract.test;
 import io.finto.domain.account.AccountId;
 import io.finto.fineract.sdk.models.*;
 import io.finto.integration.fineract.dto.AccountAdditionalFieldsDto;
+import io.finto.integration.fineract.dto.PocketAccountAdditionalFieldsDto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -29,6 +30,15 @@ public class Fixtures {
                 .externalAccountNumber("1234567890")
                 .externalAccountName("testExternalAccountName")
                 .externalBranch("testExternalBranch")
+                .build();
+    }
+
+    public static PocketAccountAdditionalFieldsDto testPocketAccountAdditionalFields(AccountId accountId) {
+        return PocketAccountAdditionalFieldsDto.builder()
+                .cardId("testCardId")
+                .cardBin("123456")
+                .cardPan("1234")
+                .cardHolderName("John Smith")
                 .build();
     }
 

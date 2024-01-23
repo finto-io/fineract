@@ -7,6 +7,7 @@ import io.finto.domain.account.Account;
 import io.finto.domain.account.AccountId;
 import io.finto.domain.account.BankName;
 import io.finto.domain.account.BankSwift;
+import io.finto.domain.account.PocketAccount;
 import io.finto.domain.product.ProductId;
 import io.finto.exceptions.core.FintoApiException;
 import io.finto.fineract.sdk.api.DataTablesApi;
@@ -14,6 +15,7 @@ import io.finto.fineract.sdk.api.SavingsAccountApi;
 import io.finto.fineract.sdk.models.GetSavingsAccountsAccountIdResponse;
 import io.finto.integration.fineract.converter.FineractAccountMapper;
 import io.finto.integration.fineract.dto.AccountAdditionalFieldsDto;
+import io.finto.integration.fineract.dto.PocketAccountAdditionalFieldsDto;
 import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
 import io.finto.integration.fineract.usecase.impl.account.SdkFindAccountUseCase;
 import org.easymock.IMocksControl;
@@ -25,6 +27,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static io.finto.integration.fineract.test.Fixtures.testAccountAdditionalFields;
+import static io.finto.integration.fineract.test.Fixtures.testPocketAccountAdditionalFields;
 import static io.finto.integration.fineract.test.Fixtures.testSavedAccountResponse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -148,6 +151,97 @@ class SdkFindAccountUseCaseTest {
         control.replay();
 
         Account actual = useCase.findAccount(accountId);
+
+        control.verify();
+
+        assertThat(actual).isSameAs(result);
+    }
+
+    /**
+     * Method under test: {@link SdkFindAccountUseCase#findPocketAccount(AccountId)}
+     */
+    @Test
+    void test_findPocketAccount_invalidAdditionalFieldsContent() {
+        GetSavingsAccountsAccountIdResponse savedAccount = testSavedAccountResponse(accountId);
+        Call<GetSavingsAccountsAccountIdResponse> savingCall = control.createMock(Call.class);
+        Call<String> callDataTables = control.createMock(Call.class);
+        String additionalDetailsContent = "";
+
+        expect(context.savingsAccountApi()).andReturn(savingsAccountApi);
+        expect(savingsAccountApi.retrieveOneSavingsAccount(accountId.getValue(), null, null, null))
+                .andReturn(savingCall);
+        expect(context.getResponseBody(savingCall)).andReturn(savedAccount);
+        expect(context.dataTablesApi()).andReturn(dataTablesApi);
+        expect(dataTablesApi.getDatatableByAppTableId("card_fields", accountId.getValue(), null, null))
+                .andReturn(callDataTables);
+        expect(context.getResponseBody(callDataTables)).andReturn(additionalDetailsContent);
+
+        control.replay();
+
+        assertThatThrownBy(() -> useCase.findPocketAccount(accountId))
+                .isInstanceOf(FintoApiException.class)
+                .hasCauseInstanceOf(JsonProcessingException.class);
+
+        control.verify();
+    }
+
+    /**
+     * Method under test: {@link SdkFindAccountUseCase#findPocketAccount(AccountId)}
+     */
+    @Test
+    void test_findPocketAccount_emptyAdditionalFieldsContent() {
+        GetSavingsAccountsAccountIdResponse savedAccount = testSavedAccountResponse(accountId);
+        Call<GetSavingsAccountsAccountIdResponse> savingCall = control.createMock(Call.class);
+        Call<String> callDataTables = control.createMock(Call.class);
+        String additionalDetailsContent = "[]";
+        PocketAccount result = PocketAccount.builder().id(accountId).productId(ProductId.builder().value(10L).build()).build();
+
+        expect(context.savingsAccountApi()).andReturn(savingsAccountApi);
+        expect(savingsAccountApi.retrieveOneSavingsAccount(accountId.getValue(), null, null, null))
+                .andReturn(savingCall);
+        expect(context.getResponseBody(savingCall)).andReturn(savedAccount);
+        expect(context.dataTablesApi()).andReturn(dataTablesApi);
+        expect(dataTablesApi.getDatatableByAppTableId("card_fields", accountId.getValue(), null, null))
+                .andReturn(callDataTables);
+        expect(context.getResponseBody(callDataTables)).andReturn(additionalDetailsContent);
+        expect(fineractAccountMapper.toPocketAccount(savedAccount, null, bankSwift.get(), bankName.get()))
+                .andReturn(result);
+
+        control.replay();
+
+        PocketAccount actual = useCase.findPocketAccount(accountId);
+
+        control.verify();
+
+        assertThat(actual).isSameAs(result);
+    }
+
+    /**
+     * Method under test: {@link SdkFindAccountUseCase#findPocketAccount(AccountId)}
+     */
+    @Test
+    void test_findPocketAccount_withNoBlankAdditionalFieldsContent() throws JsonProcessingException {
+        GetSavingsAccountsAccountIdResponse savedAccount = testSavedAccountResponse(accountId);
+        PocketAccountAdditionalFieldsDto additionalFields = testPocketAccountAdditionalFields(accountId);
+        Call<GetSavingsAccountsAccountIdResponse> savingCall = control.createMock(Call.class);
+        Call<String> callDataTables = control.createMock(Call.class);
+        String additionalDetailsContent = mapper.writeValueAsString(List.of(additionalFields));
+        PocketAccount result = PocketAccount.builder().id(accountId).productId(ProductId.builder().value(10L).build()).build();
+
+        expect(context.savingsAccountApi()).andReturn(savingsAccountApi);
+        expect(savingsAccountApi.retrieveOneSavingsAccount(accountId.getValue(), null, null, null))
+                .andReturn(savingCall);
+        expect(context.getResponseBody(savingCall)).andReturn(savedAccount);
+        expect(context.dataTablesApi()).andReturn(dataTablesApi);
+        expect(dataTablesApi.getDatatableByAppTableId("card_fields", accountId.getValue(), null, null))
+                .andReturn(callDataTables);
+        expect(context.getResponseBody(callDataTables)).andReturn(additionalDetailsContent);
+        expect(fineractAccountMapper.toPocketAccount(savedAccount, additionalFields, bankSwift.get(), bankName.get()))
+                .andReturn(result);
+
+        control.replay();
+
+        PocketAccount actual = useCase.findPocketAccount(accountId);
 
         control.verify();
 

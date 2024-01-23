@@ -95,4 +95,37 @@ class SdkCreateAccountUseCaseTest {
         assertThat(actual).isEqualTo(accountId);
     }
 
+    /**
+     * Method under test: {@link SdkCreateAccountUseCase#initPocketAccount(OpeningAccount)}
+     */
+    @Test
+    void test_createPocketAccount_invalidAdditionalFieldsContent() {
+        CustomerId customerId = CustomerId.of(10L);
+        AccountId accountId = AccountId.of(23L);
+
+        OpeningAccount request = OpeningAccount.builder()
+                .customerId(customerId)
+                .accountType(accountType)
+                .currencyCode(currencyCode)
+                .build();
+
+        PostSavingsAccountsRequest fineractRequest = control.createMock(PostSavingsAccountsRequest.class);
+        Call<PostSavingsAccountsResponse> response = control.createMock(Call.class);
+        PostSavingsAccountsResponse responseBody = control.createMock(PostSavingsAccountsResponse.class);
+
+        expect(accountMapper.pocketAccountCreationFineractRequest(product, request.getCustomerId())).andReturn(fineractRequest);
+        expect(context.savingsAccountApi()).andReturn(savingsAccountApi);
+        expect(savingsAccountApi.submitSavingsAccountsApplication(fineractRequest)).andReturn(response);
+        expect(context.getResponseBody(response)).andReturn(responseBody);
+        expect(responseBody.getSavingsId()).andReturn(accountId.getValue().intValue());
+
+        control.replay();
+
+        AccountId actual = useCase.initPocketAccount(request);
+
+        control.verify();
+
+        assertThat(actual).isEqualTo(accountId);
+    }
+
 }

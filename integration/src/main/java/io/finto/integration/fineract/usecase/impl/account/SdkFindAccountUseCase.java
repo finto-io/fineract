@@ -7,12 +7,14 @@ import io.finto.domain.account.Account;
 import io.finto.domain.account.AccountId;
 import io.finto.domain.account.BankName;
 import io.finto.domain.account.BankSwift;
+import io.finto.domain.account.PocketAccount;
 import io.finto.exceptions.core.FintoApiException;
 import io.finto.fineract.sdk.api.DataTablesApi;
 import io.finto.fineract.sdk.api.SavingsAccountApi;
 import io.finto.fineract.sdk.models.GetSavingsAccountsAccountIdResponse;
 import io.finto.integration.fineract.converter.FineractAccountMapper;
 import io.finto.integration.fineract.dto.AccountAdditionalFieldsDto;
+import io.finto.integration.fineract.dto.PocketAccountAdditionalFieldsDto;
 import io.finto.integration.fineract.usecase.impl.SdkFineractUseCaseContext;
 import io.finto.usecase.account.FindAccountUseCase;
 import lombok.*;
@@ -21,6 +23,7 @@ import retrofit2.Call;
 import java.util.function.Supplier;
 
 import static io.finto.fineract.sdk.CustomDatatableNames.ACCOUNT_ADDITIONAL_FIELDS;
+import static io.finto.fineract.sdk.CustomDatatableNames.CARD_ADDITIONAL_FIELDS;
 
 @AllArgsConstructor
 @Builder
@@ -46,16 +49,20 @@ public class SdkFindAccountUseCase implements FindAccountUseCase {
 
     @Override
     public Account findAccount(AccountId id) {
-        SavingsAccountApi api = context.savingsAccountApi();
-        Call<GetSavingsAccountsAccountIdResponse> initAccountCall = api.retrieveOneSavingsAccount(id.getValue(), null, null, null);
+        GetSavingsAccountsAccountIdResponse savedAccount = retrieveSavingsAccount(id);
+        String additionalDetailsContent = retrieveAdditionalDetailsContent(context.dataTablesApi(), ACCOUNT_ADDITIONAL_FIELDS, id);
 
-        GetSavingsAccountsAccountIdResponse savedAccount = context.getResponseBody(initAccountCall);
-        DataTablesApi dataTablesApi = context.dataTablesApi();
-        Call<String> callDataTables = dataTablesApi.getDatatableByAppTableId(ACCOUNT_ADDITIONAL_FIELDS, id.getValue(), null, null);
-
-        String additionalDetailsContent = context.getResponseBody(callDataTables);
         AccountAdditionalFieldsDto accountAdditionalFields = parseAdditionalFields(additionalDetailsContent);
         return accountMapper.toAccount(savedAccount, accountAdditionalFields, bankSwiftInfo.get(), bankNameInfo.get());
+    }
+
+    @Override
+    public PocketAccount findPocketAccount(AccountId id) {
+        GetSavingsAccountsAccountIdResponse savedAccount = retrieveSavingsAccount(id);
+        String additionalDetailsContent = retrieveAdditionalDetailsContent(context.dataTablesApi(), CARD_ADDITIONAL_FIELDS, id);
+
+        PocketAccountAdditionalFieldsDto accountAdditionalFields = parsePocketAdditionalFields(additionalDetailsContent);
+        return accountMapper.toPocketAccount(savedAccount, accountAdditionalFields, bankSwiftInfo.get(), bankNameInfo.get());
     }
 
     private AccountAdditionalFieldsDto parseAdditionalFields(String content) {
@@ -66,5 +73,26 @@ public class SdkFindAccountUseCase implements FindAccountUseCase {
             throw new FintoApiException(e);
         }
     }
+
+    private PocketAccountAdditionalFieldsDto parsePocketAdditionalFields(String content) {
+        try {
+            PocketAccountAdditionalFieldsDto[] accountAdditionalFieldsResponse = objectMapper.readValue(content, PocketAccountAdditionalFieldsDto[].class);
+            return accountAdditionalFieldsResponse.length > 0 ? accountAdditionalFieldsResponse[0] : null;
+        } catch (JsonProcessingException e) {
+            throw new FintoApiException(e);
+        }
+    }
+
+    private GetSavingsAccountsAccountIdResponse retrieveSavingsAccount(AccountId id) {
+        SavingsAccountApi api = context.savingsAccountApi();
+        Call<GetSavingsAccountsAccountIdResponse> initAccountCall = api.retrieveOneSavingsAccount(id.getValue(), null, null, null);
+        return context.getResponseBody(initAccountCall);
+    }
+
+    private String retrieveAdditionalDetailsContent(DataTablesApi dataTablesApi, String customDatatableName, AccountId id) {
+        Call<String> callDataTables = dataTablesApi.getDatatableByAppTableId(customDatatableName, id.getValue(), null, null);
+        return context.getResponseBody(callDataTables);
+    }
+
 
 }

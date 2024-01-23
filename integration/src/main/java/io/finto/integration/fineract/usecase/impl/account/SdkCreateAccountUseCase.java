@@ -48,4 +48,21 @@ public class SdkCreateAccountUseCase implements CreateAccountUseCase {
         );
     }
 
+    @Override
+    public AccountId initPocketAccount(OpeningAccount request) {
+        PostSavingsAccountsRequest fineractRequest = accountMapper.pocketAccountCreationFineractRequest(
+                findProduct.apply(request.getAccountType(), request.getCurrencyCode()),
+                request.getCustomerId()
+        );
+
+        return AccountId.of(
+                Objects.requireNonNull(context
+                                .getResponseBody(
+                                        context.savingsAccountApi().submitSavingsAccountsApplication(fineractRequest)
+                                )
+                                .getSavingsId())
+                        .longValue()
+        );
+    }
+
 }

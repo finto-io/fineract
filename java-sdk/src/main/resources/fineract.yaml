@@ -49466,7 +49466,7 @@ components:
             properties:
               registeredTableName:
                 type: string
-                example: account_fields
+                example: account_fields, card_fields
               data:
                 type: object
                 properties:
@@ -49481,6 +49481,16 @@ components:
                     type: string
                   external_branch:
                     type: string
+                  card_id:
+                    type: string
+                  card_bin:
+                    type: string
+                  card_pan:
+                    type: string
+                  card_holder_name:
+                    type: string
+                  external_source:
+                    type: boolean
     PostSavingsAccountsResponse:
       type: object
       description: PostSavingsAccountsResponse
