@@ -19,7 +19,6 @@ import lombok.NonNull;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 
 import static io.finto.fineract.sdk.CustomDatatableNames.LOAN_PRODUCT_FIELDS;
 
